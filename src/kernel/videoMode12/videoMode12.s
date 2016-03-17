@@ -1,5 +1,5 @@
 /*
- *  Uzebox Kernel - Mode 8
+ *  Uzebox Kernel - Mode 12
  *  Copyright (C) 2009  Alec Bourque
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 */
 
 ;****************************************************
-; Video Mode 11 - Chip8
+; Video Mode 12 - Chip8
 ; Bitmappep mode: 1bpp 
 ; Submode 0: 64x32 
 ; Submode 1: 128x64

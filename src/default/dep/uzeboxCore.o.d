@@ -14,7 +14,7 @@ uzeboxCore.o: ../kernel/uzeboxCore.c \
  /usr/local/avr/include/avr/interrupt.h /usr/local/avr/include/avr/wdt.h \
  ../kernel/uzebox.h ../kernel/defines.h \
  ../kernel/videoMode3/videoMode3.def.h ../kernel/kernel.h \
- ../kernel/videoMode3/videoMode3.h
+ ../kernel/videoMode3/videoMode3.h /usr/local/avr/include/util/atomic.h
 
 /usr/local/lib/gcc/avr/4.9.2/include/stdbool.h:
 
@@ -61,3 +61,5 @@ uzeboxCore.o: ../kernel/uzeboxCore.c \
 ../kernel/kernel.h:
 
 ../kernel/videoMode3/videoMode3.h:
+
+/usr/local/avr/include/util/atomic.h:

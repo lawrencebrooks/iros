@@ -3,3 +3,6 @@
 .hex
 .uze
 .bin
+.map
+.o
+.elf

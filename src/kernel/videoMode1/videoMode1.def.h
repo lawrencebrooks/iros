@@ -62,6 +62,8 @@
 
 #define VRAM_SIZE VRAM_TILES_H*VRAM_TILES_V*2
 #define VRAM_ADDR_SIZE 2 //in bytes
+#define VRAM_PTR_TYPE int
+	
 #define SPRITES_ENABLED 0
 
 #ifndef FRAME_LINES
@@ -75,3 +77,4 @@
 #endif
 
 
+#define HSYNC_USABLE_CYCLES 264 //Maximum free cycles usable by the hysnc and audio

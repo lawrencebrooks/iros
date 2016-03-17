@@ -36,9 +36,20 @@
 #endif
 
 #define TILE_WIDTH 6
-#define VRAM_TILES_H 60
-#define SCREEN_TILES_H 60
 
+#ifndef RESOLUTION
+	#define RESOLUTION 60
+#else
+	#if RESOLUTION != 60 && RESOLUTION != 80
+		#error Invalid value for compile switch RESOLUTION: Valid values are 60 or 80.
+	#endif
+#endif
+
+#ifndef SCREEN_TILES_H
+	#define SCREEN_TILES_H 60	
+#endif 
+
+#define VRAM_TILES_H SCREEN_TILES_H
 
 #ifndef SCREEN_TILES_V
 	#define SCREEN_TILES_V 28
@@ -59,8 +70,18 @@
 
 #define VRAM_SIZE VRAM_TILES_H*VRAM_TILES_V	
 #define VRAM_ADDR_SIZE 1 //in bytes
+#define VRAM_PTR_TYPE char
 
-#define FONT_TILE_WIDTH 21 //in words
-#define FONT_TILE_SIZE FONT_TILE_WIDTH*TILE_HEIGHT //Size in words: 27 instructions * 8 rows
+#if RESOLUTION==60
+	#define FONT_TILE_WIDTH 21 //in words
+	#define CYCLES_PER_PIXEL 4
+#else
+	#define FONT_TILE_WIDTH 15 //in words
+	#define CYCLES_PER_PIXEL 3
+#endif
+#define FONT_TILE_SIZE FONT_TILE_WIDTH*TILE_HEIGHT //Size in words: n instructions * 8 rows
+
+#define HSYNC_USABLE_CYCLES 249 //Maximum free cycles usable by the hysnc and audio
+
 
 

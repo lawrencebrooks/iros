@@ -96,6 +96,7 @@
 
 #define VRAM_SIZE VRAM_TILES_H*VRAM_TILES_V	
 #define VRAM_ADDR_SIZE 1 //in bytes
+#define VRAM_PTR_TYPE char
 
 #define SPRITES_ENABLED 1
 
@@ -115,3 +116,5 @@
 #define SPRITE_BANK3 3<<6
 
 #define OFF_SCREEN SCREEN_TILES_H*TILE_WIDTH
+#define MAX_RAMTILES 60
+#define HSYNC_USABLE_CYCLES 225 //Maximum free cycles usable by the hysnc and audio

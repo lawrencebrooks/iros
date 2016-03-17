@@ -61,9 +61,8 @@
 	extern void SetFont(char x,char y, unsigned char tileId);
 	extern void SetFontTilesIndex(unsigned char index);
 	extern void SetFontTable(const char *data);
-	extern void SetTileTable(const char *data);
-	extern void DrawMap(unsigned char x,unsigned char y,const int *map); //draw a map in video mode 1
-	extern void DrawMap2(unsigned char x,unsigned char y,const char *map); //draw a map in video mode 2
+	extern void SetTileTable(const char *data);	
+	extern void DrawMap(unsigned char x,unsigned char y,const VRAM_PTR_TYPE *map); 	
 	extern void Print(int x,int y,const char *string);
 	extern void PrintRam(int x,int y,unsigned char *string);
 	extern void PrintBinaryByte(char x,char y,unsigned char byte);
@@ -81,7 +80,9 @@
 	extern void WaitVsync(int count);
 	extern void ClearVsyncFlag(void);
 	extern   u8 GetVsyncFlag(void);
-	
+	extern void ClearVsyncCounter();
+	extern u16	GetVsyncCounter();	
+
 	extern void SetRenderingParameters(u8 firstScanlineToRender, u8 verticalTilesToRender);
 
 
@@ -133,18 +134,23 @@
     extern unsigned char ReadEeprom(unsigned int addr);
 	extern char EepromWriteBlock(struct EepromBlockStruct *block);
 	extern char EepromReadBlock(unsigned int blockId,struct EepromBlockStruct *block);
+	extern char EepromBlockExists(unsigned int blockId, u16* eepromAddr, u8* nextFreeBlockId);
 	extern bool isEepromFormatted();
 	extern void FormatEeprom(void);
 	extern void FormatEeprom2(u16 *ids, u8 count);
 
 
 	/*
-	 * UART RX buffer
-	 */
-	extern void UartInitRxBuffer();
+	 * UART
+	 */	
 	extern void UartGoBack(unsigned char count);
-	extern unsigned char UartUnreadCount();
-	extern unsigned char UartReadChar();
+	extern u8 UartUnreadCount();
+	extern s16 UartReadChar();
+	extern s8 UartSendChar(u8 data);		
+	extern bool IsUartTxBufferEmpty();
+	extern bool IsUartTxBufferFull();
+	extern void InitUartTxBuffer();
+	extern void InitUartRxBuffer();
 
 	/*
 	 * Misc functions
@@ -153,6 +159,7 @@
 	extern void WaitUs(unsigned int microseconds);
 	extern void SoftReset(void);
 	extern bool IsRunningInEmulator(void);
+	extern bool IsPowerSwitchPressed();
 
 	extern void SetUserPreVsyncCallback(VsyncCallBackFunc);
 	extern void SetUserPostVsyncCallback(VsyncCallBackFunc);
@@ -161,7 +168,9 @@
 	extern void SetLedOff();
 	extern void ToggleLed();
 
-	extern u16  GetRandomSeed();
+	extern u16  GetTrueRandomSeed(); 		//uses the entropy generator to generate a seed. Needs -DTRUE_RANDOM_GEN == 1	
+	extern u16 GetPrngNumber(u16);			//non-zero values seeds the LFSR generator (pseudo-random generator)
+	
 
 	//Debug
 	extern void debug_clear();
@@ -173,6 +182,12 @@
 	extern void debug_int(u16 i);
 	extern void debug_long_hex(u32 i);
 	extern void debug_long(unsigned long val);
+	extern void debug_crlf();
+
+	/*
+	 * Deprecated functions
+	 */
+	 extern void DrawMap2(unsigned char x,unsigned char y,const char *map); // Use generalized DrawMap() function
 
 
 #endif

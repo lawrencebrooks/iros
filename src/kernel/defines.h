@@ -31,6 +31,10 @@
 	#define __DEFINES_H_
  	#include <avr/io.h>
 
+	//Used by custom video modes to add quotes to paths
+	#define Q(x) #x
+	#define QUOTE(x) Q(x)
+
 	//For some reason the Atmega1284P io.h does not include the old "PA0" defines
 	#ifndef PA0
 		#define PA0 PORTA0
@@ -163,34 +167,47 @@
 	#ifndef MIDI_IN
 		#define MIDI_IN 0
 	#elif MIDI_IN == 1
-		#define UART_RX_BUFFER 1
+		#define UART 1
 	#endif
 
 	/*
-	 * Activates the UART receive buffer 
+	 * Activates the UART receive and transmit ring buffers
 	 * Not supported with video mode 2.
 	 *
 	 * 0 = no
 	 * 1 = yes
 	 */
-	#ifndef UART_RX_BUFFER
-		#define UART_RX_BUFFER 0
+	#ifndef UART
+		#define UART 0
 	#endif
 
 	/*
-	 * Activates the UART receive buffer 
+	 * Define the UART receive buffer size. Must be a power of 2.
 	 * Not supported with video mode 2.
 	 *
 	 * 0 = no
 	 * 1 = yes
 	 */
 	#ifndef UART_RX_BUFFER_SIZE
-		#define UART_RX_BUFFER_SIZE 128
+		#define UART_RX_BUFFER_SIZE 0
 	#else
-		#if UART_RX_BUFFER_SIZE !=2 &&   UART_RX_BUFFER_SIZE !=4 &&  UART_RX_BUFFER_SIZE !=8 && \
-			UART_RX_BUFFER_SIZE !=16 &&  UART_RX_BUFFER_SIZE !=32 && UART_RX_BUFFER_SIZE !=64 && \
-			UART_RX_BUFFER_SIZE !=128 && UART_RX_BUFFER_SIZE !=256
+		#if UART_RX_BUFFER_SIZE % 2 != 0
 			#error Invalid size for UART_RX_BUFFER_SIZE: must be a power of 2.
+		#endif
+	#endif
+
+	/*
+	 * Define the UART transmit buffer size. Must be a power of 2.
+	 * Not supported with video mode 2.
+	 *
+	 * 0 = no
+	 * 1 = yes
+	 */
+	#ifndef UART_TX_BUFFER_SIZE
+		#define UART_TX_BUFFER_SIZE 0
+	#else
+		#if UART_TX_BUFFER_SIZE % 2 != 0
+			#error Invalid size for UART_TX_BUFFER_SIZE: must be a power of 2.
 		#endif
 	#endif
 
@@ -399,6 +416,8 @@
 	#define PC_TREMOLO_RATE	10
 	#define PC_SLIDE		11
 	#define PC_SLIDE_SPEED	12
+	#define PC_LOOP_START	13
+	#define PC_LOOP_END		14
 	#define PATCH_END		0xff
 
 
@@ -411,19 +430,21 @@
 		#if SOUND_CHANNEL_5_ENABLE==1
 			#define PCM_CHANNELS 1
 			#define CHANNELS WAVE_CHANNELS+NOISE_CHANNELS+PCM_CHANNELS
-			#if UART_RX_BUFFER == 1
-				#define AUDIO_OUT_HSYNC_CYCLES 230
-				#define AUDIO_OUT_VSYNC_CYCLES 230
+			
+			#if UART == 1
+				#define AUDIO_OUT_HSYNC_CYCLES 258 
+				#define AUDIO_OUT_VSYNC_CYCLES 258 
 			#else
-				#define AUDIO_OUT_HSYNC_CYCLES 212
-				#define AUDIO_OUT_VSYNC_CYCLES 212
+				#define AUDIO_OUT_HSYNC_CYCLES 212 
+				#define AUDIO_OUT_VSYNC_CYCLES 212 
 			#endif 
 		#else
 			#define PCM_CHANNELS 0
 			#define CHANNELS WAVE_CHANNELS+NOISE_CHANNELS
-			#if UART_RX_BUFFER == 1
-				#define AUDIO_OUT_HSYNC_CYCLES 185
-				#define AUDIO_OUT_VSYNC_CYCLES 185
+			
+			#if UART == 1
+				#define AUDIO_OUT_HSYNC_CYCLES 213 
+				#define AUDIO_OUT_VSYNC_CYCLES 213 
 			#else
 				#define AUDIO_OUT_HSYNC_CYCLES 167 
 				#define AUDIO_OUT_VSYNC_CYCLES 167 
@@ -448,7 +469,6 @@
 		#define AUDIO_OUT_VSYNC_CYCLES 68
 
 	#endif
-
 
 	#define SWEEP_UP   0x80
 	#define SWEEP_DOWN 0x00
@@ -485,10 +505,12 @@
 	#define JOYPAD_DATA2_PIN PA1
 
 	#define EEPROM_BLOCK_SIZE 32
+	#define EEPROM_MAX_BLOCKS 64 //(2048/EEPROM_BLOCK_SIZE)
 	#define EEPROM_HEADER_SIZE 1
 	#define EEPROM_SIGNATURE 0x555A
 	#define EEPROM_SIGNATURE2 0x555B
 	#define EEPROM_FREE_BLOCK 0xffff
+	#define EEPROM_OK 0x0
 	#define EEPROM_ERROR_INVALID_BLOCK 0x1
 	#define EEPROM_ERROR_FULL 0x2
 	#define EEPROM_ERROR_BLOCK_NOT_FOUND 0x3
@@ -516,9 +538,21 @@
 		#include "videoMode10/videoMode10.def.h"
 	#elif VIDEO_MODE == 12
 		#include "videoMode12/videoMode12.def.h"
+	#elif VIDEO_MODE == 13
+		#include "videoMode13/videoMode13.def.h"
+	#elif VIDEO_MODE == 14
+		#include "videoMode14/videoMode14.def.h"
+	#elif VIDEO_MODE == 0
+	    //custom user defined video mode
+	    #include QUOTE(VIDEO_MODE_PATH/videoMode.def.h)
 	#else
 		#error Invalid video mode defined with VIDEO_MODE
 	#endif
 
+	#ifdef HSYNC_USABLE_CYCLES 
+		#if HSYNC_USABLE_CYCLES - AUDIO_OUT_HSYNC_CYCLES <0
+			#error There is not enough CPU cycles to support the build options. Disable the UART (-DUART=0), audio channel 5 (-DSOUND_CHANNEL_5_ENABLE=0) or the inline mixer (-DSOUND_MIXER=0).
+		#endif 
+	#endif
 
 #endif

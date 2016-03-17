@@ -27,7 +27,7 @@
 #include <avr/io.h>
 #include "defines.h"
 
-;Global delay macro for 0 to 1275 (old:767) cycles
+;Global assembly delay macro for 0 to 1275 (old:767) cycles
 ;Parameters: reg=Registerto use in inner loop (will be destroyed)
 ;            clocks=CPU clocks to wait
 .macro WAIT reg,clocks	
@@ -75,6 +75,8 @@
 .global SetUserPostVsyncCallback
 .global UartInitRxBuffer
 .global IsRunningInEmulator
+.global GetVsyncCounter
+.global ClearVsyncCounter
 
 ;Public variables
 .global sync_pulse
@@ -84,8 +86,6 @@
 .global joypad2_status_lo
 .global joypad1_status_hi
 .global joypad2_status_hi
-.global first_render_line_tmp
-.global render_lines_count_tmp
 .global first_render_line
 .global render_lines_count
 
@@ -108,8 +108,6 @@
 	first_render_line:		.byte 1
 	render_lines_count: 	.byte 1
 
-	first_render_line_tmp:	.byte 1
-	render_lines_count_tmp: .byte 1
 	
 	;last read results of joypads
 	joypad1_status_lo:	.byte 1
@@ -121,6 +119,8 @@
 						.byte 1
 	joypad2_status_hi:	.byte 1
 						.byte 1
+
+	vsync_counter:		.word 1
 	
 #if TRUE_RANDOM_GEN == 1
 	random_value:			.word 1
@@ -158,7 +158,7 @@ latency_loop:
 	brlo latency_loop
 	jmp .
 	
-	;increment sync pulse counter
+	;decrement sync pulse counter
 	lds ZL,sync_pulse
 	dec ZL
 	sts sync_pulse,ZL
@@ -413,12 +413,15 @@ no_render:
 	ldi ZL,SYNC_PRE_EQ_PULSES+SYNC_EQ_PULSES+SYNC_POST_EQ_PULSES
 	sts sync_pulse,ZL
 
-	;fetch render height registers if they changed	
-	lds ZH,first_render_line_tmp
-	sts first_render_line,ZH
-	
-	lds ZH,render_lines_count_tmp
-	sts render_lines_count,ZH
+
+
+	;increment the vsync counter
+	lds r24,vsync_counter
+	lds r25,vsync_counter+1
+	adiw r24,1
+	sts vsync_counter,r24
+	sts vsync_counter+1,r25
+
 
 	;process user pre callback
 	lds ZL,pre_vsync_user_callback+0
@@ -502,7 +505,7 @@ hsync_pulse:
 ; This flag is set on each VSYNC by
 ; the engine. This func is used to
 ; synchronize the programs on frame
-; rate (30hz).
+; rate (60hz).
 ;
 ; C-callable
 ;************************************
@@ -523,6 +526,34 @@ ClearVsyncFlag:
 	andi r18,~SYNC_FLAG_VSYNC
 	sts sync_flags,r18
 	ret
+
+
+;************************************
+; Read the current vsync counter.
+; This value is incremented by the kernel
+; on each vertical sync (60hz). Can be used
+; for timeout functions.
+;
+; C-callable
+; returns: (unsigned int) r25:r24
+;************************************
+.section .text.GetVsyncCounter
+GetVsyncCounter:
+	lds r24,vsync_counter
+	lds r25,vsync_counter+1
+	ret
+
+;************************************
+; Clear the vsync counter.
+;
+; C-callable
+;************************************
+.section .text.ClearVsyncCounter
+ClearVsyncCounter:
+	sts vsync_counter,r1
+	sts vsync_counter+1,r1
+	ret
+
 
 ;*****************************
 ; Return joypad 1 or 2 buttons status
@@ -752,11 +783,21 @@ internal_spi_byte:
 		ldi r24,0
 		sts sync_pulse,r24
 
+
+		sts _SFR_MEM_ADDR(TIMSK1),r24
+		sts _SFR_MEM_ADDR(OCR1AL),r24
+		sts _SFR_MEM_ADDR(OCR1AH),r24
+		sts _SFR_MEM_ADDR(OCR1BL),r24
+		sts _SFR_MEM_ADDR(OCR1BH),r24
+		sts _SFR_MEM_ADDR(TCNT1H),r24
+		sts _SFR_MEM_ADDR(TCNT1L),r24
+		
 		sts _SFR_MEM_ADDR(TCCR1A),r24	
 		ldi 24,(1<<CS10)
 		sts _SFR_MEM_ADDR(TCCR1B),r24
 
 		cli
+
 		;enable watchdog at fastest speed and generate interrupts
 		ldi r24,0
 		sts _SFR_MEM_ADDR(MCUSR),r24	
@@ -783,9 +824,9 @@ internal_spi_byte:
 	; Returns: r24:r25(u16)
 	;********************************
 
-	.global GetRandomSeed
-	.section .text.GetRandomSeed
-	GetRandomSeed:
+	.global GetTrueRandomSeed
+	.section .text.GetTrueRandomSeed
+	GetTrueRandomSeed:
 		lds r24,random_value
 		lds r25,random_value+1
 		ret
@@ -799,7 +840,7 @@ internal_spi_byte:
 		;save flags & status register
 		push r16
 		push r17
-	
+
 		in r16,_SFR_IO_ADDR(SREG)
 		push r16
 
