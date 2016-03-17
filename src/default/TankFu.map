@@ -119,8 +119,6 @@ Discarded input sections
                 0x0000000000000000        0x4 uzeboxVideoEngineCore.o
  .text.internal_spi_byte
                 0x0000000000000000        0xe uzeboxVideoEngineCore.o
- .text.GetTrueRandomSeed
-                0x0000000000000000        0xa uzeboxVideoEngineCore.o
  .text          0x0000000000000000        0x0 uzeboxCore.o
  .data          0x0000000000000000        0x0 uzeboxCore.o
  .bss           0x0000000000000000        0x2 uzeboxCore.o
@@ -700,106 +698,109 @@ END GROUP
  .text.wdt_randomize
                 0x0000000000009064       0x50 uzeboxVideoEngineCore.o
                 0x0000000000009064                wdt_randomize
+ .text.GetTrueRandomSeed
+                0x00000000000090b4        0xa uzeboxVideoEngineCore.o
+                0x00000000000090b4                GetTrueRandomSeed
  .text.__vector_8
-                0x00000000000090b4       0x44 uzeboxVideoEngineCore.o
-                0x00000000000090b4                __vector_8
+                0x00000000000090be       0x44 uzeboxVideoEngineCore.o
+                0x00000000000090be                __vector_8
  .text.SoftReset
-                0x00000000000090f8       0x16 uzeboxCore.o
-                0x00000000000090f8                SoftReset
+                0x0000000000009102       0x16 uzeboxCore.o
+                0x0000000000009102                SoftReset
  .text.ReadButtons
-                0x000000000000910e       0x6c uzeboxCore.o
-                0x000000000000910e                ReadButtons
+                0x0000000000009118       0x6c uzeboxCore.o
+                0x0000000000009118                ReadButtons
  .text.ReadControllers
-                0x000000000000917a       0x20 uzeboxCore.o
-                0x000000000000917a                ReadControllers
+                0x0000000000009184       0x20 uzeboxCore.o
+                0x0000000000009184                ReadControllers
  .text.FormatEeprom
-                0x000000000000919a       0x44 uzeboxCore.o
-                0x000000000000919a                FormatEeprom
+                0x00000000000091a4       0x44 uzeboxCore.o
+                0x00000000000091a4                FormatEeprom
  .text.isEepromFormatted
-                0x00000000000091de       0x2e uzeboxCore.o
-                0x00000000000091de                isEepromFormatted
+                0x00000000000091e8       0x2e uzeboxCore.o
+                0x00000000000091e8                isEepromFormatted
  .text.EepromBlockExists
-                0x000000000000920c       0xa4 uzeboxCore.o
-                0x000000000000920c                EepromBlockExists
+                0x0000000000009216       0xa4 uzeboxCore.o
+                0x0000000000009216                EepromBlockExists
  .text.EepromWriteBlock
-                0x00000000000092b0       0x94 uzeboxCore.o
-                0x00000000000092b0                EepromWriteBlock
+                0x00000000000092ba       0x94 uzeboxCore.o
+                0x00000000000092ba                EepromWriteBlock
  .text.EepromReadBlock
-                0x0000000000009344       0x66 uzeboxCore.o
-                0x0000000000009344                EepromReadBlock
+                0x000000000000934e       0x66 uzeboxCore.o
+                0x000000000000934e                EepromReadBlock
  .text.PatchCommand00
-                0x00000000000093aa        0x6 uzeboxSoundEngine.o
-                0x00000000000093aa                PatchCommand00
+                0x00000000000093b4        0x6 uzeboxSoundEngine.o
+                0x00000000000093b4                PatchCommand00
  .text.PatchCommand01
-                0x00000000000093b0       0x10 uzeboxSoundEngine.o
-                0x00000000000093b0                PatchCommand01
+                0x00000000000093ba       0x10 uzeboxSoundEngine.o
+                0x00000000000093ba                PatchCommand01
  .text.PatchCommand05
-                0x00000000000093c0        0xa uzeboxSoundEngine.o
-                0x00000000000093c0                PatchCommand05
- .text.PatchCommand06
                 0x00000000000093ca        0xa uzeboxSoundEngine.o
-                0x00000000000093ca                PatchCommand06
+                0x00000000000093ca                PatchCommand05
+ .text.PatchCommand06
+                0x00000000000093d4        0xa uzeboxSoundEngine.o
+                0x00000000000093d4                PatchCommand06
  .text.PatchCommand07
-                0x00000000000093d4        0x6 uzeboxSoundEngine.o
-                0x00000000000093d4                PatchCommand07
+                0x00000000000093de        0x6 uzeboxSoundEngine.o
+                0x00000000000093de                PatchCommand07
  .text.PatchCommand09
-                0x00000000000093da        0x6 uzeboxSoundEngine.o
-                0x00000000000093da                PatchCommand09
+                0x00000000000093e4        0x6 uzeboxSoundEngine.o
+                0x00000000000093e4                PatchCommand09
  .text.PatchCommand10
-                0x00000000000093e0        0x6 uzeboxSoundEngine.o
-                0x00000000000093e0                PatchCommand10
+                0x00000000000093ea        0x6 uzeboxSoundEngine.o
+                0x00000000000093ea                PatchCommand10
  .text.PatchCommand11
-                0x00000000000093e6       0x76 uzeboxSoundEngine.o
-                0x00000000000093e6                PatchCommand11
+                0x00000000000093f0       0x76 uzeboxSoundEngine.o
+                0x00000000000093f0                PatchCommand11
  .text.PatchCommand12
-                0x000000000000945c        0x6 uzeboxSoundEngine.o
-                0x000000000000945c                PatchCommand12
+                0x0000000000009466        0x6 uzeboxSoundEngine.o
+                0x0000000000009466                PatchCommand12
  .text.PatchCommand13
-                0x0000000000009462        0x6 uzeboxSoundEngine.o
-                0x0000000000009462                PatchCommand13
+                0x000000000000946c        0x6 uzeboxSoundEngine.o
+                0x000000000000946c                PatchCommand13
  .text.PatchCommand02
-                0x0000000000009468        0x8 uzeboxSoundEngine.o
-                0x0000000000009468                PatchCommand02
+                0x0000000000009472        0x8 uzeboxSoundEngine.o
+                0x0000000000009472                PatchCommand02
  .text.PatchCommand03
-                0x0000000000009470        0xe uzeboxSoundEngine.o
-                0x0000000000009470                PatchCommand03
+                0x000000000000947a        0xe uzeboxSoundEngine.o
+                0x000000000000947a                PatchCommand03
  .text.PatchCommand04
-                0x000000000000947e       0x10 uzeboxSoundEngine.o
-                0x000000000000947e                PatchCommand04
+                0x0000000000009488       0x10 uzeboxSoundEngine.o
+                0x0000000000009488                PatchCommand04
  .text.PatchCommand08
-                0x000000000000948e       0x20 uzeboxSoundEngine.o
-                0x000000000000948e                PatchCommand08
+                0x0000000000009498       0x20 uzeboxSoundEngine.o
+                0x0000000000009498                PatchCommand08
  .text.PatchCommand14
-                0x00000000000094ae       0x54 uzeboxSoundEngine.o
-                0x00000000000094ae                PatchCommand14
+                0x00000000000094b8       0x54 uzeboxSoundEngine.o
+                0x00000000000094b8                PatchCommand14
  .text.InitMusicPlayer
-                0x0000000000009502       0x44 uzeboxSoundEngine.o
-                0x0000000000009502                InitMusicPlayer
+                0x000000000000950c       0x44 uzeboxSoundEngine.o
+                0x000000000000950c                InitMusicPlayer
  .text.ReadVarLen
-                0x0000000000009546       0x4c uzeboxSoundEngine.o
-                0x0000000000009546                ReadVarLen
+                0x0000000000009550       0x4c uzeboxSoundEngine.o
+                0x0000000000009550                ReadVarLen
  .text.TriggerCommon
-                0x0000000000009592      0x11c uzeboxSoundEngine.o
-                0x0000000000009592                TriggerCommon
+                0x000000000000959c      0x11c uzeboxSoundEngine.o
+                0x000000000000959c                TriggerCommon
  .text.TriggerFx
-                0x00000000000096ae       0x90 uzeboxSoundEngine.o
-                0x00000000000096ae                TriggerFx
+                0x00000000000096b8       0x90 uzeboxSoundEngine.o
+                0x00000000000096b8                TriggerFx
  .text.TriggerNote
-                0x000000000000973e       0x80 uzeboxSoundEngine.o
-                0x000000000000973e                TriggerNote
+                0x0000000000009748       0x80 uzeboxSoundEngine.o
+                0x0000000000009748                TriggerNote
  .text.ProcessMusic
-                0x00000000000097be      0x43e uzeboxSoundEngine.o
-                0x00000000000097be                ProcessMusic
+                0x00000000000097c8      0x43e uzeboxSoundEngine.o
+                0x00000000000097c8                ProcessMusic
  .text.SetMasterVolume
-                0x0000000000009bfc        0x6 uzeboxSoundEngine.o
-                0x0000000000009bfc                SetMasterVolume
+                0x0000000000009c06        0x6 uzeboxSoundEngine.o
+                0x0000000000009c06                SetMasterVolume
  .text.SetMixerNote
-                0x0000000000009c02       0x2e uzeboxSoundEngineCore.o
-                0x0000000000009c02                SetMixerNote
+                0x0000000000009c0c       0x2e uzeboxSoundEngineCore.o
+                0x0000000000009c0c                SetMixerNote
  .text.SetMixerWave
-                0x0000000000009c30       0x3a uzeboxSoundEngineCore.o
-                0x0000000000009c30                SetMixerWave
- *fill*         0x0000000000009c6a       0x96 
+                0x0000000000009c3a       0x3a uzeboxSoundEngineCore.o
+                0x0000000000009c3a                SetMixerWave
+ *fill*         0x0000000000009c74       0x8c 
  .text.DisableSoundEngine
                 0x0000000000009d00      0xc00 uzeboxSoundEngineCore.o
                 0x0000000000009d00                DisableSoundEngine
@@ -1405,7 +1406,7 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0xa15a
+.debug_info     0x0000000000000000     0xa13d
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x672 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_info    0x0000000000000672       0x7f uzeboxVideoEngineCore.o
@@ -1413,7 +1414,7 @@ END GROUP
  .debug_info    0x00000000000011a9     0x12ce uzeboxSoundEngine.o
  .debug_info    0x0000000000002477       0x76 uzeboxSoundEngineCore.o
  .debug_info    0x00000000000024ed     0x14f2 uzeboxVideoEngine.o
- .debug_info    0x00000000000039df     0x677b TankFu.o
+ .debug_info    0x00000000000039df     0x675e TankFu.o
 
 .debug_abbrev   0x0000000000000000     0x1614
  *(.debug_abbrev)
@@ -1442,7 +1443,7 @@ END GROUP
  .debug_frame   0x0000000000000440      0x48c uzeboxVideoEngine.o
  .debug_frame   0x00000000000008cc      0xcf8 TankFu.o
 
-.debug_str      0x0000000000000000     0x1e73
+.debug_str      0x0000000000000000     0x1e77
  *(.debug_str)
  .debug_str     0x0000000000000000      0x231 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_str     0x0000000000000231      0x4bc uzeboxCore.o
@@ -1451,8 +1452,8 @@ END GROUP
                                         0x63a (size before relaxing)
  .debug_str     0x0000000000000ae3      0x33c uzeboxVideoEngine.o
                                         0x50e (size before relaxing)
- .debug_str     0x0000000000000e1f     0x1054 TankFu.o
-                                       0x1452 (size before relaxing)
+ .debug_str     0x0000000000000e1f     0x1058 TankFu.o
+                                       0x1456 (size before relaxing)
 
 .debug_loc      0x0000000000000000     0x92b7
  *(.debug_loc)

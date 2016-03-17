@@ -158,7 +158,7 @@ int LBRandom(unsigned int from, unsigned int to)
  */
 {
 	static unsigned int random_seed = 0;
-	if (random_seed == 0) random_seed = GetRandomSeed();
+	if (random_seed == 0) random_seed = GetTrueRandomSeed();
 	
 	static u8 shift_count = 0;
 	unsigned int shifted = random_seed >> shift_count;
