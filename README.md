@@ -1,2 +1,2 @@
-# spectrum
-Source code and assets for the Spectrum Uzebox game.
+# iris 
+Source code and assets for the Iris Uzebox game.
