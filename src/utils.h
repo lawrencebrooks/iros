@@ -31,10 +31,10 @@ typedef struct sAnimation {
 	u8 frame_count;			// Render frame counter
 	u8 looped;
 	u8 reversing;
-	u8* anims;
+	char** anims;
 } Animation;
 
-u8 LBGetNextFrame(Animation* anim)
+char* LBGetNextFrame(Animation* anim)
 {
 	anim->looped = 0;
 	anim->frame_count += 1;
@@ -48,7 +48,7 @@ u8 LBGetNextFrame(Animation* anim)
 	return anim->anims[anim->current_anim];
 }
 
-u8 LBGetNextFrameReverse(Animation* anim)
+char* LBGetNextFrameReverse(Animation* anim)
 {
 	anim->looped = 0;
 	anim->frame_count += 1;
