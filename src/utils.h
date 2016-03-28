@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Lawrence Brooks
+ * Copyright 2016 Lawrence Brooks
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,15 +31,10 @@ typedef struct sAnimation {
 	u8 frame_count;			// Render frame counter
 	u8 looped;
 	u8 reversing;
-	char* anims[3];
+	u8* anims;
 } Animation;
 
-typedef struct sTileAnimation {
-	Animation anim;
-	int tile_index;
-} TileAnimation;
-
-char* LBGetNextFrame(Animation* anim)
+u8 LBGetNextFrame(Animation* anim)
 {
 	anim->looped = 0;
 	anim->frame_count += 1;
@@ -53,7 +48,7 @@ char* LBGetNextFrame(Animation* anim)
 	return anim->anims[anim->current_anim];
 }
 
-char* LBGetNextFrameReverse(Animation* anim)
+u8 LBGetNextFrameReverse(Animation* anim)
 {
 	anim->looped = 0;
 	anim->frame_count += 1;
@@ -130,25 +125,6 @@ u8 LBCollides(u8 x1, u8 y1, u8 width1, u8 height1,
 	if (y1 >= y2 + height2) return 0;
 	if (x1 + width1 <= x2) return 0;
 	if (x1 >= x2 + width2) return 0;
-	return 1;
-}
-
-u8 LBLineIntersect(u8 line1x1, u8 line1y1, u8 line1x2, u8 line1y2,
-							  u8 line2x1, u8 line2y1, u8 line2x2, u8 line2y2)
-{
-	float ua, ub;
-	float denom;
-
-	denom = ((line2y2 - line2y1) * (line1x2 - line1x1)) -
-			 ((line2x2 - line2x1) * (line1y2 - line1y1));
-	if (denom == 0) return 0;
-
-	ua = (((line2x2 - line2x1) * (line1y1 - line2y1)) -
-		 ((line2y2 - line2y1) * (line1x1 - line2x1))) / denom;
-	ub = (((line1x2 - line1x1) * (line1y1 - line2y1)) -
-		 ((line1y2 - line1y1) * (line1x1 - line2x1))) / denom;
-	if ((ua < 0) || (ua > 1) || (ub < 0) || (ub > 1)) return 0;
-
 	return 1;
 }
 

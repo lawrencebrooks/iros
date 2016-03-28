@@ -1,10 +1,10 @@
 ###############################################################################
-# Makefile for the project Tank Fu
+# Makefile for the project Iris
 ###############################################################################
 
 ## General Flags
-PROJECT = TankFu 
-GAME= TankFu
+PROJECT = Iris 
+GAME= Iris
 MCU = atmega644
 TARGET = $(GAME).elf
 CC = avr-gcc
@@ -13,7 +13,7 @@ INFO=../gameinfo.properties
 ## Kernel settings
 KERNEL_DIR = ../kernel
 KERNEL_OPTIONS  = -DVIDEO_MODE=3  -DSOUND_MIXER=1 -DINTRO_LOGO=1 
-KERNEL_OPTIONS += -DMAX_SPRITES=10 -DRAM_TILES_COUNT=24 -DTRUE_RANDOM_GEN=1
+KERNEL_OPTIONS += -DMAX_SPRITES=14 -DRAM_TILES_COUNT=28 -DTRUE_RANDOM_GEN=1 -DSCROLLING=1
 
 ## Options common to compile, link and assembly rules
 COMMON = -mmcu=$(MCU)

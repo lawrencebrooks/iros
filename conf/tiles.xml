@@ -1,57 +1,27 @@
 <?xml version="1.0" ?>
 <gfx-xform version="1">
-    <input file="../art/tiles.png" type="png" tile-width="8" tile-height="8" width="224" height="248" />
+    <input file="../art/tiles.png" type="png" tile-width="8" tile-height="8" width="120" height="72" />
     <output file="../src/data/tiles.h">
         <tiles var-name="tiles_data"/>
         <maps pointers-size="8">
             <!-- Misc. tiles -->
             <map var-name="map_tile_none" left="0" top="0" width="1" height="1"/>
-            <map var-name="map_pause" left="0" top="5" width="15" height="4"/>
+            <map var-name="map_splash" left="0" top="4" width="15" height="5"/>
 
-            <!-- Title tiles -->
-            <map var-name="map_splash" left="0" top="1" width="21" height="4"/>
+            <!-- Ice planet tiles -->
+            <map var-name="map_ice_left" left="1" top="0" width="1" height="1"/>
+            <map var-name="map_ice_middle" left="2" top="0" width="1" height="1"/>
+            <map var-name="map_ice_right" left="3" top="0" width="1" height="1"/>
+            <map var-name="map_ice_bottom" left="4" top="0" width="1" height="1"/>
+            <map var-name="map_ice_horizon" left="5" top="0" width="1" height="1"/>
+            <map var-name="map_ice_sky" left="6" top="0" width="1" height="1"/>
+            <map var-name="map_ice_far" left="7" top="0" width="1" height="1"/>
+            <map var-name="map_ice_cloud" left="8" top="0" width="1" height="1"/>   
+            <map var-name="map_ice_moon" left="0" top="1" width="3" height="3"/>
             
-            <!-- Structural tiles -->
-            <map var-name="map_brick" left="1" top="0" width="1" height="1"/>
-            <map var-name="map_metal" left="5" top="0" width="1" height="1"/>
-
-            <!-- Item tiles -->
-            <map var-name="map_speed_itm" left="2" top="0" width="1" height="1"/>
-            <map var-name="map_explode_itm" left="3" top="0" width="1" height="1"/>
-            <map var-name="map_rocket_itm" left="4" top="0" width="1" height="1"/>
+            <!-- Space tiles -->
+            <map var-name="map_star" left="3" top="1" width="1" height="1"/>
             
-            <!-- Brick explosion -->
-            <map var-name="map_tile_exp_0" left="6" top="0" width="1" height="1"/>
-            <map var-name="map_tile_exp_1" left="7" top="0" width="1" height="1"/>
-            <map var-name="map_tile_exp_2" left="8" top="0" width="1" height="1"/>
-            
-            <!-- Metal bumbers -->
-            <map var-name="map_metal_tl" left="9" top="0" width="1" height="1"/>
-            <map var-name="map_metal_br" left="10" top="0" width="1" height="1"/>
-            <map var-name="map_metal_tr" left="11" top="0" width="1" height="1"/>
-            <map var-name="map_metal_bl" left="12" top="0" width="1" height="1"/>
-
-            <!-- Water --> 
-            <map var-name="map_water" left="13" top="0" width="1" height="1"/>
-
-            <!-- Turf -->
-            <map var-name="map_turf" left="14" top="0" width="1" height="1"/>
-
-            <!-- Fence -->
-            <map var-name="map_fence" left="15" top="0" width="1" height="1"/>
-
-            <!-- Green tank -->
-            <map var-name="map_green_tank" left="21" top="1" width="2" height="2"/>
-
-            <!-- Blue Tank -->
-            <map var-name="map_blue_tank" left="21" top="3" width="2" height="2"/>
-
-            <!-- Submarine -->
-            <map var-name="map_scope_0" left="16" top="0" width="1" height="1"/>
-            <map var-name="map_scope_1" left="17" top="0" width="1" height="1"/>
-            <map var-name="map_scope_2" left="18" top="0" width="1" height="1"/>
-            <map var-name="map_sub" left="0" top="9" width="28" height="11"/>
-            <map var-name="map_sub_emerging" left="0" top="20" width="28" height="11"/>
         </maps>
     </output>
 </gfx-xform>

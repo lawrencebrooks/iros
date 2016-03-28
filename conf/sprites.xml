@@ -1,41 +1,37 @@
 <?xml version="1.0" ?>
 <gfx-xform version="1">
-    <input file="../art/sprites.png" type="png" tile-width="8" tile-height="8" width="80" height="40" />
+    <input file="../art/sprites.png" type="png" tile-width="8" tile-height="8" width="96" height="48" />
     <output file="../src/data/sprites.h">
         <tiles var-name="sprites_data"/>
         
         <maps pointers-size="8">
-            <!-- Blank -->
-            <map var-name="map_none" left="8" top="3" width="1" height="1"/>
-            <map var-name="map_tank_blank" left="8" top="3" width="2" height="2"/>
-            <!-- Tank 1 -->
-            <map var-name="map_tank1_up_0" left="0" top="0" width="2" height="2"/>
-            <map var-name="map_tank1_right_0" left="2" top="0" width="2" height="2"/>
+            <!-- Misc. Sprites -->
+            <map var-name="map_none" left="11" top="1" width="1" height="1"/>
+            <map var-name="map_right_arrow" left="7" top="3" width="1" height="1"/>
+            <map var-name="map_down_arrow" left="8" top="3" width="1" height="1"/>
+            <map var-name="map_up_arrow" left="9" top="3" width="1" height="1"/>
+            <map var-name="map_meteor" left="6" top="3" width="1" height="1"/>
+            <map var-name="map_explosion_0" left="3" top="3" width="1" height="1"/>
+            <map var-name="map_explosion_1" left="4" top="3" width="1" height="1"/>
+            <map var-name="map_explosion_2" left="5" top="3" width="1" height="1"/>
 
-            <!-- Tank 2 -->
-            <map var-name="map_tank2_up_0" left="0" top="2" width="2" height="2"/>
-            <map var-name="map_tank2_right_0" left="2" top="2" width="2" height="2"/>
+            <!-- Hero Sprites -->
+            <map var-name="map_hero_idle" left="0" top="0" width="2" height="3"/>
+            <map var-name="map_hero_step_0" left="2" top="0" width="2" height="3"/>
+            <map var-name="map_hero_step_1" left="4" top="0" width="2" height="3"/>
+            <map var-name="map_hero_step_2" left="6" top="0" width="2" height="3"/>
+            <map var-name="map_hero_jump" left="8" top="0" width="2" height="3"/>
+            <map var-name="map_hero_ship_0" left="0" top="3" width="3" height="1"/>
+            <map var-name="map_hero_ship_1" left="0" top="4" width="3" height="1"/>
+            <map var-name="map_hero_ship_large" left="3" top="4" width="4" height="2"/>
+            <map var-name="map_hero_shot" left="10" top="0" width="1" height="1"/>
 
-            <!-- Explosions -->
-            <map var-name="map_explosion_0" left="4" top="0" width="2" height="2"/>
-            <map var-name="map_explosion_1" left="6" top="0" width="2" height="2"/>
-            <map var-name="map_explosion_2" left="8" top="0" width="2" height="2"/>
-
-            <! -- Shot -->
-            <map var-name="map_ball" left="4" top="2" width="1" height="1"/>
-            <map var-name="map_rocket_up_0" left="5" top="2" width="1" height="1"/>
-            <map var-name="map_rocket_up_1" left="6" top="2" width="1" height="1"/>
-            <map var-name="map_rocket_right_0" left="7" top="2" width="1" height="1"/>
-            <map var-name="map_rocket_right_1" left="8" top="2" width="1" height="1"/>
-
-            <!-- Select arrows -->
-            <map var-name="map_right_arrow" left="4" top="3" width="1" height="1"/>
-            <map var-name="map_down_arrow" left="5" top="3" width="1" height="1"/>
-            <map var-name="map_up_arrow" left="6" top="3" width="1" height="1"/>
-
-            <!-- Submarine -->
-            <map var-name="map_sub_shot" left="9" top="2" width="1" height="1"/>
-            <map var-name="map_sub_turret" left="7" top="3" width="1" height="1"/>
+            <!-- Enemy Sprites -->
+            <map var-name="map_enemy_shot" left="10" top="1" width="1" height="1"/>
+            <map var-name="map_enemy_shark" left="11" top="0" width="1" height="1"/>
+            <map var-name="map_enemy_spider_0" left="10" top="2" width="1" height="1"/>
+            <map var-name="map_enemy_spider_1" left="10" top="3" width="1" height="1"/>
+            
         </maps>
 
     </output>
