@@ -17,6 +17,11 @@
 #ifndef LB_UTILS_H
 #define LB_UTILS_H
 
+extern struct SpriteStruct sprites[];
+extern ScreenType Screen;
+
+struct SpriteStruct extendedSprites[MAX_EXTENDED_SPRITES];
+
 typedef struct sJoyPadState {
 	unsigned int pressed;
 	unsigned int released;
@@ -152,6 +157,108 @@ void LBWaitSeconds(u8 seconds)
 	{
 		WaitUs(65535);
 	}
+}
+
+void LBMapSprite(u8 startSprite,const char *map,u8 spriteFlags)
+{
+	unsigned char mapWidth=pgm_read_byte(&(map[0]));
+	unsigned char mapHeight=pgm_read_byte(&(map[1]));
+	s8 x,y,dx,dy,t; 
+
+	if(spriteFlags & SPRITE_FLIP_X)
+	{
+		x=(mapWidth-1);
+		dx=-1;
+	}
+	else
+	{
+		x=0;
+		dx=1;
+	}
+
+	if(spriteFlags & SPRITE_FLIP_Y)
+	{
+		y=(mapHeight-1);
+		dy=-1;
+	}
+	else
+	{
+		y=0;
+		dy=1;
+	}
+
+	for(u8 cy=0;cy<mapHeight;cy++)
+	{
+		for(u8 cx=0;cx<mapWidth;cx++)
+		{
+			t=pgm_read_byte(&(map[(y*mapWidth)+x+2])); 
+			extendedSprites[startSprite].tileIndex=t;
+			extendedSprites[startSprite++].flags=spriteFlags;
+			x+=dx;
+		}
+		y+=dy;
+		x=(spriteFlags & SPRITE_FLIP_X)?(mapWidth-1):0;
+	}
+}
+
+void LBMoveSprite(u8 startSprite,u8 x,u8 y,u8 width,u8 height)
+{
+	for(u8 dy=0;dy<height;dy++)
+	{
+		for(u8 dx=0;dx<width;dx++)
+		{
+		
+			extendedSprites[startSprite].x=x+(TILE_WIDTH*dx);
+		
+			#if SCROLLING == 1
+				if((Screen.scrollHeight<32) && (y+(TILE_HEIGHT*dy))>(Screen.scrollHeight*TILE_HEIGHT))
+				{
+					u8 tmp=(y+(TILE_HEIGHT*dy))-(Screen.scrollHeight*TILE_HEIGHT);
+					extendedSprites[startSprite].y=tmp;
+				}
+				else
+				{
+					extendedSprites[startSprite].y=y+(TILE_HEIGHT*dy);
+				}
+			#else
+				if((VRAM_TILES_V<32) && (y+(TILE_HEIGHT*dy))>(VRAM_TILES_V*TILE_HEIGHT))
+				{
+					u8 tmp=(y+(TILE_HEIGHT*dy))-(VRAM_TILES_V*TILE_HEIGHT);
+					extendedSprites[startSprite].y=tmp;
+				}
+				else
+				{
+					extendedSprites[startSprite].y=y+(TILE_HEIGHT*dy);
+				}
+			#endif
+
+			startSprite++;
+		}
+	}	
+}
+
+void LBRotateSprites(u8 mappedSpriteCount)
+{
+	static u8 swapped = 0;
+	u8 counter = 0;
+	
+	if (swapped)
+	{
+		while (counter < MAX_SPRITES && mappedSpriteCount > 0)
+		{
+			sprites[counter] = extendedSprites[--mappedSpriteCount];
+			counter++;
+		}
+	}
+	else
+	{
+		while (counter < MAX_SPRITES && counter < mappedSpriteCount)
+		{
+			sprites[counter] = extendedSprites[counter];
+			counter++;
+		}
+	}
+	swapped = swapped & 1;
 }
 
 #endif

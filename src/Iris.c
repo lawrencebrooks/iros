@@ -94,9 +94,9 @@ void level_transition(u8 index)
 
 void clear_sprites()
 {
-	for(char i = 0; i < MAX_SPRITES; i++)
+	for(char i = 0; i < MAX_EXTENDED_SPRITES; i++)
 	{
-		MapSprite2(i, map_none, 0);
+		LBMoveSprite(i, OFF_SCREEN, 0, 1, 1);
 	}
 }
 
