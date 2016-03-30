@@ -98,6 +98,7 @@ void clear_sprites()
 	{
 		LBMoveSprite(i, OFF_SCREEN, 0, 1, 1);
 	}
+	LBRotateSprites(MAX_SPRITES);
 }
 
 void save_score()
@@ -117,41 +118,63 @@ void exit_game()
 void load_splash()
 {
 	game.current_screen = SPLASH;
+	game.selection = START_SELECTED;
 	clear_sprites();
+	Print(0, VRAM_TILES_V, (char*) strCopyright);
 	Print(8, 15, (char*) str1Player);
 	Print(8, 16, (char*) strHighscores);
 	Print(6, 21, (char*) strSelectHandle);
-	Print(5, 26, (char*) strCopyright);
+	Print(4, 26, (char*) strCopyright);
 	DrawMap2(6, 5, (const char*) map_splash);
-	MapSprite2(0, map_right_arrow, 0);
+	LBMapSprite(0, map_right_arrow, 0);
+	LBMoveSprite(0, 7*8, 15*8, 1, 1);
+	LBRotateSprites(1);
 }
 
 void update_level()
 {
-	
+}
+
+char select_pressed(JoyPadState* p)
+{
+	return (p->pressed & BTN_A) || (p->pressed & BTN_START);
 }
 
 void update_splash()
 {
-	
+	if (game.joypadState.pressed & BTN_DOWN && game.selection == START_SELECTED)
+	{
+		game.selection = HIGH_SCORES_SELECTED;
+		LBMoveSprite(0, 7*8, 16*8, 1, 1);
+	}
+	else if (game.joypadState.pressed & BTN_UP && game.selection == HIGH_SCORES_SELECTED)
+	{
+		game.selection = START_SELECTED;
+		LBMoveSprite(0, 7*8, 15*8, 1, 1);
+	}
+	LBRotateSprites(1);
 }
 
 int main()
 {
 	// Initialize
 	InitMusicPlayer(my_patches);
+	ClearVram();
 	SetMasterVolume(0xff);
 	SetTileTable(tiles_data);
 	SetSpritesTileTable(sprites_data);
 	SetFontTilesIndex(TILES_DATA_SIZE);
 	FadeIn(FRAMES_PER_FADE, false);
-	ClearVram();
 	init_game_state();
+	//Screen.scrollX = 0;
+	//Screen.scrollY = 6;
+	//Screen.overlayHeight = 1;
+	//Screen.overlayTileTable = tiles_data;
 	load_splash();
-	
 	while (1)
 	{
 		WaitVsync(1);
+		LBGetJoyPadState(&game.joypadState, 0);
 		switch (game.current_screen)
 		{
 			case SPLASH:

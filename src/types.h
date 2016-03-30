@@ -57,6 +57,7 @@ typedef struct sGameState {
 	u8 current_screen;
 	u8 current_level;
 	u8 paused;
+	u8 selection;
 	Player player;
 	JoyPadState joypadState;
 } Game;
