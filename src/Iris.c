@@ -113,15 +113,23 @@ void render_level_tile(u8 level_tile, u8 x, u8 y)
 	}
 }
 
+void clear_overlay()
+{
+	for(u8 i = 0; i < CAMERA_WIDTH; i++)
+	{
+		SetTile(i, VRAM_TILES_V, 0);
+	}
+}
+
 void load_level(u8 index)
 {
 	u8 level_tile;
 	
 	Screen.scrollX = 0;
 	Screen.scrollY = 0;
-	Screen.overlayHeight = 1;
 	Screen.overlayTileTable = tiles_data;
-	
+	Screen.overlayHeight = 1;
+	clear_overlay();
 	game.camera_x = get_camera_x(index);
 	game.camera_y = get_camera_y(index);
 	
