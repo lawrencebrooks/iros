@@ -22,9 +22,9 @@
 #include "macros.h"
 
 typedef struct sSpriteShared {
-	u8 direction;
-	u8 speed;
-	u8 recoiled;
+	char vx;
+	char vy;
+	u8 gravity;
 	float x;
 	float y;
 } SpriteShared;
@@ -41,17 +41,15 @@ typedef struct sShot {
 
 typedef struct sPlayer {
 	SpriteShared shared;
-	u8 score;
 	u8 active_shots;
 	u8 flags;
 	u8 grace_frame;
-	u8 max_speed;
 	Shot shot[MAX_SHOTS];
 	Animation idle;
-	Animation run_anim;
-	Animation jump_anim;
-	Animation prone_anim;
-	Animation expl_anim;
+	Animation run;
+	Animation jump;
+	Animation prone;
+	Animation expl;
 } Player;
 
 typedef struct sGameState {

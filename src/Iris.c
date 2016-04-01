@@ -41,8 +41,64 @@ void exit_game();
 Game game;
 struct EepromBlockStruct scores;
 
+char* idle_anim[1];
+char* jump_anim[1];
+char* prone_anim[1];
+char* run_anim[4];
+
 void init_game_state()
 {
+	game.camera_x = 0;
+	game.camera_y = 0;
+	game.current_level = 0;
+	game.current_screen = 0;
+	game.paused = 0;
+	game.selection = 0;
+	game.player.active_shots = 0;
+	game.player.flags = 0;
+	game.player.grace_frame = 0;
+	game.player.shared.gravity = GRAVITY;
+	game.player.shared.vx = 0;
+	game.player.shared.vy = 0;
+	
+	game.player.idle.anim_count = 1;
+	game.player.idle.current_anim = 0;
+	game.player.idle.frame_count = 0;
+	game.player.idle.frames_per_anim = 1;
+	game.player.idle.looped = 0;
+	game.player.idle.reversing = 0;
+	game.player.idle.anims = idle_anim;
+	game.player.idle.anims[0] = (char*) map_hero_idle;
+	
+	game.player.jump.anim_count = 1;
+	game.player.jump.current_anim = 0;
+	game.player.jump.frame_count = 0;
+	game.player.jump.frames_per_anim = 1;
+	game.player.jump.looped = 0;
+	game.player.jump.reversing = 0;
+	game.player.jump.anims = jump_anim;
+	game.player.jump.anims[0] = (char*) map_hero_jump;
+	
+	game.player.prone.anim_count = 1;
+	game.player.prone.current_anim = 0;
+	game.player.prone.frame_count = 0;
+	game.player.prone.frames_per_anim = 1;
+	game.player.prone.looped = 0;
+	game.player.prone.reversing = 0;
+	game.player.prone.anims = prone_anim;
+	game.player.prone.anims[0] = (char*) map_hero_prone;
+	
+	game.player.run.anim_count = 4;
+	game.player.run.current_anim = 0;
+	game.player.run.frame_count = 0;
+	game.player.run.frames_per_anim = FRAMES_PER_RUN_CYCLE;
+	game.player.run.looped = 0;
+	game.player.run.reversing = 0;
+	game.player.run.anims = run_anim;
+	game.player.run.anims[0] = (char*) map_hero_step_0;
+	game.player.run.anims[1] = (char*) map_hero_step_1;
+	game.player.run.anims[2] = (char*) map_hero_step_2;
+	game.player.run.anims[3] = (char*) map_hero_step_3;
 }
 
 void load_eeprom(struct EepromBlockStruct* block)
@@ -79,26 +135,6 @@ void fade_through()
 	FadeIn(FRAMES_PER_FADE, false);
 }
 
-#if RLE == 0
-
-u8 get_camera_x(u8 level_index)
-{
-	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 0]);
-}
-
-u8 get_camera_y(u8 level_index)
-{
-	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 1]);
-}
-
-u8 get_level_tile(u8 level_index, u8 x, u8 y)
-{
-	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 4 + (y*LEVEL_WIDTH+x)]);
-}
-#else
-
-#endif
-
 void render_level_tile(u8 level_tile, u8 x, u8 y)
 {
 	switch (level_tile)
@@ -113,13 +149,47 @@ void render_level_tile(u8 level_tile, u8 x, u8 y)
 	}
 }
 
-void clear_overlay()
+void clear_overlay(u8 overlayHeight)
 {
-	for(u8 i = 0; i < CAMERA_WIDTH; i++)
+	for(u8 x = 0; x < CAMERA_WIDTH; x++)
 	{
-		SetTile(i, VRAM_TILES_V, 0);
+		for(u8 y = 0; y < overlayHeight; y++)
+		{
+			SetTile(x, VRAM_TILES_V+y, 0);
+		}
 	}
 }
+
+#if RLE == 0
+
+u8 get_camera_x(u8 level_index)
+{
+	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 0]);
+}
+
+u8 get_camera_y(u8 level_index)
+{
+	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 1]);
+}
+
+u8 get_hero_spawn_x(u8 level_index)
+{
+	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 2]);
+}
+
+u8 get_hero_spawn_y(u8 level_index)
+{
+	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 3]);
+}
+
+u8 get_level_tile(u8 level_index, u8 x, u8 y)
+{
+	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 4 + (y*LEVEL_WIDTH+x)]);
+}
+
+#else
+
+#endif
 
 void load_level(u8 index)
 {
@@ -127,9 +197,10 @@ void load_level(u8 index)
 	
 	Screen.scrollX = 0;
 	Screen.scrollY = 0;
+	Screen.scrollHeight = 30;
 	Screen.overlayTileTable = tiles_data;
-	Screen.overlayHeight = 1;
-	clear_overlay();
+	Screen.overlayHeight = 2;
+	clear_overlay(2);
 	game.camera_x = get_camera_x(index);
 	game.camera_y = get_camera_y(index);
 	
@@ -141,7 +212,9 @@ void load_level(u8 index)
 			render_level_tile(level_tile, x - game.camera_x, y - game.camera_y);
 		}
 	}
-	
+	game.player.shared.x = get_hero_spawn_x(index)*8;
+	game.player.shared.y = get_hero_spawn_y(index)*8;
+	LBMapSprite(0, LBGetNextFrame(&game.player.idle), 0);
 }
 
 void level_transition(u8 index)
@@ -156,6 +229,12 @@ void level_transition(u8 index)
 	ClearVram();
 	FadeIn(FRAMES_PER_FADE, false);
 	load_level(index);
+}
+
+void update_level()
+{
+	LBMoveSprite(0, game.player.shared.x, game.player.shared.y, 2, 3);
+	LBRotateSprites(6);
 }
 
 void clear_sprites()
@@ -186,7 +265,6 @@ void load_splash()
 	game.current_screen = SPLASH;
 	game.selection = START_SELECTED;
 	clear_sprites();
-	//Print(0, VRAM_TILES_V, (char*) strCopyright);
 	Print(8, 15, (char*) str1Player);
 	Print(8, 16, (char*) strHighscores);
 	Print(6, 21, (char*) strSelectHandle);
@@ -195,10 +273,6 @@ void load_splash()
 	LBMapSprite(0, map_right_arrow, 0);
 	LBMoveSprite(0, 7*8, 15*8, 1, 1);
 	LBRotateSprites(1);
-}
-
-void update_level()
-{
 }
 
 char select_pressed(JoyPadState* p)
