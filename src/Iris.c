@@ -79,6 +79,63 @@ void fade_through()
 	FadeIn(FRAMES_PER_FADE, false);
 }
 
+#if RLE == 0
+
+u8 get_camera_x(u8 level_index)
+{
+	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 0]);
+}
+
+u8 get_camera_y(u8 level_index)
+{
+	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 1]);
+}
+
+u8 get_level_tile(u8 level_index, u8 x, u8 y)
+{
+	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 4 + (y*LEVEL_WIDTH+x)]);
+}
+#else
+
+#endif
+
+void render_level_tile(u8 level_tile, u8 x, u8 y)
+{
+	switch (level_tile)
+	{
+		case L_ICE_SKY : DrawMap2(x, y, map_ice_sky); break;
+		case L_ICE_MIDDLE : DrawMap2(x, y, map_ice_middle); break;
+		case L_ICE_LEFT : DrawMap2(x, y, map_ice_left); break;
+		case L_ICE_RIGHT : DrawMap2(x, y, map_ice_right); break;
+		case L_ICE_BOTTOM : DrawMap2(x, y, map_ice_bottom); break;
+		case L_ICE_FAR : DrawMap2(x, y, map_ice_far); break;
+		case L_ICE_HORIZON : DrawMap2(x, y, map_ice_horizon); break;
+	}
+}
+
+void load_level(u8 index)
+{
+	u8 level_tile;
+	
+	Screen.scrollX = 0;
+	Screen.scrollY = 0;
+	Screen.overlayHeight = 1;
+	Screen.overlayTileTable = tiles_data;
+	
+	game.camera_x = get_camera_x(index);
+	game.camera_y = get_camera_y(index);
+	
+	for (u8 x = game.camera_x; x < game.camera_x + CAMERA_WIDTH; x++)
+	{
+		for (u8 y = game.camera_y; y < game.camera_y + CAMERA_HEIGHT; y++)
+		{
+			level_tile = get_level_tile(index, x, y);
+			render_level_tile(level_tile, x - game.camera_x, y - game.camera_y);
+		}
+	}
+	
+}
+
 void level_transition(u8 index)
 {
 	FadeOut(FRAMES_PER_FADE, true);
@@ -90,6 +147,7 @@ void level_transition(u8 index)
 	FadeOut(1, true);
 	ClearVram();
 	FadeIn(FRAMES_PER_FADE, false);
+	load_level(index);
 }
 
 void clear_sprites()
@@ -120,7 +178,7 @@ void load_splash()
 	game.current_screen = SPLASH;
 	game.selection = START_SELECTED;
 	clear_sprites();
-	Print(0, VRAM_TILES_V, (char*) strCopyright);
+	//Print(0, VRAM_TILES_V, (char*) strCopyright);
 	Print(8, 15, (char*) str1Player);
 	Print(8, 16, (char*) strHighscores);
 	Print(6, 21, (char*) strSelectHandle);
@@ -152,6 +210,12 @@ void update_splash()
 		game.selection = START_SELECTED;
 		LBMoveSprite(0, 7*8, 15*8, 1, 1);
 	}
+	else if (select_pressed(&game.joypadState) && game.selection == START_SELECTED)
+	{
+		game.current_screen = LEVEL;
+		level_transition(0);
+		return;
+	}
 	LBRotateSprites(1);
 }
 
@@ -166,10 +230,6 @@ int main()
 	SetFontTilesIndex(TILES_DATA_SIZE);
 	FadeIn(FRAMES_PER_FADE, false);
 	init_game_state();
-	//Screen.scrollX = 0;
-	//Screen.scrollY = 6;
-	//Screen.overlayHeight = 1;
-	//Screen.overlayTileTable = tiles_data;
 	load_splash();
 	while (1)
 	{

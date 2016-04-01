@@ -38,6 +38,10 @@
 #define FRAME_TIME 0.0166666
 #define MAX_SHOTS 4
 #define TEXT_LINGER 3
+#define CAMERA_WIDTH 28
+#define CAMERA_HEIGHT 27
+#define LEVEL_WIDTH 60
+#define LEVEL_HEIGHT 27
 
 // Sound Effects
 #define SFX_NAVIGATE TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff)

@@ -50,6 +50,7 @@ typedef struct sPlayer {
 	Animation idle;
 	Animation run_anim;
 	Animation jump_anim;
+	Animation prone_anim;
 	Animation expl_anim;
 } Player;
 
@@ -58,6 +59,8 @@ typedef struct sGameState {
 	u8 current_level;
 	u8 paused;
 	u8 selection;
+	u8 camera_x;
+	u8 camera_y;
 	Player player;
 	JoyPadState joypadState;
 } Game;

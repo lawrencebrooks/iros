@@ -246,7 +246,10 @@ void LBRotateSprites(u8 mappedSpriteCount)
 	{
 		while (counter < MAX_SPRITES && mappedSpriteCount > 0)
 		{
-			sprites[counter] = extendedSprites[--mappedSpriteCount];
+			sprites[counter].flags = extendedSprites[--mappedSpriteCount].flags;
+			sprites[counter].tileIndex = extendedSprites[--mappedSpriteCount].tileIndex;
+			sprites[counter].x = extendedSprites[--mappedSpriteCount].x;
+			sprites[counter].y = extendedSprites[--mappedSpriteCount].y;
 			counter++;
 		}
 	}
@@ -254,7 +257,10 @@ void LBRotateSprites(u8 mappedSpriteCount)
 	{
 		while (counter < MAX_SPRITES && counter < mappedSpriteCount)
 		{
-			sprites[counter] = extendedSprites[counter];
+			sprites[counter].flags = extendedSprites[counter].flags;
+			sprites[counter].tileIndex = extendedSprites[counter].tileIndex;
+			sprites[counter].x = extendedSprites[counter].x;
+			sprites[counter].y = extendedSprites[counter].y;
 			counter++;
 		}
 	}
