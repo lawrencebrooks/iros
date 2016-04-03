@@ -25,8 +25,8 @@ typedef struct sSpriteShared {
 	char vx;
 	char vy;
 	u8 gravity;
-	float x;
-	float y;
+	u16 x;
+	u16 y;
 } SpriteShared;
 
 typedef struct sShot {
@@ -57,8 +57,10 @@ typedef struct sGameState {
 	u8 current_level;
 	u8 paused;
 	u8 selection;
-	u8 camera_x;
-	u8 camera_y;
+	u8 scroll_src_x;
+	u8 scroll_dest_x;
+	u16 camera_x;
+	u16 camera_y;
 	Player player;
 	JoyPadState joypadState;
 } Game;

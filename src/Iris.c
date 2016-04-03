@@ -54,8 +54,10 @@ void init_game_state()
 	game.current_screen = 0;
 	game.paused = 0;
 	game.selection = 0;
+	game.scroll_src_x=29;
+    game.scroll_dest_x=29;
 	game.player.active_shots = 0;
-	game.player.flags = 0;
+	game.player.flags = IDLE;
 	game.player.grace_frame = 0;
 	game.player.shared.gravity = GRAVITY;
 	game.player.shared.vx = 0;
@@ -139,13 +141,13 @@ void render_level_tile(u8 level_tile, u8 x, u8 y)
 {
 	switch (level_tile)
 	{
-		case L_ICE_SKY : DrawMap2(x, y, map_ice_sky); break;
-		case L_ICE_MIDDLE : DrawMap2(x, y, map_ice_middle); break;
-		case L_ICE_LEFT : DrawMap2(x, y, map_ice_left); break;
-		case L_ICE_RIGHT : DrawMap2(x, y, map_ice_right); break;
-		case L_ICE_BOTTOM : DrawMap2(x, y, map_ice_bottom); break;
-		case L_ICE_FAR : DrawMap2(x, y, map_ice_far); break;
-		case L_ICE_HORIZON : DrawMap2(x, y, map_ice_horizon); break;
+		case L_ICE_SKY : LBDrawTile(x, y, map_ice_sky); break;
+		case L_ICE_MIDDLE : LBDrawTile(x, y, map_ice_middle); break;
+		case L_ICE_LEFT : LBDrawTile(x, y, map_ice_left); break;
+		case L_ICE_RIGHT : LBDrawTile(x, y, map_ice_right); break;
+		case L_ICE_BOTTOM : LBDrawTile(x, y, map_ice_bottom); break;
+		case L_ICE_FAR : LBDrawTile(x, y, map_ice_far); break;
+		case L_ICE_HORIZON : LBDrawTile(x, y, map_ice_horizon); break;
 	}
 }
 
@@ -191,29 +193,66 @@ u8 get_level_tile(u8 level_index, u8 x, u8 y)
 
 #endif
 
-void load_level(u8 index)
+void render_camera_view()
 {
 	u8 level_tile;
+	u8 camara_x_tile = game.camera_x/8;
+	u8 camera_y_tile = game.camera_y/8;
 	
+	for (u8 x = camara_x_tile; x < camara_x_tile + CAMERA_WIDTH + 1; x++)
+	{
+		for (u8 y = camera_y_tile; y < camera_y_tile + CAMERA_HEIGHT + 1; y++)
+		{
+			level_tile = get_level_tile(game.current_level, x, y);
+			render_level_tile(level_tile, x - camara_x_tile, y - camera_y_tile);
+		}
+	}
+}
+
+void append_tile_column()
+{
+	u8 level_tile;
+
+    for (u8 y = 0; y < CAMERA_HEIGHT; y++)
+	{
+		level_tile = get_level_tile(game.current_level, game.scroll_src_x, y);
+		render_level_tile(level_tile, game.scroll_dest_x, y);
+    }
+	
+    game.scroll_src_x++;
+	game.scroll_dest_x++;
+    if(game.scroll_dest_x>=32)game.scroll_dest_x=0;
+}
+
+void move_camera_x()
+{	
+	static u8 scroll = 0;
+	
+	game.camera_x++;
+	Scroll(1,0);
+	if (++scroll == 8)
+	{
+		scroll = 0;
+		append_tile_column();
+	}
+}
+
+void load_level(u8 index)
+{	
 	Screen.scrollX = 0;
 	Screen.scrollY = 0;
 	Screen.scrollHeight = 30;
 	Screen.overlayTileTable = tiles_data;
 	Screen.overlayHeight = 2;
 	clear_overlay(2);
+	game.current_level = index;
 	game.camera_x = get_camera_x(index);
 	game.camera_y = get_camera_y(index);
-	
-	for (u8 x = game.camera_x; x < game.camera_x + CAMERA_WIDTH; x++)
-	{
-		for (u8 y = game.camera_y; y < game.camera_y + CAMERA_HEIGHT; y++)
-		{
-			level_tile = get_level_tile(index, x, y);
-			render_level_tile(level_tile, x - game.camera_x, y - game.camera_y);
-		}
-	}
 	game.player.shared.x = get_hero_spawn_x(index)*8;
 	game.player.shared.y = get_hero_spawn_y(index)*8;
+	game.camera_x *= 8;
+	game.camera_y *= 8;
+	render_camera_view();
 	LBMapSprite(0, LBGetNextFrame(&game.player.idle), 0);
 }
 
@@ -231,10 +270,44 @@ void level_transition(u8 index)
 	load_level(index);
 }
 
+void update_player()
+{
+	if ((game.joypadState.held & BTN_RIGHT) && (game.player.flags & (IDLE|RUNNING)) && (game.player.shared.x/8 + 2 < LEVEL_WIDTH))
+	{
+		game.player.shared.vx = RUN_SPEED;
+		game.player.flags = RUNNING;
+		LBMapSprite(0, LBGetNextFrame(&game.player.run), 0);
+	}
+	else if ((game.joypadState.held & BTN_LEFT) && (game.player.flags & (IDLE|RUNNING)) && (game.player.shared.x > game.camera_x))
+	{
+		game.player.shared.vx = -RUN_SPEED;
+		game.player.flags = RUNNING;
+		LBMapSprite(0, LBGetNextFrame(&game.player.run), SPRITE_FLIP_X);
+	}
+	else
+	{
+		game.player.shared.vx = 0;
+		game.player.flags = IDLE;
+		LBMapSprite(0, LBGetNextFrame(&game.player.idle), sprites[0].flags);
+	}
+}
+
+void update_player_position()
+{
+	game.player.shared.x += game.player.shared.vx*FRAME_TIME;
+	game.player.shared.y += game.player.shared.vy*FRAME_TIME;
+	LBMoveSprite(0, game.player.shared.x - game.camera_x, game.player.shared.y - game.camera_y, 2, 3);
+}
+
 void update_level()
 {
-	LBMoveSprite(0, game.player.shared.x, game.player.shared.y, 2, 3);
-	LBRotateSprites(6);
+	if (game.player.shared.vx > 0 &&
+	    (game.player.shared.x - game.camera_x) >= (CAMERA_WIDTH / 2 * 8) &&
+		(game.camera_x/8 + CAMERA_WIDTH < LEVEL_WIDTH) &&
+		(game.camera_y/8 + CAMERA_HEIGHT < LEVEL_HEIGHT))
+	{
+		move_camera_x();
+	}
 }
 
 void clear_sprites()
@@ -298,7 +371,6 @@ void update_splash()
 		level_transition(0);
 		return;
 	}
-	LBRotateSprites(1);
 }
 
 int main()
@@ -321,9 +393,13 @@ int main()
 		{
 			case SPLASH:
 				update_splash();
+				LBRotateSprites(1);
 				break;
 			case LEVEL:
 				update_level();
+				update_player();
+				update_player_position();
+				LBRotateSprites(6);
 				break;
 			default:
 				break;

@@ -35,19 +35,25 @@
 #define FRAMES_PER_GRACE 120
 
 // General macros
-#define FRAME_TIME 0.0166666
+#define FRAME_TIME 0.016666666666666666
 #define MAX_SHOTS 4
 #define TEXT_LINGER 3
 #define CAMERA_WIDTH 28
 #define CAMERA_HEIGHT 26
 #define LEVEL_WIDTH 60
-#define LEVEL_HEIGHT 26
+#define LEVEL_HEIGHT 27
 
 // Player macros
 #define FRAMES_PER_RUN_CYCLE 12
 #define RUN_SPEED 60
 #define GRAVITY 80
 #define MAX_SPEED 60
+
+// Player flags
+#define JUMPING 1
+#define RUNNING 2
+#define PRONE 4
+#define IDLE 8
 
 // Sound Effects
 #define SFX_NAVIGATE TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff)
