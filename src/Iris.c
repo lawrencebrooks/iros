@@ -184,7 +184,7 @@ u8 get_hero_spawn_y(u8 level_index)
 	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 3]);
 }
 
-u8 get_level_tile(u8 level_index, u8 x, u8 y)
+u8 get_level_tile(u8 level_index, u16 x, u16 y)
 {
 	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 4 + (y*LEVEL_WIDTH+x)]);
 }
@@ -196,12 +196,12 @@ u8 get_level_tile(u8 level_index, u8 x, u8 y)
 void render_camera_view()
 {
 	u8 level_tile;
-	u8 camara_x_tile = game.camera_x/8;
-	u8 camera_y_tile = game.camera_y/8;
+	u16 camara_x_tile = game.camera_x/8;
+	u16 camera_y_tile = game.camera_y/8;
 	
-	for (u8 x = camara_x_tile; x < camara_x_tile + CAMERA_WIDTH + 1; x++)
+	for (u16 x = camara_x_tile; x < camara_x_tile + CAMERA_WIDTH + 1; x++)
 	{
-		for (u8 y = camera_y_tile; y < camera_y_tile + CAMERA_HEIGHT + 1; y++)
+		for (u16 y = camera_y_tile; y < camera_y_tile + CAMERA_HEIGHT + 1; y++)
 		{
 			level_tile = get_level_tile(game.current_level, x, y);
 			render_level_tile(level_tile, x - camara_x_tile, y - camera_y_tile);
