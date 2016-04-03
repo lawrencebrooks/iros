@@ -54,6 +54,7 @@ void init_game_state()
 	game.current_screen = 0;
 	game.paused = 0;
 	game.selection = 0;
+	game.scroll = 0;
 	game.scroll_src_x=29;
     game.scroll_dest_x=29;
 	game.player.active_shots = 0;
@@ -226,13 +227,11 @@ void append_tile_column()
 
 void move_camera_x()
 {	
-	static u8 scroll = 0;
-	
 	game.camera_x++;
 	Scroll(1,0);
-	if (++scroll == 8)
+	if (++game.scroll == 8)
 	{
-		scroll = 0;
+		game.scroll = 0;
 		append_tile_column();
 	}
 }

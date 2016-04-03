@@ -57,8 +57,9 @@ typedef struct sGameState {
 	u8 current_level;
 	u8 paused;
 	u8 selection;
-	u16 scroll_src_x;
+	u8 scroll;
 	u8 scroll_dest_x;
+	u16 scroll_src_x;
 	u16 camera_x;
 	u16 camera_y;
 	Player player;
