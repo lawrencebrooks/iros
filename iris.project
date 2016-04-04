@@ -278,6 +278,7 @@
       <File Name="src/data/patches.h"/>
       <File Name="src/data/sprites.h"/>
       <File Name="src/data/tiles.h"/>
+      <File Name="src/data/music.h"/>
     </VirtualDirectory>
     <File Name="src/Iris.c"/>
   </VirtualDirectory>
