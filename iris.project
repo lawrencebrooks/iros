@@ -301,4 +301,6 @@
     <File Name="conf/sprites.xml"/>
     <File Name="conf/tiles.xml"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>
