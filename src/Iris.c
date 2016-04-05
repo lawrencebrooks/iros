@@ -23,6 +23,8 @@
 #include "data/sprites.h"
 #include "data/levels.h"
 #include "data/patches.h"
+#include "data/planetmusic.h"
+#include "data/spacemusic.h"
 #include "types.h"
 #include "strings.h"
 #include "utils.h"
@@ -377,7 +379,7 @@ int main()
 	// Initialize
 	InitMusicPlayer(my_patches);
 	ClearVram();
-	SetMasterVolume(0xff);
+	SetMasterVolume(0x05);
 	SetTileTable(tiles_data);
 	SetSpritesTileTable(sprites_data);
 	SetFontTilesIndex(TILES_DATA_SIZE);
