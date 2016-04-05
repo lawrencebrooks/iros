@@ -279,6 +279,8 @@
       <File Name="src/data/sprites.h"/>
       <File Name="src/data/tiles.h"/>
       <File Name="src/data/music.h"/>
+      <File Name="src/data/planetmusic.h"/>
+      <File Name="src/data/spacemusic.h"/>
     </VirtualDirectory>
     <File Name="src/Iris.c"/>
   </VirtualDirectory>
