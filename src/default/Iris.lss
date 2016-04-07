@@ -3,35 +3,35 @@ Iris.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000002  00800500  00007c94  00007d94  2**0
+  0 .data         00000002  00800500  000086bc  000087bc  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .noinit       00000400  00800100  00800100  00007da0  2**5
+  1 .noinit       00000400  00800100  00800100  000087c0  2**5
                   CONTENTS, READONLY
-  2 .text         00007c94  00000000  00000000  00000100  2**8
+  2 .text         000086bc  00000000  00000000  00000100  2**8
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  3 .bss          0000099b  00800502  00800502  00007d96  2**1
+  3 .bss          000009cd  00800502  00800502  000087be  2**1
                   ALLOC
-  4 .stab         00000528  00000000  00000000  000081a0  2**2
+  4 .stab         00000528  00000000  00000000  00008bc0  2**2
                   CONTENTS, READONLY, DEBUGGING
-  5 .stabstr      000002a5  00000000  00000000  000086c8  2**0
+  5 .stabstr      000002a5  00000000  00000000  000090e8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .comment      00000011  00000000  00000000  0000896d  2**0
+  6 .comment      00000011  00000000  00000000  0000938d  2**0
                   CONTENTS, READONLY
-  7 .debug_aranges 00000528  00000000  00000000  00008980  2**3
+  7 .debug_aranges 00000540  00000000  00000000  000093a0  2**3
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_info   00005a95  00000000  00000000  00008ea8  2**0
+  8 .debug_info   00005ec5  00000000  00000000  000098e0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_abbrev 00001506  00000000  00000000  0000e93d  2**0
+  9 .debug_abbrev 00001578  00000000  00000000  0000f7a5  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_line   000018f0  00000000  00000000  0000fe43  2**0
+ 10 .debug_line   000019cd  00000000  00000000  00010d1d  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_frame  00000d44  00000000  00000000  00011734  2**2
+ 11 .debug_frame  00000e44  00000000  00000000  000126ec  2**2
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_str    000015d2  00000000  00000000  00012478  2**0
+ 12 .debug_str    00001614  00000000  00000000  00013530  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_loc    00004c1d  00000000  00000000  00013a4a  2**0
+ 13 .debug_loc    00005143  00000000  00000000  00014b44  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_ranges 000005e0  00000000  00000000  00018668  2**3
+ 14 .debug_ranges 00000610  00000000  00000000  00019c88  2**3
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -65,13 +65,13 @@ Disassembly of section .text:
       64:	0c 94 52 24 	jmp	0x48a4	; 0x48a4 <__bad_interrupt>
       68:	0c 94 52 24 	jmp	0x48a4	; 0x48a4 <__bad_interrupt>
       6c:	0c 94 52 24 	jmp	0x48a4	; 0x48a4 <__bad_interrupt>
-      70:	67 39       	cpi	r22, 0x97	; 151
-      72:	6a 39       	cpi	r22, 0x9A	; 154
-      74:	6d 39       	cpi	r22, 0x9D	; 157
-      76:	70 39       	cpi	r23, 0x90	; 144
-      78:	73 39       	cpi	r23, 0x93	; 147
-      7a:	76 39       	cpi	r23, 0x96	; 150
-      7c:	79 39       	cpi	r23, 0x99	; 153
+      70:	6c 39       	cpi	r22, 0x9C	; 156
+      72:	6f 39       	cpi	r22, 0x9F	; 159
+      74:	72 39       	cpi	r23, 0x92	; 146
+      76:	75 39       	cpi	r23, 0x95	; 149
+      78:	78 39       	cpi	r23, 0x98	; 152
+      7a:	7b 39       	cpi	r23, 0x9B	; 155
+      7c:	7e 39       	cpi	r23, 0x9E	; 158
 
 0000007e <__trampolines_end>:
       7e:	81 00       	.word	0x0081	; ????
@@ -1290,8 +1290,8 @@ Disassembly of section .text:
     47de:	15 e0       	ldi	r17, 0x05	; 5
     47e0:	a0 e0       	ldi	r26, 0x00	; 0
     47e2:	b5 e0       	ldi	r27, 0x05	; 5
-    47e4:	e4 e9       	ldi	r30, 0x94	; 148
-    47e6:	fc e7       	ldi	r31, 0x7C	; 124
+    47e4:	ec eb       	ldi	r30, 0xBC	; 188
+    47e6:	f6 e8       	ldi	r31, 0x86	; 134
     47e8:	02 c0       	rjmp	.+4      	; 0x47ee <__do_copy_data+0x10>
     47ea:	05 90       	lpm	r0, Z+
     47ec:	0d 92       	st	X+, r0
@@ -1309,7 +1309,7 @@ Disassembly of section .text:
     47fc:	1d 92       	st	X+, r1
 
 000047fe <.do_clear_bss_start>:
-    47fe:	ad 39       	cpi	r26, 0x9D	; 157
+    47fe:	af 3c       	cpi	r26, 0xCF	; 207
     4800:	b1 07       	cpc	r27, r17
     4802:	e1 f7       	brne	.-8      	; 0x47fc <.do_clear_bss_loop>
 
@@ -1437,8 +1437,8 @@ void Initialize(void){
 	
 	DisplayLogo();
     4898:	0e 94 db 36 	call	0x6db6	; 0x6db6 <DisplayLogo>
-    489c:	0e 94 5f 3c 	call	0x78be	; 0x78be <main>
-    48a0:	0c 94 48 3e 	jmp	0x7c90	; 0x7c90 <_exit>
+    489c:	0e 94 47 41 	call	0x828e	; 0x828e <main>
+    48a0:	0c 94 5c 43 	jmp	0x86b8	; 0x86b8 <_exit>
 
 000048a4 <__bad_interrupt>:
     48a4:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -4807,7 +4807,7 @@ void PatchCommand11(Track* track, char param){
     555e:	97 0b       	sbc	r25, r23
     5560:	68 85       	ldd	r22, Y+8	; 0x08
     5562:	70 e0       	ldi	r23, 0x00	; 0
-    5564:	0e 94 ac 3c 	call	0x7958	; 0x7958 <__divmodhi4>
+    5564:	0e 94 94 41 	call	0x8328	; 0x8328 <__divmodhi4>
 	if(delta==0)delta++;
     5568:	61 15       	cp	r22, r1
     556a:	71 05       	cpc	r23, r1
@@ -7581,8 +7581,8 @@ DisableSoundEngine:
     677e:	3d 28       	or	r3, r13
     6780:	00 e9       	ldi	r16, 0x90	; 144
     6782:	e5 fe       	sbrs	r14, 5
-    6784:	d4 d7       	rcall	.+4008   	; 0x772e <update_level+0x2e>
-    6786:	d7 d7       	rcall	.+4014   	; 0x7736 <update_level+0x36>
+    6784:	d4 d7       	rcall	.+4008   	; 0x772e <on_solid_ground+0x160>
+    6786:	d7 d7       	rcall	.+4014   	; 0x7736 <on_solid_ground+0x168>
     6788:	d6 d4       	rcall	.+2476   	; 0x7136 <LBRotateSprites+0x54>
     678a:	d2 d0       	rcall	.+420    	; 0x6930 <waves+0x930>
     678c:	ce cc       	rjmp	.-1636   	; 0x612a <waves+0x12a>
@@ -7638,8 +7638,8 @@ DisableSoundEngine:
     67f2:	ca cc       	rjmp	.-1644   	; 0x6188 <waves+0x188>
     67f4:	ce d0       	rcall	.+412    	; 0x6992 <waves+0x992>
     67f6:	d2 d4       	rcall	.+2468   	; 0x719c <LBRotateSprites+0xba>
-    67f8:	d6 d7       	rcall	.+4012   	; 0x77a6 <level_transition+0x34>
-    67fa:	d7 d7       	rcall	.+4014   	; 0x77aa <level_transition+0x38>
+    67f8:	d6 d7       	rcall	.+4012   	; 0x77a6 <update_player+0x42>
+    67fa:	d7 d7       	rcall	.+4014   	; 0x77aa <update_player+0x46>
     67fc:	d4 fe       	sbrs	r13, 4
     67fe:	e5 e9       	ldi	r30, 0x95	; 149
     6800:	f9 f8       	.word	0xf8f9	; ????
@@ -7893,8 +7893,8 @@ DisableSoundEngine:
     69f2:	80 80       	ld	r8, Z
     69f4:	80 87       	std	Z+8, r24	; 0x08
     69f6:	91 9d       	mul	r25, r1
-    69f8:	ac c4       	rjmp	.+2392   	; 0x7352 <get_hero_spawn_x+0x4>
-    69fa:	cb d4       	rcall	.+2454   	; 0x7392 <get_level_tile+0x10>
+    69f8:	ac c4       	rjmp	.+2392   	; 0x7352 <get_camera_y+0x14>
+    69fa:	cb d4       	rcall	.+2454   	; 0x7392 <get_level_tile+0x6>
     69fc:	dd f2       	brhs	.-74     	; 0x69b4 <waves+0x9b4>
     69fe:	fa fa       	.word	0xfafa	; ????
 
@@ -8852,7 +8852,7 @@ char* LBGetNextFrame(Animation* anim)
     6ee8:	01 96       	adiw	r24, 0x01	; 1
     6eea:	61 81       	ldd	r22, Z+1	; 0x01
     6eec:	70 e0       	ldi	r23, 0x00	; 0
-    6eee:	0e 94 ac 3c 	call	0x7958	; 0x7958 <__divmodhi4>
+    6eee:	0e 94 94 41 	call	0x8328	; 0x8328 <__divmodhi4>
     6ef2:	80 83       	st	Z, r24
 	if (anim->current_anim == 0) anim->looped = 1;
     6ef4:	81 11       	cpse	r24, r1
@@ -9123,7 +9123,7 @@ void LBMapSprite(u8 startSprite,const char *map,u8 spriteFlags)
     703a:	83 9f       	mul	r24, r19
     703c:	f0 01       	movw	r30, r0
     703e:	11 24       	eor	r1, r1
-    7040:	ed 5d       	subi	r30, 0xDD	; 221
+    7040:	eb 5a       	subi	r30, 0xAB	; 171
     7042:	f1 4f       	sbci	r31, 0xF1	; 241
     7044:	22 83       	std	Z+2, r18	; 0x02
 			extendedSprites[startSprite++].flags=spriteFlags;
@@ -9212,7 +9212,7 @@ void LBMoveSprite(u8 startSprite,u8 x,u8 y,u8 width,u8 height)
     70a4:	f0 01       	movw	r30, r0
     70a6:	11 24       	eor	r1, r1
     70a8:	ef 01       	movw	r28, r30
-    70aa:	cd 5d       	subi	r28, 0xDD	; 221
+    70aa:	cb 5a       	subi	r28, 0xAB	; 171
     70ac:	d1 4f       	sbci	r29, 0xF1	; 241
     70ae:	98 83       	st	Y, r25
 		
@@ -9240,7 +9240,7 @@ void LBMoveSprite(u8 startSprite,u8 x,u8 y,u8 width,u8 height)
 				else
 				{
 					extendedSprites[startSprite].y=y+(TILE_HEIGHT*dy);
-    70be:	ed 5d       	subi	r30, 0xDD	; 221
+    70be:	eb 5a       	subi	r30, 0xAB	; 171
     70c0:	f1 4f       	sbci	r31, 0xF1	; 241
     70c2:	d1 82       	std	Z+1, r13	; 0x01
 				{
@@ -9306,7 +9306,7 @@ void LBRotateSprites(u8 mappedSpriteCount)
     7100:	a3 9f       	mul	r26, r19
     7102:	d0 01       	movw	r26, r0
     7104:	11 24       	eor	r1, r1
-    7106:	ad 5d       	subi	r26, 0xDD	; 221
+    7106:	ab 5a       	subi	r26, 0xAB	; 171
     7108:	b1 4f       	sbci	r27, 0xF1	; 241
     710a:	13 96       	adiw	r26, 0x03	; 3
     710c:	3c 91       	ld	r19, X
@@ -9320,7 +9320,7 @@ void LBRotateSprites(u8 mappedSpriteCount)
     711a:	a3 9f       	mul	r26, r19
     711c:	d0 01       	movw	r26, r0
     711e:	11 24       	eor	r1, r1
-    7120:	ad 5d       	subi	r26, 0xDD	; 221
+    7120:	ab 5a       	subi	r26, 0xAB	; 171
     7122:	b1 4f       	sbci	r27, 0xF1	; 241
     7124:	12 96       	adiw	r26, 0x02	; 2
     7126:	3c 91       	ld	r19, X
@@ -9333,7 +9333,7 @@ void LBRotateSprites(u8 mappedSpriteCount)
     7132:	a3 9f       	mul	r26, r19
     7134:	d0 01       	movw	r26, r0
     7136:	11 24       	eor	r1, r1
-    7138:	ad 5d       	subi	r26, 0xDD	; 221
+    7138:	ab 5a       	subi	r26, 0xAB	; 171
     713a:	b1 4f       	sbci	r27, 0xF1	; 241
     713c:	3c 91       	ld	r19, X
     713e:	38 83       	st	Y, r19
@@ -9344,7 +9344,7 @@ void LBRotateSprites(u8 mappedSpriteCount)
     7146:	83 9f       	mul	r24, r19
     7148:	d0 01       	movw	r26, r0
     714a:	11 24       	eor	r1, r1
-    714c:	ad 5d       	subi	r26, 0xDD	; 221
+    714c:	ab 5a       	subi	r26, 0xAB	; 171
     714e:	b1 4f       	sbci	r27, 0xF1	; 241
     7150:	11 96       	adiw	r26, 0x01	; 1
     7152:	3c 91       	ld	r19, X
@@ -9382,7 +9382,7 @@ void LBRotateSprites(u8 mappedSpriteCount)
     716e:	28 17       	cp	r18, r24
     7170:	a9 f3       	breq	.-22     	; 0x715c <LBRotateSprites+0x7a>
     7172:	da 01       	movw	r26, r20
-    7174:	ad 5d       	subi	r26, 0xDD	; 221
+    7174:	ab 5a       	subi	r26, 0xAB	; 171
     7176:	b1 4f       	sbci	r27, 0xF1	; 241
     7178:	fa 01       	movw	r30, r20
     717a:	ee 5f       	subi	r30, 0xFE	; 254
@@ -9464,1772 +9464,3085 @@ void init_game_state()
     game.scroll_dest_x=29;
     71ce:	85 83       	std	Z+5, r24	; 0x05
 	game.player.active_shots = 0;
-    71d0:	13 8a       	std	Z+19, r1	; 0x13
+    71d0:	15 8e       	std	Z+29, r1	; 0x1d
 	game.player.flags = IDLE;
     71d2:	88 e0       	ldi	r24, 0x08	; 8
-    71d4:	84 8b       	std	Z+20, r24	; 0x14
+    71d4:	86 8f       	std	Z+30, r24	; 0x1e
 	game.player.grace_frame = 0;
-    71d6:	15 8a       	std	Z+21, r1	; 0x15
-	game.player.shared.gravity = GRAVITY;
-    71d8:	80 e5       	ldi	r24, 0x50	; 80
-    71da:	86 87       	std	Z+14, r24	; 0x0e
+    71d6:	17 8e       	std	Z+31, r1	; 0x1f
+	game.player.shared.gravity = 0;
+    71d8:	14 8e       	std	Z+28, r1	; 0x1c
 	game.player.shared.vx = 0;
-    71dc:	14 86       	std	Z+12, r1	; 0x0c
+    71da:	14 86       	std	Z+12, r1	; 0x0c
+    71dc:	15 86       	std	Z+13, r1	; 0x0d
+    71de:	16 86       	std	Z+14, r1	; 0x0e
+    71e0:	17 86       	std	Z+15, r1	; 0x0f
 	game.player.shared.vy = 0;
-    71de:	15 86       	std	Z+13, r1	; 0x0d
+    71e2:	10 8a       	std	Z+16, r1	; 0x10
+    71e4:	11 8a       	std	Z+17, r1	; 0x11
+    71e6:	12 8a       	std	Z+18, r1	; 0x12
+    71e8:	13 8a       	std	Z+19, r1	; 0x13
 	
 	game.player.idle.anim_count = 1;
-    71e0:	81 e0       	ldi	r24, 0x01	; 1
-    71e2:	80 93 f3 0d 	sts	0x0DF3, r24
+    71ea:	81 e0       	ldi	r24, 0x01	; 1
+    71ec:	80 93 25 0e 	sts	0x0E25, r24
 	game.player.idle.current_anim = 0;
-    71e6:	10 92 f2 0d 	sts	0x0DF2, r1
+    71f0:	10 92 24 0e 	sts	0x0E24, r1
 	game.player.idle.frame_count = 0;
-    71ea:	10 92 f5 0d 	sts	0x0DF5, r1
+    71f4:	10 92 27 0e 	sts	0x0E27, r1
 	game.player.idle.frames_per_anim = 1;
-    71ee:	80 93 f4 0d 	sts	0x0DF4, r24
+    71f8:	80 93 26 0e 	sts	0x0E26, r24
 	game.player.idle.looped = 0;
-    71f2:	10 92 f6 0d 	sts	0x0DF6, r1
+    71fc:	10 92 28 0e 	sts	0x0E28, r1
 	game.player.idle.reversing = 0;
-    71f6:	10 92 f7 0d 	sts	0x0DF7, r1
+    7200:	10 92 29 0e 	sts	0x0E29, r1
 	game.player.idle.anims = idle_anim;
-    71fa:	eb e9       	ldi	r30, 0x9B	; 155
-    71fc:	fe e0       	ldi	r31, 0x0E	; 14
-    71fe:	f0 93 f9 0d 	sts	0x0DF9, r31
-    7202:	e0 93 f8 0d 	sts	0x0DF8, r30
+    7204:	ed ec       	ldi	r30, 0xCD	; 205
+    7206:	fe e0       	ldi	r31, 0x0E	; 14
+    7208:	f0 93 2b 0e 	sts	0x0E2B, r31
+    720c:	e0 93 2a 0e 	sts	0x0E2A, r30
 	game.player.idle.anims[0] = (char*) map_hero_idle;
-    7206:	2b e7       	ldi	r18, 0x7B	; 123
-    7208:	3e e2       	ldi	r19, 0x2E	; 46
-    720a:	31 83       	std	Z+1, r19	; 0x01
-    720c:	20 83       	st	Z, r18
+    7210:	2b e7       	ldi	r18, 0x7B	; 123
+    7212:	3e e2       	ldi	r19, 0x2E	; 46
+    7214:	31 83       	std	Z+1, r19	; 0x01
+    7216:	20 83       	st	Z, r18
 	
 	game.player.jump.anim_count = 1;
-    720e:	80 93 03 0e 	sts	0x0E03, r24
+    7218:	80 93 35 0e 	sts	0x0E35, r24
 	game.player.jump.current_anim = 0;
-    7212:	10 92 02 0e 	sts	0x0E02, r1
+    721c:	10 92 34 0e 	sts	0x0E34, r1
 	game.player.jump.frame_count = 0;
-    7216:	10 92 05 0e 	sts	0x0E05, r1
+    7220:	10 92 37 0e 	sts	0x0E37, r1
 	game.player.jump.frames_per_anim = 1;
-    721a:	80 93 04 0e 	sts	0x0E04, r24
+    7224:	80 93 36 0e 	sts	0x0E36, r24
 	game.player.jump.looped = 0;
-    721e:	10 92 06 0e 	sts	0x0E06, r1
+    7228:	10 92 38 0e 	sts	0x0E38, r1
 	game.player.jump.reversing = 0;
-    7222:	10 92 07 0e 	sts	0x0E07, r1
+    722c:	10 92 39 0e 	sts	0x0E39, r1
 	game.player.jump.anims = jump_anim;
-    7226:	ee e6       	ldi	r30, 0x6E	; 110
-    7228:	fd e0       	ldi	r31, 0x0D	; 13
-    722a:	f0 93 09 0e 	sts	0x0E09, r31
-    722e:	e0 93 08 0e 	sts	0x0E08, r30
+    7230:	ee e6       	ldi	r30, 0x6E	; 110
+    7232:	fd e0       	ldi	r31, 0x0D	; 13
+    7234:	f0 93 3b 0e 	sts	0x0E3B, r31
+    7238:	e0 93 3a 0e 	sts	0x0E3A, r30
 	game.player.jump.anims[0] = (char*) map_hero_jump;
-    7232:	23 e5       	ldi	r18, 0x53	; 83
-    7234:	3e e2       	ldi	r19, 0x2E	; 46
-    7236:	31 83       	std	Z+1, r19	; 0x01
-    7238:	20 83       	st	Z, r18
+    723c:	23 e5       	ldi	r18, 0x53	; 83
+    723e:	3e e2       	ldi	r19, 0x2E	; 46
+    7240:	31 83       	std	Z+1, r19	; 0x01
+    7242:	20 83       	st	Z, r18
 	
 	game.player.prone.anim_count = 1;
-    723a:	80 93 0b 0e 	sts	0x0E0B, r24
+    7244:	80 93 3d 0e 	sts	0x0E3D, r24
 	game.player.prone.current_anim = 0;
-    723e:	10 92 0a 0e 	sts	0x0E0A, r1
+    7248:	10 92 3c 0e 	sts	0x0E3C, r1
 	game.player.prone.frame_count = 0;
-    7242:	10 92 0d 0e 	sts	0x0E0D, r1
+    724c:	10 92 3f 0e 	sts	0x0E3F, r1
 	game.player.prone.frames_per_anim = 1;
-    7246:	80 93 0c 0e 	sts	0x0E0C, r24
+    7250:	80 93 3e 0e 	sts	0x0E3E, r24
 	game.player.prone.looped = 0;
-    724a:	10 92 0e 0e 	sts	0x0E0E, r1
+    7254:	10 92 40 0e 	sts	0x0E40, r1
 	game.player.prone.reversing = 0;
-    724e:	10 92 0f 0e 	sts	0x0E0F, r1
+    7258:	10 92 41 0e 	sts	0x0E41, r1
 	game.player.prone.anims = prone_anim;
-    7252:	e1 e2       	ldi	r30, 0x21	; 33
-    7254:	fe e0       	ldi	r31, 0x0E	; 14
-    7256:	f0 93 11 0e 	sts	0x0E11, r31
-    725a:	e0 93 10 0e 	sts	0x0E10, r30
+    725c:	e3 e5       	ldi	r30, 0x53	; 83
+    725e:	fe e0       	ldi	r31, 0x0E	; 14
+    7260:	f0 93 43 0e 	sts	0x0E43, r31
+    7264:	e0 93 42 0e 	sts	0x0E42, r30
 	game.player.prone.anims[0] = (char*) map_hero_prone;
-    725e:	8e e4       	ldi	r24, 0x4E	; 78
-    7260:	9e e2       	ldi	r25, 0x2E	; 46
-    7262:	91 83       	std	Z+1, r25	; 0x01
-    7264:	80 83       	st	Z, r24
+    7268:	8e e4       	ldi	r24, 0x4E	; 78
+    726a:	9e e2       	ldi	r25, 0x2E	; 46
+    726c:	91 83       	std	Z+1, r25	; 0x01
+    726e:	80 83       	st	Z, r24
 	
 	game.player.run.anim_count = 4;
-    7266:	84 e0       	ldi	r24, 0x04	; 4
-    7268:	80 93 fb 0d 	sts	0x0DFB, r24
+    7270:	84 e0       	ldi	r24, 0x04	; 4
+    7272:	80 93 2d 0e 	sts	0x0E2D, r24
 	game.player.run.current_anim = 0;
-    726c:	10 92 fa 0d 	sts	0x0DFA, r1
+    7276:	10 92 2c 0e 	sts	0x0E2C, r1
 	game.player.run.frame_count = 0;
-    7270:	10 92 fd 0d 	sts	0x0DFD, r1
+    727a:	10 92 2f 0e 	sts	0x0E2F, r1
 	game.player.run.frames_per_anim = FRAMES_PER_RUN_CYCLE;
-    7274:	8c e0       	ldi	r24, 0x0C	; 12
-    7276:	80 93 fc 0d 	sts	0x0DFC, r24
+    727e:	8c e0       	ldi	r24, 0x0C	; 12
+    7280:	80 93 2e 0e 	sts	0x0E2E, r24
 	game.player.run.looped = 0;
-    727a:	10 92 fe 0d 	sts	0x0DFE, r1
+    7284:	10 92 30 0e 	sts	0x0E30, r1
 	game.player.run.reversing = 0;
-    727e:	10 92 ff 0d 	sts	0x0DFF, r1
+    7288:	10 92 31 0e 	sts	0x0E31, r1
 	game.player.run.anims = run_anim;
-    7282:	e3 e9       	ldi	r30, 0x93	; 147
-    7284:	fe e0       	ldi	r31, 0x0E	; 14
-    7286:	f0 93 01 0e 	sts	0x0E01, r31
-    728a:	e0 93 00 0e 	sts	0x0E00, r30
+    728c:	e5 ec       	ldi	r30, 0xC5	; 197
+    728e:	fe e0       	ldi	r31, 0x0E	; 14
+    7290:	f0 93 33 0e 	sts	0x0E33, r31
+    7294:	e0 93 32 0e 	sts	0x0E32, r30
 	game.player.run.anims[0] = (char*) map_hero_step_0;
-    728e:	83 e7       	ldi	r24, 0x73	; 115
-    7290:	9e e2       	ldi	r25, 0x2E	; 46
-    7292:	91 83       	std	Z+1, r25	; 0x01
-    7294:	80 83       	st	Z, r24
+    7298:	83 e7       	ldi	r24, 0x73	; 115
+    729a:	9e e2       	ldi	r25, 0x2E	; 46
+    729c:	91 83       	std	Z+1, r25	; 0x01
+    729e:	80 83       	st	Z, r24
 	game.player.run.anims[1] = (char*) map_hero_step_1;
-    7296:	8b e6       	ldi	r24, 0x6B	; 107
-    7298:	9e e2       	ldi	r25, 0x2E	; 46
-    729a:	93 83       	std	Z+3, r25	; 0x03
-    729c:	82 83       	std	Z+2, r24	; 0x02
+    72a0:	8b e6       	ldi	r24, 0x6B	; 107
+    72a2:	9e e2       	ldi	r25, 0x2E	; 46
+    72a4:	93 83       	std	Z+3, r25	; 0x03
+    72a6:	82 83       	std	Z+2, r24	; 0x02
 	game.player.run.anims[2] = (char*) map_hero_step_2;
-    729e:	83 e6       	ldi	r24, 0x63	; 99
-    72a0:	9e e2       	ldi	r25, 0x2E	; 46
-    72a2:	95 83       	std	Z+5, r25	; 0x05
-    72a4:	84 83       	std	Z+4, r24	; 0x04
+    72a8:	83 e6       	ldi	r24, 0x63	; 99
+    72aa:	9e e2       	ldi	r25, 0x2E	; 46
+    72ac:	95 83       	std	Z+5, r25	; 0x05
+    72ae:	84 83       	std	Z+4, r24	; 0x04
 	game.player.run.anims[3] = (char*) map_hero_step_3;
-    72a6:	8b e5       	ldi	r24, 0x5B	; 91
-    72a8:	9e e2       	ldi	r25, 0x2E	; 46
-    72aa:	97 83       	std	Z+7, r25	; 0x07
-    72ac:	86 83       	std	Z+6, r24	; 0x06
-    72ae:	08 95       	ret
+    72b0:	8b e5       	ldi	r24, 0x5B	; 91
+    72b2:	9e e2       	ldi	r25, 0x2E	; 46
+    72b4:	97 83       	std	Z+7, r25	; 0x07
+    72b6:	86 83       	std	Z+6, r24	; 0x06
+    72b8:	08 95       	ret
 
-000072b0 <render_level_tile>:
+000072ba <render_level_tile>:
 	ClearVram();
 	FadeIn(FRAMES_PER_FADE, false);
 }
 
 void render_level_tile(u8 level_tile, u8 x, u8 y)
 {
-    72b0:	0f 93       	push	r16
-    72b2:	1f 93       	push	r17
-    72b4:	e8 2f       	mov	r30, r24
-    72b6:	86 2f       	mov	r24, r22
-    72b8:	64 2f       	mov	r22, r20
+    72ba:	0f 93       	push	r16
+    72bc:	1f 93       	push	r17
+    72be:	e8 2f       	mov	r30, r24
+    72c0:	86 2f       	mov	r24, r22
+    72c2:	64 2f       	mov	r22, r20
 	switch (level_tile)
-    72ba:	0e 2f       	mov	r16, r30
-    72bc:	10 e0       	ldi	r17, 0x00	; 0
-    72be:	07 30       	cpi	r16, 0x07	; 7
-    72c0:	11 05       	cpc	r17, r1
-    72c2:	e8 f4       	brcc	.+58     	; 0x72fe <render_level_tile+0x4e>
-    72c4:	f8 01       	movw	r30, r16
-    72c6:	e8 5c       	subi	r30, 0xC8	; 200
-    72c8:	ff 4f       	sbci	r31, 0xFF	; 255
-    72ca:	0c 94 c0 3c 	jmp	0x7980	; 0x7980 <__tablejump2__>
+    72c4:	0e 2f       	mov	r16, r30
+    72c6:	10 e0       	ldi	r17, 0x00	; 0
+    72c8:	07 30       	cpi	r16, 0x07	; 7
+    72ca:	11 05       	cpc	r17, r1
+    72cc:	e8 f4       	brcc	.+58     	; 0x7308 <render_level_tile+0x4e>
+    72ce:	f8 01       	movw	r30, r16
+    72d0:	e8 5c       	subi	r30, 0xC8	; 200
+    72d2:	ff 4f       	sbci	r31, 0xFF	; 255
+    72d4:	0c 94 a8 41 	jmp	0x8350	; 0x8350 <__tablejump2__>
 	{
 		case L_ICE_SKY : LBDrawTile(x, y, map_ice_sky); break;
-    72ce:	4f e6       	ldi	r20, 0x6F	; 111
-    72d0:	57 e4       	ldi	r21, 0x47	; 71
-    72d2:	11 c0       	rjmp	.+34     	; 0x72f6 <render_level_tile+0x46>
+    72d8:	4f e6       	ldi	r20, 0x6F	; 111
+    72da:	57 e4       	ldi	r21, 0x47	; 71
+    72dc:	11 c0       	rjmp	.+34     	; 0x7300 <render_level_tile+0x46>
 		case L_ICE_MIDDLE : LBDrawTile(x, y, map_ice_middle); break;
-    72d4:	4b e7       	ldi	r20, 0x7B	; 123
-    72d6:	57 e4       	ldi	r21, 0x47	; 71
-    72d8:	0e c0       	rjmp	.+28     	; 0x72f6 <render_level_tile+0x46>
+    72de:	4b e7       	ldi	r20, 0x7B	; 123
+    72e0:	57 e4       	ldi	r21, 0x47	; 71
+    72e2:	0e c0       	rjmp	.+28     	; 0x7300 <render_level_tile+0x46>
 		case L_ICE_LEFT : LBDrawTile(x, y, map_ice_left); break;
-    72da:	4e e7       	ldi	r20, 0x7E	; 126
-    72dc:	57 e4       	ldi	r21, 0x47	; 71
-    72de:	0b c0       	rjmp	.+22     	; 0x72f6 <render_level_tile+0x46>
+    72e4:	4e e7       	ldi	r20, 0x7E	; 126
+    72e6:	57 e4       	ldi	r21, 0x47	; 71
+    72e8:	0b c0       	rjmp	.+22     	; 0x7300 <render_level_tile+0x46>
 		case L_ICE_RIGHT : LBDrawTile(x, y, map_ice_right); break;
-    72e0:	48 e7       	ldi	r20, 0x78	; 120
-    72e2:	57 e4       	ldi	r21, 0x47	; 71
-    72e4:	08 c0       	rjmp	.+16     	; 0x72f6 <render_level_tile+0x46>
+    72ea:	48 e7       	ldi	r20, 0x78	; 120
+    72ec:	57 e4       	ldi	r21, 0x47	; 71
+    72ee:	08 c0       	rjmp	.+16     	; 0x7300 <render_level_tile+0x46>
 		case L_ICE_BOTTOM : LBDrawTile(x, y, map_ice_bottom); break;
-    72e6:	45 e7       	ldi	r20, 0x75	; 117
-    72e8:	57 e4       	ldi	r21, 0x47	; 71
-    72ea:	05 c0       	rjmp	.+10     	; 0x72f6 <render_level_tile+0x46>
+    72f0:	45 e7       	ldi	r20, 0x75	; 117
+    72f2:	57 e4       	ldi	r21, 0x47	; 71
+    72f4:	05 c0       	rjmp	.+10     	; 0x7300 <render_level_tile+0x46>
 		case L_ICE_FAR : LBDrawTile(x, y, map_ice_far); break;
-    72ec:	4c e6       	ldi	r20, 0x6C	; 108
-    72ee:	57 e4       	ldi	r21, 0x47	; 71
-    72f0:	02 c0       	rjmp	.+4      	; 0x72f6 <render_level_tile+0x46>
+    72f6:	4c e6       	ldi	r20, 0x6C	; 108
+    72f8:	57 e4       	ldi	r21, 0x47	; 71
+    72fa:	02 c0       	rjmp	.+4      	; 0x7300 <render_level_tile+0x46>
 		case L_ICE_HORIZON : LBDrawTile(x, y, map_ice_horizon); break;
-    72f2:	42 e7       	ldi	r20, 0x72	; 114
-    72f4:	57 e4       	ldi	r21, 0x47	; 71
+    72fc:	42 e7       	ldi	r20, 0x72	; 114
+    72fe:	57 e4       	ldi	r21, 0x47	; 71
 	}
 }
-    72f6:	1f 91       	pop	r17
-    72f8:	0f 91       	pop	r16
+    7300:	1f 91       	pop	r17
+    7302:	0f 91       	pop	r16
 		case L_ICE_MIDDLE : LBDrawTile(x, y, map_ice_middle); break;
 		case L_ICE_LEFT : LBDrawTile(x, y, map_ice_left); break;
 		case L_ICE_RIGHT : LBDrawTile(x, y, map_ice_right); break;
 		case L_ICE_BOTTOM : LBDrawTile(x, y, map_ice_bottom); break;
 		case L_ICE_FAR : LBDrawTile(x, y, map_ice_far); break;
 		case L_ICE_HORIZON : LBDrawTile(x, y, map_ice_horizon); break;
-    72fa:	0c 94 d2 38 	jmp	0x71a4	; 0x71a4 <LBDrawTile>
+    7304:	0c 94 d2 38 	jmp	0x71a4	; 0x71a4 <LBDrawTile>
 	}
 }
-    72fe:	1f 91       	pop	r17
-    7300:	0f 91       	pop	r16
-    7302:	08 95       	ret
+    7308:	1f 91       	pop	r17
+    730a:	0f 91       	pop	r16
+    730c:	08 95       	ret
 
-00007304 <clear_overlay>:
+0000730e <clear_overlay>:
 
 void clear_overlay(u8 overlayHeight)
 {
-    7304:	1f 93       	push	r17
-    7306:	cf 93       	push	r28
-    7308:	df 93       	push	r29
+    730e:	1f 93       	push	r17
+    7310:	cf 93       	push	r28
+    7312:	df 93       	push	r29
 	for(u8 x = 0; x < CAMERA_WIDTH; x++)
-    730a:	d0 e0       	ldi	r29, 0x00	; 0
-    730c:	10 e2       	ldi	r17, 0x20	; 32
-    730e:	18 0f       	add	r17, r24
+    7314:	d0 e0       	ldi	r29, 0x00	; 0
+    7316:	10 e2       	ldi	r17, 0x20	; 32
+    7318:	18 0f       	add	r17, r24
 		case L_ICE_HORIZON : LBDrawTile(x, y, map_ice_horizon); break;
 	}
 }
 
 void clear_overlay(u8 overlayHeight)
 {
-    7310:	c0 e2       	ldi	r28, 0x20	; 32
+    731a:	c0 e2       	ldi	r28, 0x20	; 32
 	for(u8 x = 0; x < CAMERA_WIDTH; x++)
 	{
 		for(u8 y = 0; y < overlayHeight; y++)
-    7312:	c1 17       	cp	r28, r17
-    7314:	41 f0       	breq	.+16     	; 0x7326 <clear_overlay+0x22>
+    731c:	c1 17       	cp	r28, r17
+    731e:	41 f0       	breq	.+16     	; 0x7330 <clear_overlay+0x22>
 		{
 			SetTile(x, VRAM_TILES_V+y, 0);
-    7316:	40 e0       	ldi	r20, 0x00	; 0
-    7318:	50 e0       	ldi	r21, 0x00	; 0
-    731a:	6c 2f       	mov	r22, r28
-    731c:	8d 2f       	mov	r24, r29
-    731e:	0e 94 5b 29 	call	0x52b6	; 0x52b6 <SetTile>
-    7322:	cf 5f       	subi	r28, 0xFF	; 255
-    7324:	f6 cf       	rjmp	.-20     	; 0x7312 <clear_overlay+0xe>
+    7320:	40 e0       	ldi	r20, 0x00	; 0
+    7322:	50 e0       	ldi	r21, 0x00	; 0
+    7324:	6c 2f       	mov	r22, r28
+    7326:	8d 2f       	mov	r24, r29
+    7328:	0e 94 5b 29 	call	0x52b6	; 0x52b6 <SetTile>
+    732c:	cf 5f       	subi	r28, 0xFF	; 255
+    732e:	f6 cf       	rjmp	.-20     	; 0x731c <clear_overlay+0xe>
 	}
 }
 
 void clear_overlay(u8 overlayHeight)
 {
 	for(u8 x = 0; x < CAMERA_WIDTH; x++)
-    7326:	df 5f       	subi	r29, 0xFF	; 255
-    7328:	dc 31       	cpi	r29, 0x1C	; 28
-    732a:	91 f7       	brne	.-28     	; 0x7310 <clear_overlay+0xc>
+    7330:	df 5f       	subi	r29, 0xFF	; 255
+    7332:	dc 31       	cpi	r29, 0x1C	; 28
+    7334:	91 f7       	brne	.-28     	; 0x731a <clear_overlay+0xc>
 		for(u8 y = 0; y < overlayHeight; y++)
 		{
 			SetTile(x, VRAM_TILES_V+y, 0);
 		}
 	}
 }
-    732c:	df 91       	pop	r29
-    732e:	cf 91       	pop	r28
-    7330:	1f 91       	pop	r17
-    7332:	08 95       	ret
+    7336:	df 91       	pop	r29
+    7338:	cf 91       	pop	r28
+    733a:	1f 91       	pop	r17
+    733c:	08 95       	ret
 
-00007334 <get_camera_y>:
+0000733e <get_camera_y>:
 	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 0]);
 }
 
 u8 get_camera_y(u8 level_index)
 {
 	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 1]);
-    7334:	28 e5       	ldi	r18, 0x58	; 88
-    7336:	36 e0       	ldi	r19, 0x06	; 6
-    7338:	48 2f       	mov	r20, r24
-    733a:	42 9f       	mul	r20, r18
-    733c:	c0 01       	movw	r24, r0
-    733e:	43 9f       	mul	r20, r19
-    7340:	90 0d       	add	r25, r0
-    7342:	11 24       	eor	r1, r1
-    7344:	fc 01       	movw	r30, r24
-    7346:	ec 5a       	subi	r30, 0xAC	; 172
-    7348:	f4 4e       	sbci	r31, 0xE4	; 228
-    734a:	84 91       	lpm	r24, Z
+    733e:	28 e5       	ldi	r18, 0x58	; 88
+    7340:	36 e0       	ldi	r19, 0x06	; 6
+    7342:	48 2f       	mov	r20, r24
+    7344:	42 9f       	mul	r20, r18
+    7346:	c0 01       	movw	r24, r0
+    7348:	43 9f       	mul	r20, r19
+    734a:	90 0d       	add	r25, r0
+    734c:	11 24       	eor	r1, r1
+    734e:	fc 01       	movw	r30, r24
+    7350:	ec 5a       	subi	r30, 0xAC	; 172
+    7352:	f4 4e       	sbci	r31, 0xE4	; 228
+    7354:	84 91       	lpm	r24, Z
 }
-    734c:	08 95       	ret
+    7356:	08 95       	ret
 
-0000734e <get_hero_spawn_x>:
+00007358 <get_hero_spawn_x>:
 
 u8 get_hero_spawn_x(u8 level_index)
 {
 	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 2]);
-    734e:	28 e5       	ldi	r18, 0x58	; 88
-    7350:	36 e0       	ldi	r19, 0x06	; 6
-    7352:	48 2f       	mov	r20, r24
-    7354:	42 9f       	mul	r20, r18
-    7356:	c0 01       	movw	r24, r0
-    7358:	43 9f       	mul	r20, r19
-    735a:	90 0d       	add	r25, r0
-    735c:	11 24       	eor	r1, r1
-    735e:	fc 01       	movw	r30, r24
-    7360:	eb 5a       	subi	r30, 0xAB	; 171
-    7362:	f4 4e       	sbci	r31, 0xE4	; 228
-    7364:	84 91       	lpm	r24, Z
+    7358:	28 e5       	ldi	r18, 0x58	; 88
+    735a:	36 e0       	ldi	r19, 0x06	; 6
+    735c:	48 2f       	mov	r20, r24
+    735e:	42 9f       	mul	r20, r18
+    7360:	c0 01       	movw	r24, r0
+    7362:	43 9f       	mul	r20, r19
+    7364:	90 0d       	add	r25, r0
+    7366:	11 24       	eor	r1, r1
+    7368:	fc 01       	movw	r30, r24
+    736a:	eb 5a       	subi	r30, 0xAB	; 171
+    736c:	f4 4e       	sbci	r31, 0xE4	; 228
+    736e:	84 91       	lpm	r24, Z
 }
-    7366:	08 95       	ret
+    7370:	08 95       	ret
 
-00007368 <get_hero_spawn_y>:
+00007372 <get_hero_spawn_y>:
 
 u8 get_hero_spawn_y(u8 level_index)
 {
 	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 3]);
-    7368:	28 e5       	ldi	r18, 0x58	; 88
-    736a:	36 e0       	ldi	r19, 0x06	; 6
-    736c:	48 2f       	mov	r20, r24
-    736e:	42 9f       	mul	r20, r18
-    7370:	c0 01       	movw	r24, r0
-    7372:	43 9f       	mul	r20, r19
-    7374:	90 0d       	add	r25, r0
-    7376:	11 24       	eor	r1, r1
-    7378:	fc 01       	movw	r30, r24
-    737a:	ea 5a       	subi	r30, 0xAA	; 170
-    737c:	f4 4e       	sbci	r31, 0xE4	; 228
-    737e:	84 91       	lpm	r24, Z
+    7372:	28 e5       	ldi	r18, 0x58	; 88
+    7374:	36 e0       	ldi	r19, 0x06	; 6
+    7376:	48 2f       	mov	r20, r24
+    7378:	42 9f       	mul	r20, r18
+    737a:	c0 01       	movw	r24, r0
+    737c:	43 9f       	mul	r20, r19
+    737e:	90 0d       	add	r25, r0
+    7380:	11 24       	eor	r1, r1
+    7382:	fc 01       	movw	r30, r24
+    7384:	ea 5a       	subi	r30, 0xAA	; 170
+    7386:	f4 4e       	sbci	r31, 0xE4	; 228
+    7388:	84 91       	lpm	r24, Z
 }
-    7380:	08 95       	ret
+    738a:	08 95       	ret
 
-00007382 <get_level_tile>:
+0000738c <get_level_tile>:
 
 u8 get_level_tile(u8 level_index, u16 x, u16 y)
 {
-    7382:	fb 01       	movw	r30, r22
-    7384:	34 96       	adiw	r30, 0x04	; 4
+    738c:	fb 01       	movw	r30, r22
+    738e:	34 96       	adiw	r30, 0x04	; 4
 	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 4 + (y*LEVEL_WIDTH+x)]);
-    7386:	9c e3       	ldi	r25, 0x3C	; 60
-    7388:	94 9f       	mul	r25, r20
-    738a:	90 01       	movw	r18, r0
-    738c:	95 9f       	mul	r25, r21
-    738e:	30 0d       	add	r19, r0
-    7390:	11 24       	eor	r1, r1
-    7392:	e2 0f       	add	r30, r18
-    7394:	f3 1f       	adc	r31, r19
-    7396:	28 e5       	ldi	r18, 0x58	; 88
-    7398:	36 e0       	ldi	r19, 0x06	; 6
-    739a:	48 2f       	mov	r20, r24
-    739c:	42 9f       	mul	r20, r18
-    739e:	c0 01       	movw	r24, r0
-    73a0:	43 9f       	mul	r20, r19
-    73a2:	90 0d       	add	r25, r0
-    73a4:	11 24       	eor	r1, r1
-    73a6:	e8 0f       	add	r30, r24
-    73a8:	f9 1f       	adc	r31, r25
-    73aa:	ed 5a       	subi	r30, 0xAD	; 173
-    73ac:	f4 4e       	sbci	r31, 0xE4	; 228
-    73ae:	84 91       	lpm	r24, Z
+    7390:	9c e3       	ldi	r25, 0x3C	; 60
+    7392:	94 9f       	mul	r25, r20
+    7394:	90 01       	movw	r18, r0
+    7396:	95 9f       	mul	r25, r21
+    7398:	30 0d       	add	r19, r0
+    739a:	11 24       	eor	r1, r1
+    739c:	e2 0f       	add	r30, r18
+    739e:	f3 1f       	adc	r31, r19
+    73a0:	28 e5       	ldi	r18, 0x58	; 88
+    73a2:	36 e0       	ldi	r19, 0x06	; 6
+    73a4:	48 2f       	mov	r20, r24
+    73a6:	42 9f       	mul	r20, r18
+    73a8:	c0 01       	movw	r24, r0
+    73aa:	43 9f       	mul	r20, r19
+    73ac:	90 0d       	add	r25, r0
+    73ae:	11 24       	eor	r1, r1
+    73b0:	e8 0f       	add	r30, r24
+    73b2:	f9 1f       	adc	r31, r25
+    73b4:	ed 5a       	subi	r30, 0xAD	; 173
+    73b6:	f4 4e       	sbci	r31, 0xE4	; 228
+    73b8:	84 91       	lpm	r24, Z
 }
-    73b0:	08 95       	ret
+    73ba:	08 95       	ret
 
-000073b2 <render_camera_view>:
+000073bc <render_camera_view>:
 #else
 
 #endif
 
 void render_camera_view()
 {
-    73b2:	7f 92       	push	r7
-    73b4:	8f 92       	push	r8
-    73b6:	9f 92       	push	r9
-    73b8:	af 92       	push	r10
-    73ba:	bf 92       	push	r11
-    73bc:	cf 92       	push	r12
-    73be:	df 92       	push	r13
-    73c0:	ef 92       	push	r14
-    73c2:	ff 92       	push	r15
-    73c4:	0f 93       	push	r16
-    73c6:	1f 93       	push	r17
-    73c8:	cf 93       	push	r28
-    73ca:	df 93       	push	r29
+    73bc:	7f 92       	push	r7
+    73be:	8f 92       	push	r8
+    73c0:	9f 92       	push	r9
+    73c2:	af 92       	push	r10
+    73c4:	bf 92       	push	r11
+    73c6:	cf 92       	push	r12
+    73c8:	df 92       	push	r13
+    73ca:	ef 92       	push	r14
+    73cc:	ff 92       	push	r15
+    73ce:	0f 93       	push	r16
+    73d0:	1f 93       	push	r17
+    73d2:	cf 93       	push	r28
+    73d4:	df 93       	push	r29
 	u8 level_tile;
 	u16 camara_x_tile = game.camera_x/8;
-    73cc:	c0 91 98 0d 	lds	r28, 0x0D98
-    73d0:	d0 91 99 0d 	lds	r29, 0x0D99
-    73d4:	83 e0       	ldi	r24, 0x03	; 3
-    73d6:	d6 95       	lsr	r29
-    73d8:	c7 95       	ror	r28
-    73da:	8a 95       	dec	r24
-    73dc:	e1 f7       	brne	.-8      	; 0x73d6 <render_camera_view+0x24>
+    73d6:	c0 91 98 0d 	lds	r28, 0x0D98
+    73da:	d0 91 99 0d 	lds	r29, 0x0D99
+    73de:	83 e0       	ldi	r24, 0x03	; 3
+    73e0:	d6 95       	lsr	r29
+    73e2:	c7 95       	ror	r28
+    73e4:	8a 95       	dec	r24
+    73e6:	e1 f7       	brne	.-8      	; 0x73e0 <render_camera_view+0x24>
 	u16 camera_y_tile = game.camera_y/8;
-    73de:	c0 90 9a 0d 	lds	r12, 0x0D9A
-    73e2:	d0 90 9b 0d 	lds	r13, 0x0D9B
-    73e6:	93 e0       	ldi	r25, 0x03	; 3
-    73e8:	d6 94       	lsr	r13
-    73ea:	c7 94       	ror	r12
-    73ec:	9a 95       	dec	r25
-    73ee:	e1 f7       	brne	.-8      	; 0x73e8 <render_camera_view+0x36>
+    73e8:	c0 90 9a 0d 	lds	r12, 0x0D9A
+    73ec:	d0 90 9b 0d 	lds	r13, 0x0D9B
+    73f0:	93 e0       	ldi	r25, 0x03	; 3
+    73f2:	d6 94       	lsr	r13
+    73f4:	c7 94       	ror	r12
+    73f6:	9a 95       	dec	r25
+    73f8:	e1 f7       	brne	.-8      	; 0x73f2 <render_camera_view+0x36>
 	
 	for (u16 x = camara_x_tile; x < camara_x_tile + CAMERA_WIDTH + 1; x++)
-    73f0:	8e 01       	movw	r16, r28
-    73f2:	5e 01       	movw	r10, r28
-    73f4:	8d e1       	ldi	r24, 0x1D	; 29
-    73f6:	a8 0e       	add	r10, r24
-    73f8:	b1 1c       	adc	r11, r1
+    73fa:	8e 01       	movw	r16, r28
+    73fc:	5e 01       	movw	r10, r28
+    73fe:	8d e1       	ldi	r24, 0x1D	; 29
+    7400:	a8 0e       	add	r10, r24
+    7402:	b1 1c       	adc	r11, r1
 	{
 		for (u16 y = camera_y_tile; y < camera_y_tile + CAMERA_HEIGHT + 1; y++)
-    73fa:	46 01       	movw	r8, r12
-    73fc:	8b e1       	ldi	r24, 0x1B	; 27
-    73fe:	88 0e       	add	r8, r24
-    7400:	91 1c       	adc	r9, r1
+    7404:	46 01       	movw	r8, r12
+    7406:	8b e1       	ldi	r24, 0x1B	; 27
+    7408:	88 0e       	add	r8, r24
+    740a:	91 1c       	adc	r9, r1
 {
 	u8 level_tile;
 	u16 camara_x_tile = game.camera_x/8;
 	u16 camera_y_tile = game.camera_y/8;
 	
 	for (u16 x = camara_x_tile; x < camara_x_tile + CAMERA_WIDTH + 1; x++)
-    7402:	0a 15       	cp	r16, r10
-    7404:	1b 05       	cpc	r17, r11
-    7406:	c0 f4       	brcc	.+48     	; 0x7438 <render_camera_view+0x86>
-    7408:	76 01       	movw	r14, r12
-    740a:	70 2e       	mov	r7, r16
-    740c:	7c 1a       	sub	r7, r28
+    740c:	0a 15       	cp	r16, r10
+    740e:	1b 05       	cpc	r17, r11
+    7410:	c0 f4       	brcc	.+48     	; 0x7442 <render_camera_view+0x86>
+    7412:	76 01       	movw	r14, r12
+    7414:	70 2e       	mov	r7, r16
+    7416:	7c 1a       	sub	r7, r28
 	{
 		for (u16 y = camera_y_tile; y < camera_y_tile + CAMERA_HEIGHT + 1; y++)
-    740e:	e8 14       	cp	r14, r8
-    7410:	f9 04       	cpc	r15, r9
-    7412:	78 f4       	brcc	.+30     	; 0x7432 <render_camera_view+0x80>
+    7418:	e8 14       	cp	r14, r8
+    741a:	f9 04       	cpc	r15, r9
+    741c:	78 f4       	brcc	.+30     	; 0x743c <render_camera_view+0x80>
 		{
 			level_tile = get_level_tile(game.current_level, x, y);
-    7414:	a7 01       	movw	r20, r14
-    7416:	b8 01       	movw	r22, r16
-    7418:	80 91 91 0d 	lds	r24, 0x0D91
-    741c:	0e 94 c1 39 	call	0x7382	; 0x7382 <get_level_tile>
-    7420:	4e 2d       	mov	r20, r14
-    7422:	4c 19       	sub	r20, r12
+    741e:	a7 01       	movw	r20, r14
+    7420:	b8 01       	movw	r22, r16
+    7422:	80 91 91 0d 	lds	r24, 0x0D91
+    7426:	0e 94 c6 39 	call	0x738c	; 0x738c <get_level_tile>
+    742a:	4e 2d       	mov	r20, r14
+    742c:	4c 19       	sub	r20, r12
 			render_level_tile(level_tile, x - camara_x_tile, y - camera_y_tile);
-    7424:	67 2d       	mov	r22, r7
-    7426:	0e 94 58 39 	call	0x72b0	; 0x72b0 <render_level_tile>
+    742e:	67 2d       	mov	r22, r7
+    7430:	0e 94 5d 39 	call	0x72ba	; 0x72ba <render_level_tile>
 	u16 camara_x_tile = game.camera_x/8;
 	u16 camera_y_tile = game.camera_y/8;
 	
 	for (u16 x = camara_x_tile; x < camara_x_tile + CAMERA_WIDTH + 1; x++)
 	{
 		for (u16 y = camera_y_tile; y < camera_y_tile + CAMERA_HEIGHT + 1; y++)
-    742a:	8f ef       	ldi	r24, 0xFF	; 255
-    742c:	e8 1a       	sub	r14, r24
-    742e:	f8 0a       	sbc	r15, r24
-    7430:	ee cf       	rjmp	.-36     	; 0x740e <render_camera_view+0x5c>
+    7434:	8f ef       	ldi	r24, 0xFF	; 255
+    7436:	e8 1a       	sub	r14, r24
+    7438:	f8 0a       	sbc	r15, r24
+    743a:	ee cf       	rjmp	.-36     	; 0x7418 <render_camera_view+0x5c>
 {
 	u8 level_tile;
 	u16 camara_x_tile = game.camera_x/8;
 	u16 camera_y_tile = game.camera_y/8;
 	
 	for (u16 x = camara_x_tile; x < camara_x_tile + CAMERA_WIDTH + 1; x++)
-    7432:	0f 5f       	subi	r16, 0xFF	; 255
-    7434:	1f 4f       	sbci	r17, 0xFF	; 255
-    7436:	e5 cf       	rjmp	.-54     	; 0x7402 <render_camera_view+0x50>
+    743c:	0f 5f       	subi	r16, 0xFF	; 255
+    743e:	1f 4f       	sbci	r17, 0xFF	; 255
+    7440:	e5 cf       	rjmp	.-54     	; 0x740c <render_camera_view+0x50>
 		{
 			level_tile = get_level_tile(game.current_level, x, y);
 			render_level_tile(level_tile, x - camara_x_tile, y - camera_y_tile);
 		}
 	}
 }
-    7438:	df 91       	pop	r29
-    743a:	cf 91       	pop	r28
-    743c:	1f 91       	pop	r17
-    743e:	0f 91       	pop	r16
-    7440:	ff 90       	pop	r15
-    7442:	ef 90       	pop	r14
-    7444:	df 90       	pop	r13
-    7446:	cf 90       	pop	r12
-    7448:	bf 90       	pop	r11
-    744a:	af 90       	pop	r10
-    744c:	9f 90       	pop	r9
-    744e:	8f 90       	pop	r8
-    7450:	7f 90       	pop	r7
-    7452:	08 95       	ret
+    7442:	df 91       	pop	r29
+    7444:	cf 91       	pop	r28
+    7446:	1f 91       	pop	r17
+    7448:	0f 91       	pop	r16
+    744a:	ff 90       	pop	r15
+    744c:	ef 90       	pop	r14
+    744e:	df 90       	pop	r13
+    7450:	cf 90       	pop	r12
+    7452:	bf 90       	pop	r11
+    7454:	af 90       	pop	r10
+    7456:	9f 90       	pop	r9
+    7458:	8f 90       	pop	r8
+    745a:	7f 90       	pop	r7
+    745c:	08 95       	ret
 
-00007454 <append_tile_column>:
+0000745e <append_tile_column>:
 
 void append_tile_column()
 {
-    7454:	cf 93       	push	r28
-    7456:	df 93       	push	r29
-    7458:	c0 e0       	ldi	r28, 0x00	; 0
-    745a:	d0 e0       	ldi	r29, 0x00	; 0
+    745e:	cf 93       	push	r28
+    7460:	df 93       	push	r29
+    7462:	c0 e0       	ldi	r28, 0x00	; 0
+    7464:	d0 e0       	ldi	r29, 0x00	; 0
 	u8 level_tile;
 
     for (u8 y = 0; y < CAMERA_HEIGHT; y++)
 	{
 		level_tile = get_level_tile(game.current_level, game.scroll_src_x, y);
-    745c:	60 91 96 0d 	lds	r22, 0x0D96
-    7460:	70 91 97 0d 	lds	r23, 0x0D97
-    7464:	ae 01       	movw	r20, r28
-    7466:	80 91 91 0d 	lds	r24, 0x0D91
-    746a:	0e 94 c1 39 	call	0x7382	; 0x7382 <get_level_tile>
+    7466:	60 91 96 0d 	lds	r22, 0x0D96
+    746a:	70 91 97 0d 	lds	r23, 0x0D97
+    746e:	ae 01       	movw	r20, r28
+    7470:	80 91 91 0d 	lds	r24, 0x0D91
+    7474:	0e 94 c6 39 	call	0x738c	; 0x738c <get_level_tile>
 		render_level_tile(level_tile, game.scroll_dest_x, y);
-    746e:	4c 2f       	mov	r20, r28
-    7470:	60 91 95 0d 	lds	r22, 0x0D95
-    7474:	0e 94 58 39 	call	0x72b0	; 0x72b0 <render_level_tile>
-    7478:	21 96       	adiw	r28, 0x01	; 1
+    7478:	4c 2f       	mov	r20, r28
+    747a:	60 91 95 0d 	lds	r22, 0x0D95
+    747e:	0e 94 5d 39 	call	0x72ba	; 0x72ba <render_level_tile>
+    7482:	21 96       	adiw	r28, 0x01	; 1
 
 void append_tile_column()
 {
 	u8 level_tile;
 
     for (u8 y = 0; y < CAMERA_HEIGHT; y++)
-    747a:	ca 31       	cpi	r28, 0x1A	; 26
-    747c:	d1 05       	cpc	r29, r1
-    747e:	71 f7       	brne	.-36     	; 0x745c <append_tile_column+0x8>
+    7484:	ca 31       	cpi	r28, 0x1A	; 26
+    7486:	d1 05       	cpc	r29, r1
+    7488:	71 f7       	brne	.-36     	; 0x7466 <append_tile_column+0x8>
 	{
 		level_tile = get_level_tile(game.current_level, game.scroll_src_x, y);
 		render_level_tile(level_tile, game.scroll_dest_x, y);
     }
 	
     game.scroll_src_x++;
-    7480:	80 91 96 0d 	lds	r24, 0x0D96
-    7484:	90 91 97 0d 	lds	r25, 0x0D97
-    7488:	01 96       	adiw	r24, 0x01	; 1
-    748a:	90 93 97 0d 	sts	0x0D97, r25
-    748e:	80 93 96 0d 	sts	0x0D96, r24
+    748a:	80 91 96 0d 	lds	r24, 0x0D96
+    748e:	90 91 97 0d 	lds	r25, 0x0D97
+    7492:	01 96       	adiw	r24, 0x01	; 1
+    7494:	90 93 97 0d 	sts	0x0D97, r25
+    7498:	80 93 96 0d 	sts	0x0D96, r24
 	game.scroll_dest_x++;
-    7492:	80 91 95 0d 	lds	r24, 0x0D95
-    7496:	8f 5f       	subi	r24, 0xFF	; 255
+    749c:	80 91 95 0d 	lds	r24, 0x0D95
+    74a0:	8f 5f       	subi	r24, 0xFF	; 255
     if(game.scroll_dest_x>=32)game.scroll_dest_x=0;
-    7498:	80 32       	cpi	r24, 0x20	; 32
-    749a:	18 f4       	brcc	.+6      	; 0x74a2 <append_tile_column+0x4e>
+    74a2:	80 32       	cpi	r24, 0x20	; 32
+    74a4:	18 f4       	brcc	.+6      	; 0x74ac <append_tile_column+0x4e>
 		level_tile = get_level_tile(game.current_level, game.scroll_src_x, y);
 		render_level_tile(level_tile, game.scroll_dest_x, y);
     }
 	
     game.scroll_src_x++;
 	game.scroll_dest_x++;
-    749c:	80 93 95 0d 	sts	0x0D95, r24
-    74a0:	02 c0       	rjmp	.+4      	; 0x74a6 <append_tile_column+0x52>
+    74a6:	80 93 95 0d 	sts	0x0D95, r24
+    74aa:	02 c0       	rjmp	.+4      	; 0x74b0 <append_tile_column+0x52>
     if(game.scroll_dest_x>=32)game.scroll_dest_x=0;
-    74a2:	10 92 95 0d 	sts	0x0D95, r1
+    74ac:	10 92 95 0d 	sts	0x0D95, r1
 }
-    74a6:	df 91       	pop	r29
-    74a8:	cf 91       	pop	r28
-    74aa:	08 95       	ret
+    74b0:	df 91       	pop	r29
+    74b2:	cf 91       	pop	r28
+    74b4:	08 95       	ret
 
-000074ac <move_camera_x>:
+000074b6 <move_camera_x>:
 
 void move_camera_x()
 {	
 	game.camera_x++;
-    74ac:	80 91 98 0d 	lds	r24, 0x0D98
-    74b0:	90 91 99 0d 	lds	r25, 0x0D99
-    74b4:	01 96       	adiw	r24, 0x01	; 1
-    74b6:	90 93 99 0d 	sts	0x0D99, r25
-    74ba:	80 93 98 0d 	sts	0x0D98, r24
+    74b6:	80 91 98 0d 	lds	r24, 0x0D98
+    74ba:	90 91 99 0d 	lds	r25, 0x0D99
+    74be:	01 96       	adiw	r24, 0x01	; 1
+    74c0:	90 93 99 0d 	sts	0x0D99, r25
+    74c4:	80 93 98 0d 	sts	0x0D98, r24
 	Scroll(1,0);
-    74be:	60 e0       	ldi	r22, 0x00	; 0
-    74c0:	81 e0       	ldi	r24, 0x01	; 1
-    74c2:	0e 94 28 36 	call	0x6c50	; 0x6c50 <Scroll>
+    74c8:	60 e0       	ldi	r22, 0x00	; 0
+    74ca:	81 e0       	ldi	r24, 0x01	; 1
+    74cc:	0e 94 28 36 	call	0x6c50	; 0x6c50 <Scroll>
 	if (++game.scroll == 8)
-    74c6:	80 91 94 0d 	lds	r24, 0x0D94
-    74ca:	8f 5f       	subi	r24, 0xFF	; 255
-    74cc:	88 30       	cpi	r24, 0x08	; 8
-    74ce:	19 f0       	breq	.+6      	; 0x74d6 <move_camera_x+0x2a>
-    74d0:	80 93 94 0d 	sts	0x0D94, r24
-    74d4:	08 95       	ret
+    74d0:	80 91 94 0d 	lds	r24, 0x0D94
+    74d4:	8f 5f       	subi	r24, 0xFF	; 255
+    74d6:	88 30       	cpi	r24, 0x08	; 8
+    74d8:	19 f0       	breq	.+6      	; 0x74e0 <move_camera_x+0x2a>
+    74da:	80 93 94 0d 	sts	0x0D94, r24
+    74de:	08 95       	ret
 	{
 		game.scroll = 0;
-    74d6:	10 92 94 0d 	sts	0x0D94, r1
+    74e0:	10 92 94 0d 	sts	0x0D94, r1
 		append_tile_column();
-    74da:	0c 94 2a 3a 	jmp	0x7454	; 0x7454 <append_tile_column>
+    74e4:	0c 94 2f 3a 	jmp	0x745e	; 0x745e <append_tile_column>
 
-000074de <load_level>:
+000074e8 <load_level>:
 	}
 }
 
 void load_level(u8 index)
 {	
-    74de:	1f 93       	push	r17
-    74e0:	cf 93       	push	r28
-    74e2:	df 93       	push	r29
-    74e4:	18 2f       	mov	r17, r24
+    74e8:	1f 93       	push	r17
+    74ea:	cf 93       	push	r28
+    74ec:	df 93       	push	r29
+    74ee:	18 2f       	mov	r17, r24
 	Screen.scrollX = 0;
-    74e6:	e9 e9       	ldi	r30, 0x99	; 153
-    74e8:	fc e0       	ldi	r31, 0x0C	; 12
-    74ea:	13 82       	std	Z+3, r1	; 0x03
+    74f0:	e9 e9       	ldi	r30, 0x99	; 153
+    74f2:	fc e0       	ldi	r31, 0x0C	; 12
+    74f4:	13 82       	std	Z+3, r1	; 0x03
 	Screen.scrollY = 0;
-    74ec:	14 82       	std	Z+4, r1	; 0x04
+    74f6:	14 82       	std	Z+4, r1	; 0x04
 	Screen.scrollHeight = 30;
-    74ee:	8e e1       	ldi	r24, 0x1E	; 30
-    74f0:	85 83       	std	Z+5, r24	; 0x05
+    74f8:	8e e1       	ldi	r24, 0x1E	; 30
+    74fa:	85 83       	std	Z+5, r24	; 0x05
 	Screen.overlayTileTable = tiles_data;
-    74f2:	8b e9       	ldi	r24, 0x9B	; 155
-    74f4:	9e e2       	ldi	r25, 0x2E	; 46
-    74f6:	92 83       	std	Z+2, r25	; 0x02
-    74f8:	81 83       	std	Z+1, r24	; 0x01
+    74fc:	8b e9       	ldi	r24, 0x9B	; 155
+    74fe:	9e e2       	ldi	r25, 0x2E	; 46
+    7500:	92 83       	std	Z+2, r25	; 0x02
+    7502:	81 83       	std	Z+1, r24	; 0x01
 	Screen.overlayHeight = 2;
-    74fa:	82 e0       	ldi	r24, 0x02	; 2
-    74fc:	80 83       	st	Z, r24
+    7504:	82 e0       	ldi	r24, 0x02	; 2
+    7506:	80 83       	st	Z, r24
 	clear_overlay(2);
-    74fe:	0e 94 82 39 	call	0x7304	; 0x7304 <clear_overlay>
+    7508:	0e 94 87 39 	call	0x730e	; 0x730e <clear_overlay>
 	game.current_level = index;
-    7502:	c0 e9       	ldi	r28, 0x90	; 144
-    7504:	dd e0       	ldi	r29, 0x0D	; 13
-    7506:	19 83       	std	Y+1, r17	; 0x01
+    750c:	c0 e9       	ldi	r28, 0x90	; 144
+    750e:	dd e0       	ldi	r29, 0x0D	; 13
+    7510:	19 83       	std	Y+1, r17	; 0x01
 
 #if RLE == 0
 
 u8 get_camera_x(u8 level_index)
 {
 	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 0]);
-    7508:	88 e5       	ldi	r24, 0x58	; 88
-    750a:	96 e0       	ldi	r25, 0x06	; 6
-    750c:	18 9f       	mul	r17, r24
-    750e:	f0 01       	movw	r30, r0
-    7510:	19 9f       	mul	r17, r25
-    7512:	f0 0d       	add	r31, r0
-    7514:	11 24       	eor	r1, r1
-    7516:	ed 5a       	subi	r30, 0xAD	; 173
-    7518:	f4 4e       	sbci	r31, 0xE4	; 228
-    751a:	e4 91       	lpm	r30, Z
+    7512:	88 e5       	ldi	r24, 0x58	; 88
+    7514:	96 e0       	ldi	r25, 0x06	; 6
+    7516:	18 9f       	mul	r17, r24
+    7518:	f0 01       	movw	r30, r0
+    751a:	19 9f       	mul	r17, r25
+    751c:	f0 0d       	add	r31, r0
+    751e:	11 24       	eor	r1, r1
+    7520:	ed 5a       	subi	r30, 0xAD	; 173
+    7522:	f4 4e       	sbci	r31, 0xE4	; 228
+    7524:	e4 91       	lpm	r30, Z
 	Screen.scrollHeight = 30;
 	Screen.overlayTileTable = tiles_data;
 	Screen.overlayHeight = 2;
 	clear_overlay(2);
 	game.current_level = index;
 	game.camera_x = get_camera_x(index);
-    751c:	f0 e0       	ldi	r31, 0x00	; 0
-    751e:	f9 87       	std	Y+9, r31	; 0x09
-    7520:	e8 87       	std	Y+8, r30	; 0x08
+    7526:	f0 e0       	ldi	r31, 0x00	; 0
+    7528:	f9 87       	std	Y+9, r31	; 0x09
+    752a:	e8 87       	std	Y+8, r30	; 0x08
 	game.camera_y = get_camera_y(index);
-    7522:	81 2f       	mov	r24, r17
-    7524:	0e 94 9a 39 	call	0x7334	; 0x7334 <get_camera_y>
-    7528:	90 e0       	ldi	r25, 0x00	; 0
-    752a:	9b 87       	std	Y+11, r25	; 0x0b
-    752c:	8a 87       	std	Y+10, r24	; 0x0a
+    752c:	81 2f       	mov	r24, r17
+    752e:	0e 94 9f 39 	call	0x733e	; 0x733e <get_camera_y>
+    7532:	90 e0       	ldi	r25, 0x00	; 0
+    7534:	9b 87       	std	Y+11, r25	; 0x0b
+    7536:	8a 87       	std	Y+10, r24	; 0x0a
 	game.player.shared.x = get_hero_spawn_x(index)*8;
-    752e:	81 2f       	mov	r24, r17
-    7530:	0e 94 a7 39 	call	0x734e	; 0x734e <get_hero_spawn_x>
-    7534:	28 e0       	ldi	r18, 0x08	; 8
-    7536:	82 9f       	mul	r24, r18
-    7538:	c0 01       	movw	r24, r0
-    753a:	11 24       	eor	r1, r1
-    753c:	98 8b       	std	Y+16, r25	; 0x10
-    753e:	8f 87       	std	Y+15, r24	; 0x0f
+    7538:	81 2f       	mov	r24, r17
+    753a:	0e 94 ac 39 	call	0x7358	; 0x7358 <get_hero_spawn_x>
+    753e:	28 e0       	ldi	r18, 0x08	; 8
+    7540:	82 9f       	mul	r24, r18
+    7542:	c0 01       	movw	r24, r0
+    7544:	11 24       	eor	r1, r1
+    7546:	bc 01       	movw	r22, r24
+    7548:	88 27       	eor	r24, r24
+    754a:	77 fd       	sbrc	r23, 7
+    754c:	80 95       	com	r24
+    754e:	98 2f       	mov	r25, r24
+    7550:	0e 94 45 42 	call	0x848a	; 0x848a <__floatsisf>
+    7554:	6c 8b       	std	Y+20, r22	; 0x14
+    7556:	7d 8b       	std	Y+21, r23	; 0x15
+    7558:	8e 8b       	std	Y+22, r24	; 0x16
+    755a:	9f 8b       	std	Y+23, r25	; 0x17
 	game.player.shared.y = get_hero_spawn_y(index)*8;
-    7540:	81 2f       	mov	r24, r17
-    7542:	0e 94 b4 39 	call	0x7368	; 0x7368 <get_hero_spawn_y>
-    7546:	28 e0       	ldi	r18, 0x08	; 8
-    7548:	82 9f       	mul	r24, r18
-    754a:	c0 01       	movw	r24, r0
-    754c:	11 24       	eor	r1, r1
-    754e:	9a 8b       	std	Y+18, r25	; 0x12
-    7550:	89 8b       	std	Y+17, r24	; 0x11
+    755c:	81 2f       	mov	r24, r17
+    755e:	0e 94 b9 39 	call	0x7372	; 0x7372 <get_hero_spawn_y>
+    7562:	28 e0       	ldi	r18, 0x08	; 8
+    7564:	82 9f       	mul	r24, r18
+    7566:	c0 01       	movw	r24, r0
+    7568:	11 24       	eor	r1, r1
+    756a:	bc 01       	movw	r22, r24
+    756c:	88 27       	eor	r24, r24
+    756e:	77 fd       	sbrc	r23, 7
+    7570:	80 95       	com	r24
+    7572:	98 2f       	mov	r25, r24
+    7574:	0e 94 45 42 	call	0x848a	; 0x848a <__floatsisf>
+    7578:	68 8f       	std	Y+24, r22	; 0x18
+    757a:	79 8f       	std	Y+25, r23	; 0x19
+    757c:	8a 8f       	std	Y+26, r24	; 0x1a
+    757e:	9b 8f       	std	Y+27, r25	; 0x1b
 	game.camera_x *= 8;
-    7552:	88 85       	ldd	r24, Y+8	; 0x08
-    7554:	99 85       	ldd	r25, Y+9	; 0x09
-    7556:	23 e0       	ldi	r18, 0x03	; 3
-    7558:	88 0f       	add	r24, r24
-    755a:	99 1f       	adc	r25, r25
-    755c:	2a 95       	dec	r18
-    755e:	e1 f7       	brne	.-8      	; 0x7558 <load_level+0x7a>
-    7560:	99 87       	std	Y+9, r25	; 0x09
-    7562:	88 87       	std	Y+8, r24	; 0x08
+    7580:	88 85       	ldd	r24, Y+8	; 0x08
+    7582:	99 85       	ldd	r25, Y+9	; 0x09
+    7584:	23 e0       	ldi	r18, 0x03	; 3
+    7586:	88 0f       	add	r24, r24
+    7588:	99 1f       	adc	r25, r25
+    758a:	2a 95       	dec	r18
+    758c:	e1 f7       	brne	.-8      	; 0x7586 <load_level+0x9e>
+    758e:	99 87       	std	Y+9, r25	; 0x09
+    7590:	88 87       	std	Y+8, r24	; 0x08
 	game.camera_y *= 8;
-    7564:	8a 85       	ldd	r24, Y+10	; 0x0a
-    7566:	9b 85       	ldd	r25, Y+11	; 0x0b
-    7568:	33 e0       	ldi	r19, 0x03	; 3
-    756a:	88 0f       	add	r24, r24
-    756c:	99 1f       	adc	r25, r25
-    756e:	3a 95       	dec	r19
-    7570:	e1 f7       	brne	.-8      	; 0x756a <load_level+0x8c>
-    7572:	9b 87       	std	Y+11, r25	; 0x0b
-    7574:	8a 87       	std	Y+10, r24	; 0x0a
+    7592:	8a 85       	ldd	r24, Y+10	; 0x0a
+    7594:	9b 85       	ldd	r25, Y+11	; 0x0b
+    7596:	33 e0       	ldi	r19, 0x03	; 3
+    7598:	88 0f       	add	r24, r24
+    759a:	99 1f       	adc	r25, r25
+    759c:	3a 95       	dec	r19
+    759e:	e1 f7       	brne	.-8      	; 0x7598 <load_level+0xb0>
+    75a0:	9b 87       	std	Y+11, r25	; 0x0b
+    75a2:	8a 87       	std	Y+10, r24	; 0x0a
 	render_camera_view();
-    7576:	0e 94 d9 39 	call	0x73b2	; 0x73b2 <render_camera_view>
+    75a4:	0e 94 de 39 	call	0x73bc	; 0x73bc <render_camera_view>
 	LBMapSprite(0, LBGetNextFrame(&game.player.idle), 0);
-    757a:	82 ef       	ldi	r24, 0xF2	; 242
-    757c:	9d e0       	ldi	r25, 0x0D	; 13
-    757e:	0e 94 61 37 	call	0x6ec2	; 0x6ec2 <LBGetNextFrame>
-    7582:	40 e0       	ldi	r20, 0x00	; 0
-    7584:	bc 01       	movw	r22, r24
-    7586:	80 e0       	ldi	r24, 0x00	; 0
+    75a8:	84 e2       	ldi	r24, 0x24	; 36
+    75aa:	9e e0       	ldi	r25, 0x0E	; 14
+    75ac:	0e 94 61 37 	call	0x6ec2	; 0x6ec2 <LBGetNextFrame>
+    75b0:	40 e0       	ldi	r20, 0x00	; 0
+    75b2:	bc 01       	movw	r22, r24
+    75b4:	80 e0       	ldi	r24, 0x00	; 0
 }
-    7588:	df 91       	pop	r29
-    758a:	cf 91       	pop	r28
-    758c:	1f 91       	pop	r17
+    75b6:	df 91       	pop	r29
+    75b8:	cf 91       	pop	r28
+    75ba:	1f 91       	pop	r17
 	game.player.shared.x = get_hero_spawn_x(index)*8;
 	game.player.shared.y = get_hero_spawn_y(index)*8;
 	game.camera_x *= 8;
 	game.camera_y *= 8;
 	render_camera_view();
 	LBMapSprite(0, LBGetNextFrame(&game.player.idle), 0);
-    758e:	0c 94 e1 37 	jmp	0x6fc2	; 0x6fc2 <LBMapSprite>
+    75bc:	0c 94 e1 37 	jmp	0x6fc2	; 0x6fc2 <LBMapSprite>
 
-00007592 <update_player>:
-	FadeIn(FRAMES_PER_FADE, false);
+000075c0 <solid_tile>:
 	load_level(index);
 }
 
+char solid_tile(u8 level_tile)
+{
+	switch (level_tile)
+    75c0:	81 50       	subi	r24, 0x01	; 1
+    75c2:	84 30       	cpi	r24, 0x04	; 4
+    75c4:	10 f0       	brcs	.+4      	; 0x75ca <solid_tile+0xa>
+		case L_ICE_MIDDLE : return 1;
+		case L_ICE_LEFT : return 1;
+		case L_ICE_RIGHT : return 1;
+		case L_ICE_BOTTOM : return 1;
+	}
+	return 0;
+    75c6:	80 e0       	ldi	r24, 0x00	; 0
+    75c8:	08 95       	ret
+
+char solid_tile(u8 level_tile)
+{
+	switch (level_tile)
+	{
+		case L_ICE_MIDDLE : return 1;
+    75ca:	81 e0       	ldi	r24, 0x01	; 1
+		case L_ICE_LEFT : return 1;
+		case L_ICE_RIGHT : return 1;
+		case L_ICE_BOTTOM : return 1;
+	}
+	return 0;
+}
+    75cc:	08 95       	ret
+
+000075ce <on_solid_ground>:
+
+char on_solid_ground(SpriteShared* s, u8 tile_width, u8 tile_height)
+{
+    75ce:	2f 92       	push	r2
+    75d0:	3f 92       	push	r3
+    75d2:	4f 92       	push	r4
+    75d4:	5f 92       	push	r5
+    75d6:	6f 92       	push	r6
+    75d8:	7f 92       	push	r7
+    75da:	8f 92       	push	r8
+    75dc:	9f 92       	push	r9
+    75de:	af 92       	push	r10
+    75e0:	bf 92       	push	r11
+    75e2:	cf 92       	push	r12
+    75e4:	df 92       	push	r13
+    75e6:	ef 92       	push	r14
+    75e8:	ff 92       	push	r15
+    75ea:	0f 93       	push	r16
+    75ec:	1f 93       	push	r17
+    75ee:	cf 93       	push	r28
+    75f0:	df 93       	push	r29
+    75f2:	00 d0       	rcall	.+0      	; 0x75f4 <on_solid_ground+0x26>
+    75f4:	00 d0       	rcall	.+0      	; 0x75f6 <on_solid_ground+0x28>
+    75f6:	00 d0       	rcall	.+0      	; 0x75f8 <on_solid_ground+0x2a>
+    75f8:	cd b7       	in	r28, 0x3d	; 61
+    75fa:	de b7       	in	r29, 0x3e	; 62
+    75fc:	9e 83       	std	Y+6, r25	; 0x06
+    75fe:	8d 83       	std	Y+5, r24	; 0x05
+	u8 lt1, lt2;
+	
+	// Bottom
+	for (u8 x = 0; x < tile_width; x++)
+	{
+		lt1 = get_level_tile(game.current_level, s->x / 8 + x, (s->y + tile_height*8) / 8);
+    7600:	88 e0       	ldi	r24, 0x08	; 8
+    7602:	48 9f       	mul	r20, r24
+    7604:	a0 01       	movw	r20, r0
+    7606:	11 24       	eor	r1, r1
+    7608:	26 2e       	mov	r2, r22
+    760a:	31 2c       	mov	r3, r1
+char on_solid_ground(SpriteShared* s, u8 tile_width, u8 tile_height)
+{
+	u8 lt1, lt2;
+	
+	// Bottom
+	for (u8 x = 0; x < tile_width; x++)
+    760c:	00 e0       	ldi	r16, 0x00	; 0
+    760e:	10 e0       	ldi	r17, 0x00	; 0
+	{
+		lt1 = get_level_tile(game.current_level, s->x / 8 + x, (s->y + tile_height*8) / 8);
+    7610:	ca 01       	movw	r24, r20
+    7612:	aa 27       	eor	r26, r26
+    7614:	97 fd       	sbrc	r25, 7
+    7616:	a0 95       	com	r26
+    7618:	ba 2f       	mov	r27, r26
+    761a:	89 83       	std	Y+1, r24	; 0x01
+    761c:	9a 83       	std	Y+2, r25	; 0x02
+    761e:	ab 83       	std	Y+3, r26	; 0x03
+    7620:	bc 83       	std	Y+4, r27	; 0x04
+char on_solid_ground(SpriteShared* s, u8 tile_width, u8 tile_height)
+{
+	u8 lt1, lt2;
+	
+	// Bottom
+	for (u8 x = 0; x < tile_width; x++)
+    7622:	02 15       	cp	r16, r2
+    7624:	13 05       	cpc	r17, r3
+    7626:	09 f4       	brne	.+2      	; 0x762a <on_solid_ground+0x5c>
+    7628:	81 c0       	rjmp	.+258    	; 0x772c <on_solid_ground+0x15e>
+	{
+		lt1 = get_level_tile(game.current_level, s->x / 8 + x, (s->y + tile_height*8) / 8);
+    762a:	69 81       	ldd	r22, Y+1	; 0x01
+    762c:	7a 81       	ldd	r23, Y+2	; 0x02
+    762e:	8b 81       	ldd	r24, Y+3	; 0x03
+    7630:	9c 81       	ldd	r25, Y+4	; 0x04
+    7632:	0e 94 45 42 	call	0x848a	; 0x848a <__floatsisf>
+    7636:	4b 01       	movw	r8, r22
+    7638:	5c 01       	movw	r10, r24
+    763a:	b8 01       	movw	r22, r16
+    763c:	88 27       	eor	r24, r24
+    763e:	77 fd       	sbrc	r23, 7
+    7640:	80 95       	com	r24
+    7642:	98 2f       	mov	r25, r24
+    7644:	0e 94 45 42 	call	0x848a	; 0x848a <__floatsisf>
+    7648:	6b 01       	movw	r12, r22
+    764a:	7c 01       	movw	r14, r24
+    764c:	ad 81       	ldd	r26, Y+5	; 0x05
+    764e:	be 81       	ldd	r27, Y+6	; 0x06
+    7650:	1c 96       	adiw	r26, 0x0c	; 12
+    7652:	2d 91       	ld	r18, X+
+    7654:	3d 91       	ld	r19, X+
+    7656:	4d 91       	ld	r20, X+
+    7658:	5c 91       	ld	r21, X
+    765a:	1f 97       	sbiw	r26, 0x0f	; 15
+    765c:	c5 01       	movw	r24, r10
+    765e:	b4 01       	movw	r22, r8
+    7660:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7664:	20 e0       	ldi	r18, 0x00	; 0
+    7666:	30 e0       	ldi	r19, 0x00	; 0
+    7668:	40 e0       	ldi	r20, 0x00	; 0
+    766a:	5e e3       	ldi	r21, 0x3E	; 62
+    766c:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7670:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7674:	2b 01       	movw	r4, r22
+    7676:	3c 01       	movw	r6, r24
+    7678:	20 e0       	ldi	r18, 0x00	; 0
+    767a:	30 e0       	ldi	r19, 0x00	; 0
+    767c:	40 e0       	ldi	r20, 0x00	; 0
+    767e:	5e e3       	ldi	r21, 0x3E	; 62
+    7680:	ed 81       	ldd	r30, Y+5	; 0x05
+    7682:	fe 81       	ldd	r31, Y+6	; 0x06
+    7684:	60 85       	ldd	r22, Z+8	; 0x08
+    7686:	71 85       	ldd	r23, Z+9	; 0x09
+    7688:	82 85       	ldd	r24, Z+10	; 0x0a
+    768a:	93 85       	ldd	r25, Z+11	; 0x0b
+    768c:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7690:	a7 01       	movw	r20, r14
+    7692:	96 01       	movw	r18, r12
+    7694:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7698:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    769c:	a2 01       	movw	r20, r4
+    769e:	80 91 91 0d 	lds	r24, 0x0D91
+    76a2:	0e 94 c6 39 	call	0x738c	; 0x738c <get_level_tile>
+    76a6:	78 2e       	mov	r7, r24
+		lt2 = get_level_tile(game.current_level, (s->x+7) / 8 + x, (s->y + tile_height*8) / 8);
+    76a8:	ad 81       	ldd	r26, Y+5	; 0x05
+    76aa:	be 81       	ldd	r27, Y+6	; 0x06
+    76ac:	1c 96       	adiw	r26, 0x0c	; 12
+    76ae:	2d 91       	ld	r18, X+
+    76b0:	3d 91       	ld	r19, X+
+    76b2:	4d 91       	ld	r20, X+
+    76b4:	5c 91       	ld	r21, X
+    76b6:	1f 97       	sbiw	r26, 0x0f	; 15
+    76b8:	c5 01       	movw	r24, r10
+    76ba:	b4 01       	movw	r22, r8
+    76bc:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    76c0:	20 e0       	ldi	r18, 0x00	; 0
+    76c2:	30 e0       	ldi	r19, 0x00	; 0
+    76c4:	40 e0       	ldi	r20, 0x00	; 0
+    76c6:	5e e3       	ldi	r21, 0x3E	; 62
+    76c8:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    76cc:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    76d0:	4b 01       	movw	r8, r22
+    76d2:	5c 01       	movw	r10, r24
+    76d4:	20 e0       	ldi	r18, 0x00	; 0
+    76d6:	30 e0       	ldi	r19, 0x00	; 0
+    76d8:	40 ee       	ldi	r20, 0xE0	; 224
+    76da:	50 e4       	ldi	r21, 0x40	; 64
+    76dc:	ed 81       	ldd	r30, Y+5	; 0x05
+    76de:	fe 81       	ldd	r31, Y+6	; 0x06
+    76e0:	60 85       	ldd	r22, Z+8	; 0x08
+    76e2:	71 85       	ldd	r23, Z+9	; 0x09
+    76e4:	82 85       	ldd	r24, Z+10	; 0x0a
+    76e6:	93 85       	ldd	r25, Z+11	; 0x0b
+    76e8:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    76ec:	20 e0       	ldi	r18, 0x00	; 0
+    76ee:	30 e0       	ldi	r19, 0x00	; 0
+    76f0:	40 e0       	ldi	r20, 0x00	; 0
+    76f2:	5e e3       	ldi	r21, 0x3E	; 62
+    76f4:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    76f8:	a7 01       	movw	r20, r14
+    76fa:	96 01       	movw	r18, r12
+    76fc:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7700:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7704:	a4 01       	movw	r20, r8
+    7706:	80 91 91 0d 	lds	r24, 0x0D91
+    770a:	0e 94 c6 39 	call	0x738c	; 0x738c <get_level_tile>
+    770e:	f8 2e       	mov	r15, r24
+		if (solid_tile(lt1) || solid_tile(lt2))
+    7710:	87 2d       	mov	r24, r7
+    7712:	0e 94 e0 3a 	call	0x75c0	; 0x75c0 <solid_tile>
+    7716:	81 11       	cpse	r24, r1
+    7718:	0b c0       	rjmp	.+22     	; 0x7730 <on_solid_ground+0x162>
+    771a:	8f 2d       	mov	r24, r15
+    771c:	0e 94 e0 3a 	call	0x75c0	; 0x75c0 <solid_tile>
+    7720:	0f 5f       	subi	r16, 0xFF	; 255
+    7722:	1f 4f       	sbci	r17, 0xFF	; 255
+    7724:	88 23       	and	r24, r24
+    7726:	09 f4       	brne	.+2      	; 0x772a <on_solid_ground+0x15c>
+    7728:	7c cf       	rjmp	.-264    	; 0x7622 <on_solid_ground+0x54>
+    772a:	02 c0       	rjmp	.+4      	; 0x7730 <on_solid_ground+0x162>
+		{
+			return 1;
+		}
+	}
+	return 0;
+    772c:	80 e0       	ldi	r24, 0x00	; 0
+    772e:	01 c0       	rjmp	.+2      	; 0x7732 <on_solid_ground+0x164>
+	{
+		lt1 = get_level_tile(game.current_level, s->x / 8 + x, (s->y + tile_height*8) / 8);
+		lt2 = get_level_tile(game.current_level, (s->x+7) / 8 + x, (s->y + tile_height*8) / 8);
+		if (solid_tile(lt1) || solid_tile(lt2))
+		{
+			return 1;
+    7730:	81 e0       	ldi	r24, 0x01	; 1
+		}
+	}
+	return 0;
+}
+    7732:	26 96       	adiw	r28, 0x06	; 6
+    7734:	0f b6       	in	r0, 0x3f	; 63
+    7736:	f8 94       	cli
+    7738:	de bf       	out	0x3e, r29	; 62
+    773a:	0f be       	out	0x3f, r0	; 63
+    773c:	cd bf       	out	0x3d, r28	; 61
+    773e:	df 91       	pop	r29
+    7740:	cf 91       	pop	r28
+    7742:	1f 91       	pop	r17
+    7744:	0f 91       	pop	r16
+    7746:	ff 90       	pop	r15
+    7748:	ef 90       	pop	r14
+    774a:	df 90       	pop	r13
+    774c:	cf 90       	pop	r12
+    774e:	bf 90       	pop	r11
+    7750:	af 90       	pop	r10
+    7752:	9f 90       	pop	r9
+    7754:	8f 90       	pop	r8
+    7756:	7f 90       	pop	r7
+    7758:	6f 90       	pop	r6
+    775a:	5f 90       	pop	r5
+    775c:	4f 90       	pop	r4
+    775e:	3f 90       	pop	r3
+    7760:	2f 90       	pop	r2
+    7762:	08 95       	ret
+
+00007764 <update_player>:
+
 void update_player()
 {
-    7592:	cf 93       	push	r28
-    7594:	df 93       	push	r29
-    7596:	1f 92       	push	r1
-    7598:	cd b7       	in	r28, 0x3d	; 61
-    759a:	de b7       	in	r29, 0x3e	; 62
-	if ((game.joypadState.held & BTN_RIGHT) && (game.player.flags & (IDLE|RUNNING)) && (game.player.shared.x/8 + 2 < LEVEL_WIDTH))
-    759c:	20 91 1e 0e 	lds	r18, 0x0E1E
-    75a0:	27 ff       	sbrs	r18, 7
-    75a2:	1c c0       	rjmp	.+56     	; 0x75dc <update_player+0x4a>
-    75a4:	80 91 a4 0d 	lds	r24, 0x0DA4
-    75a8:	8a 70       	andi	r24, 0x0A	; 10
-    75aa:	c1 f0       	breq	.+48     	; 0x75dc <update_player+0x4a>
-    75ac:	80 91 9f 0d 	lds	r24, 0x0D9F
-    75b0:	90 91 a0 0d 	lds	r25, 0x0DA0
-    75b4:	33 e0       	ldi	r19, 0x03	; 3
-    75b6:	96 95       	lsr	r25
-    75b8:	87 95       	ror	r24
-    75ba:	3a 95       	dec	r19
-    75bc:	e1 f7       	brne	.-8      	; 0x75b6 <update_player+0x24>
-    75be:	02 96       	adiw	r24, 0x02	; 2
-    75c0:	cc 97       	sbiw	r24, 0x3c	; 60
-    75c2:	60 f4       	brcc	.+24     	; 0x75dc <update_player+0x4a>
+    7764:	1f 93       	push	r17
+    7766:	cf 93       	push	r28
+    7768:	df 93       	push	r29
+    776a:	1f 92       	push	r1
+    776c:	cd b7       	in	r28, 0x3d	; 61
+    776e:	de b7       	in	r29, 0x3e	; 62
+	
+	if (game.player.flags & (IDLE|RUNNING))
+    7770:	80 91 ae 0d 	lds	r24, 0x0DAE
+    7774:	98 2f       	mov	r25, r24
+    7776:	9a 70       	andi	r25, 0x0A	; 10
+    7778:	09 f4       	brne	.+2      	; 0x777c <update_player+0x18>
+    777a:	a8 c0       	rjmp	.+336    	; 0x78cc <update_player+0x168>
 	{
-		game.player.shared.vx = RUN_SPEED;
-    75c4:	8c e3       	ldi	r24, 0x3C	; 60
-    75c6:	80 93 9c 0d 	sts	0x0D9C, r24
-		game.player.flags = RUNNING;
-    75ca:	82 e0       	ldi	r24, 0x02	; 2
-    75cc:	80 93 a4 0d 	sts	0x0DA4, r24
-		LBMapSprite(0, LBGetNextFrame(&game.player.run), 0);
-    75d0:	8a ef       	ldi	r24, 0xFA	; 250
-    75d2:	9d e0       	ldi	r25, 0x0D	; 13
-    75d4:	0e 94 61 37 	call	0x6ec2	; 0x6ec2 <LBGetNextFrame>
-    75d8:	40 e0       	ldi	r20, 0x00	; 0
-    75da:	2a c0       	rjmp	.+84     	; 0x7630 <update_player+0x9e>
+		if (!on_solid_ground(&game.player.shared, 2, 3))
+    777c:	43 e0       	ldi	r20, 0x03	; 3
+    777e:	62 e0       	ldi	r22, 0x02	; 2
+    7780:	8c e9       	ldi	r24, 0x9C	; 156
+    7782:	9d e0       	ldi	r25, 0x0D	; 13
+    7784:	0e 94 e7 3a 	call	0x75ce	; 0x75ce <on_solid_ground>
+    7788:	88 23       	and	r24, r24
+    778a:	09 f4       	brne	.+2      	; 0x778e <update_player+0x2a>
+    778c:	89 c0       	rjmp	.+274    	; 0x78a0 <update_player+0x13c>
+			game.player.flags = JUMPING;
+			LBMapSprite(0, LBGetNextFrame(&game.player.jump), sprites[0].flags);
+		}
+		else
+		{
+			if ((game.joypadState.held & BTN_RIGHT) && (game.player.shared.x/8 + 2 < LEVEL_WIDTH))
+    778e:	10 91 50 0e 	lds	r17, 0x0E50
+    7792:	17 ff       	sbrs	r17, 7
+    7794:	31 c0       	rjmp	.+98     	; 0x77f8 <update_player+0x94>
+    7796:	20 e0       	ldi	r18, 0x00	; 0
+    7798:	30 e0       	ldi	r19, 0x00	; 0
+    779a:	40 e0       	ldi	r20, 0x00	; 0
+    779c:	5e e3       	ldi	r21, 0x3E	; 62
+    779e:	60 91 a4 0d 	lds	r22, 0x0DA4
+    77a2:	70 91 a5 0d 	lds	r23, 0x0DA5
+    77a6:	80 91 a6 0d 	lds	r24, 0x0DA6
+    77aa:	90 91 a7 0d 	lds	r25, 0x0DA7
+    77ae:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    77b2:	20 e0       	ldi	r18, 0x00	; 0
+    77b4:	30 e0       	ldi	r19, 0x00	; 0
+    77b6:	40 e0       	ldi	r20, 0x00	; 0
+    77b8:	50 e4       	ldi	r21, 0x40	; 64
+    77ba:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    77be:	20 e0       	ldi	r18, 0x00	; 0
+    77c0:	30 e0       	ldi	r19, 0x00	; 0
+    77c2:	40 e7       	ldi	r20, 0x70	; 112
+    77c4:	52 e4       	ldi	r21, 0x42	; 66
+    77c6:	0e 94 13 42 	call	0x8426	; 0x8426 <__cmpsf2>
+    77ca:	87 ff       	sbrs	r24, 7
+    77cc:	15 c0       	rjmp	.+42     	; 0x77f8 <update_player+0x94>
+			{
+				game.player.shared.vx = RUN_SPEED;
+    77ce:	80 e0       	ldi	r24, 0x00	; 0
+    77d0:	90 e0       	ldi	r25, 0x00	; 0
+    77d2:	a0 e7       	ldi	r26, 0x70	; 112
+    77d4:	b2 e4       	ldi	r27, 0x42	; 66
+    77d6:	80 93 9c 0d 	sts	0x0D9C, r24
+    77da:	90 93 9d 0d 	sts	0x0D9D, r25
+    77de:	a0 93 9e 0d 	sts	0x0D9E, r26
+    77e2:	b0 93 9f 0d 	sts	0x0D9F, r27
+				game.player.flags = RUNNING;
+    77e6:	82 e0       	ldi	r24, 0x02	; 2
+    77e8:	80 93 ae 0d 	sts	0x0DAE, r24
+				LBMapSprite(0, LBGetNextFrame(&game.player.run), 0);
+    77ec:	8c e2       	ldi	r24, 0x2C	; 44
+    77ee:	9e e0       	ldi	r25, 0x0E	; 14
+    77f0:	0e 94 61 37 	call	0x6ec2	; 0x6ec2 <LBGetNextFrame>
+    77f4:	40 e0       	ldi	r20, 0x00	; 0
+    77f6:	40 c0       	rjmp	.+128    	; 0x7878 <update_player+0x114>
+			}
+			else if ((game.joypadState.held & BTN_LEFT) && (game.player.shared.x > game.camera_x))
+    77f8:	16 ff       	sbrs	r17, 6
+    77fa:	2b c0       	rjmp	.+86     	; 0x7852 <update_player+0xee>
+    77fc:	60 91 98 0d 	lds	r22, 0x0D98
+    7800:	70 91 99 0d 	lds	r23, 0x0D99
+    7804:	80 e0       	ldi	r24, 0x00	; 0
+    7806:	90 e0       	ldi	r25, 0x00	; 0
+    7808:	0e 94 43 42 	call	0x8486	; 0x8486 <__floatunsisf>
+    780c:	9b 01       	movw	r18, r22
+    780e:	ac 01       	movw	r20, r24
+    7810:	60 91 a4 0d 	lds	r22, 0x0DA4
+    7814:	70 91 a5 0d 	lds	r23, 0x0DA5
+    7818:	80 91 a6 0d 	lds	r24, 0x0DA6
+    781c:	90 91 a7 0d 	lds	r25, 0x0DA7
+    7820:	0e 94 f5 42 	call	0x85ea	; 0x85ea <__gesf2>
+    7824:	18 16       	cp	r1, r24
+    7826:	ac f4       	brge	.+42     	; 0x7852 <update_player+0xee>
+			{
+				game.player.shared.vx = -RUN_SPEED;
+    7828:	80 e0       	ldi	r24, 0x00	; 0
+    782a:	90 e0       	ldi	r25, 0x00	; 0
+    782c:	a0 e7       	ldi	r26, 0x70	; 112
+    782e:	b2 ec       	ldi	r27, 0xC2	; 194
+    7830:	80 93 9c 0d 	sts	0x0D9C, r24
+    7834:	90 93 9d 0d 	sts	0x0D9D, r25
+    7838:	a0 93 9e 0d 	sts	0x0D9E, r26
+    783c:	b0 93 9f 0d 	sts	0x0D9F, r27
+				game.player.flags = RUNNING;
+    7840:	82 e0       	ldi	r24, 0x02	; 2
+    7842:	80 93 ae 0d 	sts	0x0DAE, r24
+				LBMapSprite(0, LBGetNextFrame(&game.player.run), SPRITE_FLIP_X);
+    7846:	8c e2       	ldi	r24, 0x2C	; 44
+    7848:	9e e0       	ldi	r25, 0x0E	; 14
+    784a:	0e 94 61 37 	call	0x6ec2	; 0x6ec2 <LBGetNextFrame>
+    784e:	41 e0       	ldi	r20, 0x01	; 1
+    7850:	13 c0       	rjmp	.+38     	; 0x7878 <update_player+0x114>
+			}
+			else
+			{
+				game.player.flags = IDLE;
+    7852:	88 e0       	ldi	r24, 0x08	; 8
+    7854:	80 93 ae 0d 	sts	0x0DAE, r24
+				game.player.shared.vx = 0;
+    7858:	10 92 9c 0d 	sts	0x0D9C, r1
+    785c:	10 92 9d 0d 	sts	0x0D9D, r1
+    7860:	10 92 9e 0d 	sts	0x0D9E, r1
+    7864:	10 92 9f 0d 	sts	0x0D9F, r1
+				LBMapSprite(0, LBGetNextFrame(&game.player.idle), sprites[0].flags);
+    7868:	40 91 05 05 	lds	r20, 0x0505
+    786c:	84 e2       	ldi	r24, 0x24	; 36
+    786e:	9e e0       	ldi	r25, 0x0E	; 14
+    7870:	49 83       	std	Y+1, r20	; 0x01
+    7872:	0e 94 61 37 	call	0x6ec2	; 0x6ec2 <LBGetNextFrame>
+    7876:	49 81       	ldd	r20, Y+1	; 0x01
+    7878:	bc 01       	movw	r22, r24
+    787a:	80 e0       	ldi	r24, 0x00	; 0
+    787c:	0e 94 e1 37 	call	0x6fc2	; 0x6fc2 <LBMapSprite>
+			}
+			if (game.joypadState.pressed & BTN_B)
+    7880:	80 91 4c 0e 	lds	r24, 0x0E4C
+    7884:	80 ff       	sbrs	r24, 0
+    7886:	9b c0       	rjmp	.+310    	; 0x79be <update_player+0x25a>
+			{
+				game.player.shared.vy = -JUMP_SPEED;
+    7888:	80 e0       	ldi	r24, 0x00	; 0
+    788a:	90 e0       	ldi	r25, 0x00	; 0
+    788c:	a6 e1       	ldi	r26, 0x16	; 22
+    788e:	b3 ec       	ldi	r27, 0xC3	; 195
+    7890:	80 93 a0 0d 	sts	0x0DA0, r24
+    7894:	90 93 a1 0d 	sts	0x0DA1, r25
+    7898:	a0 93 a2 0d 	sts	0x0DA2, r26
+    789c:	b0 93 a3 0d 	sts	0x0DA3, r27
+				game.player.shared.gravity = GRAVITY;
+    78a0:	88 ec       	ldi	r24, 0xC8	; 200
+    78a2:	80 93 ac 0d 	sts	0x0DAC, r24
+				game.player.flags = JUMPING;
+    78a6:	81 e0       	ldi	r24, 0x01	; 1
+    78a8:	80 93 ae 0d 	sts	0x0DAE, r24
+				LBMapSprite(0, LBGetNextFrame(&game.player.jump), sprites[0].flags);
+    78ac:	40 91 05 05 	lds	r20, 0x0505
+    78b0:	84 e3       	ldi	r24, 0x34	; 52
+    78b2:	9e e0       	ldi	r25, 0x0E	; 14
+    78b4:	49 83       	std	Y+1, r20	; 0x01
+    78b6:	0e 94 61 37 	call	0x6ec2	; 0x6ec2 <LBGetNextFrame>
+    78ba:	49 81       	ldd	r20, Y+1	; 0x01
+    78bc:	bc 01       	movw	r22, r24
+    78be:	80 e0       	ldi	r24, 0x00	; 0
 	}
-	else if ((game.joypadState.held & BTN_LEFT) && (game.player.flags & (IDLE|RUNNING)) && (game.player.shared.x > game.camera_x))
-    75dc:	26 ff       	sbrs	r18, 6
-    75de:	1b c0       	rjmp	.+54     	; 0x7616 <update_player+0x84>
-    75e0:	80 91 a4 0d 	lds	r24, 0x0DA4
-    75e4:	8a 70       	andi	r24, 0x0A	; 10
-    75e6:	b9 f0       	breq	.+46     	; 0x7616 <update_player+0x84>
-    75e8:	20 91 9f 0d 	lds	r18, 0x0D9F
-    75ec:	30 91 a0 0d 	lds	r19, 0x0DA0
-    75f0:	80 91 98 0d 	lds	r24, 0x0D98
-    75f4:	90 91 99 0d 	lds	r25, 0x0D99
-    75f8:	82 17       	cp	r24, r18
-    75fa:	93 07       	cpc	r25, r19
-    75fc:	60 f4       	brcc	.+24     	; 0x7616 <update_player+0x84>
+	else if (game.player.flags & PRONE)
 	{
-		game.player.shared.vx = -RUN_SPEED;
-    75fe:	84 ec       	ldi	r24, 0xC4	; 196
-    7600:	80 93 9c 0d 	sts	0x0D9C, r24
-		game.player.flags = RUNNING;
-    7604:	82 e0       	ldi	r24, 0x02	; 2
-    7606:	80 93 a4 0d 	sts	0x0DA4, r24
-		LBMapSprite(0, LBGetNextFrame(&game.player.run), SPRITE_FLIP_X);
-    760a:	8a ef       	ldi	r24, 0xFA	; 250
-    760c:	9d e0       	ldi	r25, 0x0D	; 13
-    760e:	0e 94 61 37 	call	0x6ec2	; 0x6ec2 <LBGetNextFrame>
-    7612:	41 e0       	ldi	r20, 0x01	; 1
-    7614:	0d c0       	rjmp	.+26     	; 0x7630 <update_player+0x9e>
-	}
-	else
-	{
-		game.player.shared.vx = 0;
-    7616:	10 92 9c 0d 	sts	0x0D9C, r1
-		game.player.flags = IDLE;
-    761a:	88 e0       	ldi	r24, 0x08	; 8
-    761c:	80 93 a4 0d 	sts	0x0DA4, r24
-		LBMapSprite(0, LBGetNextFrame(&game.player.idle), sprites[0].flags);
-    7620:	40 91 05 05 	lds	r20, 0x0505
-    7624:	82 ef       	ldi	r24, 0xF2	; 242
-    7626:	9d e0       	ldi	r25, 0x0D	; 13
-    7628:	49 83       	std	Y+1, r20	; 0x01
-    762a:	0e 94 61 37 	call	0x6ec2	; 0x6ec2 <LBGetNextFrame>
-    762e:	49 81       	ldd	r20, Y+1	; 0x01
-    7630:	bc 01       	movw	r22, r24
-    7632:	80 e0       	ldi	r24, 0x00	; 0
+		
 	}
 }
-    7634:	0f 90       	pop	r0
-    7636:	df 91       	pop	r29
-    7638:	cf 91       	pop	r28
+    78c0:	0f 90       	pop	r0
+    78c2:	df 91       	pop	r29
+    78c4:	cf 91       	pop	r28
+    78c6:	1f 91       	pop	r17
+			if (game.joypadState.pressed & BTN_B)
+			{
+				game.player.shared.vy = -JUMP_SPEED;
+				game.player.shared.gravity = GRAVITY;
+				game.player.flags = JUMPING;
+				LBMapSprite(0, LBGetNextFrame(&game.player.jump), sprites[0].flags);
+    78c8:	0c 94 e1 37 	jmp	0x6fc2	; 0x6fc2 <LBMapSprite>
+			}
+		}
 	}
-	else
+	else if (game.player.flags & JUMPING)
+    78cc:	80 ff       	sbrs	r24, 0
+    78ce:	77 c0       	rjmp	.+238    	; 0x79be <update_player+0x25a>
 	{
-		game.player.shared.vx = 0;
-		game.player.flags = IDLE;
-		LBMapSprite(0, LBGetNextFrame(&game.player.idle), sprites[0].flags);
-    763a:	0c 94 e1 37 	jmp	0x6fc2	; 0x6fc2 <LBMapSprite>
+		if ((game.joypadState.held & BTN_RIGHT) && (game.player.shared.x/8 + 2 < LEVEL_WIDTH))
+    78d0:	10 91 50 0e 	lds	r17, 0x0E50
+    78d4:	17 ff       	sbrs	r17, 7
+    78d6:	2e c0       	rjmp	.+92     	; 0x7934 <update_player+0x1d0>
+    78d8:	20 e0       	ldi	r18, 0x00	; 0
+    78da:	30 e0       	ldi	r19, 0x00	; 0
+    78dc:	40 e0       	ldi	r20, 0x00	; 0
+    78de:	5e e3       	ldi	r21, 0x3E	; 62
+    78e0:	60 91 a4 0d 	lds	r22, 0x0DA4
+    78e4:	70 91 a5 0d 	lds	r23, 0x0DA5
+    78e8:	80 91 a6 0d 	lds	r24, 0x0DA6
+    78ec:	90 91 a7 0d 	lds	r25, 0x0DA7
+    78f0:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    78f4:	20 e0       	ldi	r18, 0x00	; 0
+    78f6:	30 e0       	ldi	r19, 0x00	; 0
+    78f8:	40 e0       	ldi	r20, 0x00	; 0
+    78fa:	50 e4       	ldi	r21, 0x40	; 64
+    78fc:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7900:	20 e0       	ldi	r18, 0x00	; 0
+    7902:	30 e0       	ldi	r19, 0x00	; 0
+    7904:	40 e7       	ldi	r20, 0x70	; 112
+    7906:	52 e4       	ldi	r21, 0x42	; 66
+    7908:	0e 94 13 42 	call	0x8426	; 0x8426 <__cmpsf2>
+    790c:	87 ff       	sbrs	r24, 7
+    790e:	12 c0       	rjmp	.+36     	; 0x7934 <update_player+0x1d0>
+		{
+			game.player.shared.vx = RUN_SPEED;
+    7910:	80 e0       	ldi	r24, 0x00	; 0
+    7912:	90 e0       	ldi	r25, 0x00	; 0
+    7914:	a0 e7       	ldi	r26, 0x70	; 112
+    7916:	b2 e4       	ldi	r27, 0x42	; 66
+    7918:	80 93 9c 0d 	sts	0x0D9C, r24
+    791c:	90 93 9d 0d 	sts	0x0D9D, r25
+    7920:	a0 93 9e 0d 	sts	0x0D9E, r26
+    7924:	b0 93 9f 0d 	sts	0x0D9F, r27
+			LBMapSprite(0, LBGetNextFrame(&game.player.jump), 0);
+    7928:	84 e3       	ldi	r24, 0x34	; 52
+    792a:	9e e0       	ldi	r25, 0x0E	; 14
+    792c:	0e 94 61 37 	call	0x6ec2	; 0x6ec2 <LBGetNextFrame>
+    7930:	40 e0       	ldi	r20, 0x00	; 0
+    7932:	3a c0       	rjmp	.+116    	; 0x79a8 <update_player+0x244>
+		}
+		else if ((game.joypadState.held & BTN_LEFT) && (game.player.shared.x > game.camera_x))
+    7934:	16 ff       	sbrs	r17, 6
+    7936:	28 c0       	rjmp	.+80     	; 0x7988 <update_player+0x224>
+    7938:	60 91 98 0d 	lds	r22, 0x0D98
+    793c:	70 91 99 0d 	lds	r23, 0x0D99
+    7940:	80 e0       	ldi	r24, 0x00	; 0
+    7942:	90 e0       	ldi	r25, 0x00	; 0
+    7944:	0e 94 43 42 	call	0x8486	; 0x8486 <__floatunsisf>
+    7948:	9b 01       	movw	r18, r22
+    794a:	ac 01       	movw	r20, r24
+    794c:	60 91 a4 0d 	lds	r22, 0x0DA4
+    7950:	70 91 a5 0d 	lds	r23, 0x0DA5
+    7954:	80 91 a6 0d 	lds	r24, 0x0DA6
+    7958:	90 91 a7 0d 	lds	r25, 0x0DA7
+    795c:	0e 94 f5 42 	call	0x85ea	; 0x85ea <__gesf2>
+    7960:	18 16       	cp	r1, r24
+    7962:	94 f4       	brge	.+36     	; 0x7988 <update_player+0x224>
+		{
+			game.player.shared.vx = -RUN_SPEED;
+    7964:	80 e0       	ldi	r24, 0x00	; 0
+    7966:	90 e0       	ldi	r25, 0x00	; 0
+    7968:	a0 e7       	ldi	r26, 0x70	; 112
+    796a:	b2 ec       	ldi	r27, 0xC2	; 194
+    796c:	80 93 9c 0d 	sts	0x0D9C, r24
+    7970:	90 93 9d 0d 	sts	0x0D9D, r25
+    7974:	a0 93 9e 0d 	sts	0x0D9E, r26
+    7978:	b0 93 9f 0d 	sts	0x0D9F, r27
+			LBMapSprite(0, LBGetNextFrame(&game.player.jump), SPRITE_FLIP_X);
+    797c:	84 e3       	ldi	r24, 0x34	; 52
+    797e:	9e e0       	ldi	r25, 0x0E	; 14
+    7980:	0e 94 61 37 	call	0x6ec2	; 0x6ec2 <LBGetNextFrame>
+    7984:	41 e0       	ldi	r20, 0x01	; 1
+    7986:	10 c0       	rjmp	.+32     	; 0x79a8 <update_player+0x244>
+		}
+		else
+		{
+			game.player.shared.vx = 0;
+    7988:	10 92 9c 0d 	sts	0x0D9C, r1
+    798c:	10 92 9d 0d 	sts	0x0D9D, r1
+    7990:	10 92 9e 0d 	sts	0x0D9E, r1
+    7994:	10 92 9f 0d 	sts	0x0D9F, r1
+			LBMapSprite(0, LBGetNextFrame(&game.player.jump), sprites[0].flags);
+    7998:	40 91 05 05 	lds	r20, 0x0505
+    799c:	84 e3       	ldi	r24, 0x34	; 52
+    799e:	9e e0       	ldi	r25, 0x0E	; 14
+    79a0:	49 83       	std	Y+1, r20	; 0x01
+    79a2:	0e 94 61 37 	call	0x6ec2	; 0x6ec2 <LBGetNextFrame>
+    79a6:	49 81       	ldd	r20, Y+1	; 0x01
+    79a8:	bc 01       	movw	r22, r24
+    79aa:	80 e0       	ldi	r24, 0x00	; 0
+    79ac:	0e 94 e1 37 	call	0x6fc2	; 0x6fc2 <LBMapSprite>
+		}
+		
+		if (game.player.shared.gravity == 0)
+    79b0:	80 91 ac 0d 	lds	r24, 0x0DAC
+    79b4:	81 11       	cpse	r24, r1
+    79b6:	03 c0       	rjmp	.+6      	; 0x79be <update_player+0x25a>
+		{
+			game.player.flags = IDLE;
+    79b8:	88 e0       	ldi	r24, 0x08	; 8
+    79ba:	80 93 ae 0d 	sts	0x0DAE, r24
+	}
+	else if (game.player.flags & PRONE)
+	{
+		
+	}
+}
+    79be:	0f 90       	pop	r0
+    79c0:	df 91       	pop	r29
+    79c2:	cf 91       	pop	r28
+    79c4:	1f 91       	pop	r17
+    79c6:	08 95       	ret
 
-0000763e <update_player_position>:
+000079c8 <collision_detect_level>:
+
+void collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
+{
+    79c8:	2f 92       	push	r2
+    79ca:	3f 92       	push	r3
+    79cc:	4f 92       	push	r4
+    79ce:	5f 92       	push	r5
+    79d0:	6f 92       	push	r6
+    79d2:	7f 92       	push	r7
+    79d4:	8f 92       	push	r8
+    79d6:	9f 92       	push	r9
+    79d8:	af 92       	push	r10
+    79da:	bf 92       	push	r11
+    79dc:	cf 92       	push	r12
+    79de:	df 92       	push	r13
+    79e0:	ef 92       	push	r14
+    79e2:	ff 92       	push	r15
+    79e4:	0f 93       	push	r16
+    79e6:	1f 93       	push	r17
+    79e8:	cf 93       	push	r28
+    79ea:	df 93       	push	r29
+    79ec:	cd b7       	in	r28, 0x3d	; 61
+    79ee:	de b7       	in	r29, 0x3e	; 62
+    79f0:	2c 97       	sbiw	r28, 0x0c	; 12
+    79f2:	0f b6       	in	r0, 0x3f	; 63
+    79f4:	f8 94       	cli
+    79f6:	de bf       	out	0x3e, r29	; 62
+    79f8:	0f be       	out	0x3f, r0	; 63
+    79fa:	cd bf       	out	0x3d, r28	; 61
+    79fc:	9c 87       	std	Y+12, r25	; 0x0c
+    79fe:	8b 87       	std	Y+11, r24	; 0x0b
+    7a00:	49 83       	std	Y+1, r20	; 0x01
+    7a02:	26 2e       	mov	r2, r22
+    7a04:	31 2c       	mov	r3, r1
+	u8 lt1, lt2;
+	
+	// Top
+	for (u8 x = 0; x < tile_width; x++)
+    7a06:	00 e0       	ldi	r16, 0x00	; 0
+    7a08:	10 e0       	ldi	r17, 0x00	; 0
+    7a0a:	02 15       	cp	r16, r2
+    7a0c:	13 05       	cpc	r17, r3
+    7a0e:	09 f4       	brne	.+2      	; 0x7a12 <collision_detect_level+0x4a>
+    7a10:	8e c0       	rjmp	.+284    	; 0x7b2e <collision_detect_level+0x166>
+	{
+		lt1 = get_level_tile(game.current_level, s->x / 8 + x, s->y / 8);
+    7a12:	b8 01       	movw	r22, r16
+    7a14:	88 27       	eor	r24, r24
+    7a16:	77 fd       	sbrc	r23, 7
+    7a18:	80 95       	com	r24
+    7a1a:	98 2f       	mov	r25, r24
+    7a1c:	0e 94 45 42 	call	0x848a	; 0x848a <__floatsisf>
+    7a20:	6b 01       	movw	r12, r22
+    7a22:	7c 01       	movw	r14, r24
+    7a24:	20 e0       	ldi	r18, 0x00	; 0
+    7a26:	30 e0       	ldi	r19, 0x00	; 0
+    7a28:	40 e0       	ldi	r20, 0x00	; 0
+    7a2a:	5e e3       	ldi	r21, 0x3E	; 62
+    7a2c:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7a2e:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7a30:	64 85       	ldd	r22, Z+12	; 0x0c
+    7a32:	75 85       	ldd	r23, Z+13	; 0x0d
+    7a34:	86 85       	ldd	r24, Z+14	; 0x0e
+    7a36:	97 85       	ldd	r25, Z+15	; 0x0f
+    7a38:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7a3c:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7a40:	4b 01       	movw	r8, r22
+    7a42:	5c 01       	movw	r10, r24
+    7a44:	20 e0       	ldi	r18, 0x00	; 0
+    7a46:	30 e0       	ldi	r19, 0x00	; 0
+    7a48:	40 e0       	ldi	r20, 0x00	; 0
+    7a4a:	5e e3       	ldi	r21, 0x3E	; 62
+    7a4c:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7a4e:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7a50:	60 85       	ldd	r22, Z+8	; 0x08
+    7a52:	71 85       	ldd	r23, Z+9	; 0x09
+    7a54:	82 85       	ldd	r24, Z+10	; 0x0a
+    7a56:	93 85       	ldd	r25, Z+11	; 0x0b
+    7a58:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7a5c:	a7 01       	movw	r20, r14
+    7a5e:	96 01       	movw	r18, r12
+    7a60:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7a64:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7a68:	a4 01       	movw	r20, r8
+    7a6a:	80 91 91 0d 	lds	r24, 0x0D91
+    7a6e:	0e 94 c6 39 	call	0x738c	; 0x738c <get_level_tile>
+    7a72:	78 2e       	mov	r7, r24
+		lt2 = get_level_tile(game.current_level, (s->x+7) / 8 + x, s->y / 8);
+    7a74:	20 e0       	ldi	r18, 0x00	; 0
+    7a76:	30 e0       	ldi	r19, 0x00	; 0
+    7a78:	40 e0       	ldi	r20, 0x00	; 0
+    7a7a:	5e e3       	ldi	r21, 0x3E	; 62
+    7a7c:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7a7e:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7a80:	64 85       	ldd	r22, Z+12	; 0x0c
+    7a82:	75 85       	ldd	r23, Z+13	; 0x0d
+    7a84:	86 85       	ldd	r24, Z+14	; 0x0e
+    7a86:	97 85       	ldd	r25, Z+15	; 0x0f
+    7a88:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7a8c:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7a90:	4b 01       	movw	r8, r22
+    7a92:	5c 01       	movw	r10, r24
+    7a94:	20 e0       	ldi	r18, 0x00	; 0
+    7a96:	30 e0       	ldi	r19, 0x00	; 0
+    7a98:	40 ee       	ldi	r20, 0xE0	; 224
+    7a9a:	50 e4       	ldi	r21, 0x40	; 64
+    7a9c:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7a9e:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7aa0:	60 85       	ldd	r22, Z+8	; 0x08
+    7aa2:	71 85       	ldd	r23, Z+9	; 0x09
+    7aa4:	82 85       	ldd	r24, Z+10	; 0x0a
+    7aa6:	93 85       	ldd	r25, Z+11	; 0x0b
+    7aa8:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7aac:	20 e0       	ldi	r18, 0x00	; 0
+    7aae:	30 e0       	ldi	r19, 0x00	; 0
+    7ab0:	40 e0       	ldi	r20, 0x00	; 0
+    7ab2:	5e e3       	ldi	r21, 0x3E	; 62
+    7ab4:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7ab8:	a7 01       	movw	r20, r14
+    7aba:	96 01       	movw	r18, r12
+    7abc:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7ac0:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7ac4:	a4 01       	movw	r20, r8
+    7ac6:	80 91 91 0d 	lds	r24, 0x0D91
+    7aca:	0e 94 c6 39 	call	0x738c	; 0x738c <get_level_tile>
+    7ace:	f8 2e       	mov	r15, r24
+		if (solid_tile(lt1) || solid_tile(lt2))
+    7ad0:	87 2d       	mov	r24, r7
+    7ad2:	0e 94 e0 3a 	call	0x75c0	; 0x75c0 <solid_tile>
+    7ad6:	81 11       	cpse	r24, r1
+    7ad8:	05 c0       	rjmp	.+10     	; 0x7ae4 <collision_detect_level+0x11c>
+    7ada:	8f 2d       	mov	r24, r15
+    7adc:	0e 94 e0 3a 	call	0x75c0	; 0x75c0 <solid_tile>
+    7ae0:	88 23       	and	r24, r24
+    7ae2:	11 f1       	breq	.+68     	; 0x7b28 <collision_detect_level+0x160>
+		{
+			s->vy =  0;
+    7ae4:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7ae6:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7ae8:	14 82       	std	Z+4, r1	; 0x04
+    7aea:	15 82       	std	Z+5, r1	; 0x05
+    7aec:	16 82       	std	Z+6, r1	; 0x06
+    7aee:	17 82       	std	Z+7, r1	; 0x07
+			s->y = (((u16) s->y / 8) + 1) * 8;
+    7af0:	64 85       	ldd	r22, Z+12	; 0x0c
+    7af2:	75 85       	ldd	r23, Z+13	; 0x0d
+    7af4:	86 85       	ldd	r24, Z+14	; 0x0e
+    7af6:	97 85       	ldd	r25, Z+15	; 0x0f
+    7af8:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7afc:	e3 e0       	ldi	r30, 0x03	; 3
+    7afe:	76 95       	lsr	r23
+    7b00:	67 95       	ror	r22
+    7b02:	ea 95       	dec	r30
+    7b04:	e1 f7       	brne	.-8      	; 0x7afe <collision_detect_level+0x136>
+    7b06:	6f 5f       	subi	r22, 0xFF	; 255
+    7b08:	7f 4f       	sbci	r23, 0xFF	; 255
+    7b0a:	f3 e0       	ldi	r31, 0x03	; 3
+    7b0c:	66 0f       	add	r22, r22
+    7b0e:	77 1f       	adc	r23, r23
+    7b10:	fa 95       	dec	r31
+    7b12:	e1 f7       	brne	.-8      	; 0x7b0c <collision_detect_level+0x144>
+    7b14:	80 e0       	ldi	r24, 0x00	; 0
+    7b16:	90 e0       	ldi	r25, 0x00	; 0
+    7b18:	0e 94 43 42 	call	0x8486	; 0x8486 <__floatunsisf>
+    7b1c:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7b1e:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7b20:	64 87       	std	Z+12, r22	; 0x0c
+    7b22:	75 87       	std	Z+13, r23	; 0x0d
+    7b24:	86 87       	std	Z+14, r24	; 0x0e
+    7b26:	97 87       	std	Z+15, r25	; 0x0f
+    7b28:	0f 5f       	subi	r16, 0xFF	; 255
+    7b2a:	1f 4f       	sbci	r17, 0xFF	; 255
+    7b2c:	6e cf       	rjmp	.-292    	; 0x7a0a <collision_detect_level+0x42>
+    7b2e:	39 81       	ldd	r19, Y+1	; 0x01
+    7b30:	23 2f       	mov	r18, r19
+    7b32:	30 e0       	ldi	r19, 0x00	; 0
+    7b34:	3a 87       	std	Y+10, r19	; 0x0a
+    7b36:	29 87       	std	Y+9, r18	; 0x09
+	}
+	
+	// Right
+	for (u8 y = 0; y < tile_height; y++)
+	{
+		lt1 = get_level_tile(game.current_level, (s->x + tile_width * 8 - 1) / 8, s->y / 8 + y);
+    7b38:	00 e0       	ldi	r16, 0x00	; 0
+    7b3a:	10 e0       	ldi	r17, 0x00	; 0
+    7b3c:	c1 01       	movw	r24, r2
+    7b3e:	63 e0       	ldi	r22, 0x03	; 3
+    7b40:	88 0f       	add	r24, r24
+    7b42:	99 1f       	adc	r25, r25
+    7b44:	6a 95       	dec	r22
+    7b46:	e1 f7       	brne	.-8      	; 0x7b40 <collision_detect_level+0x178>
+    7b48:	9c 01       	movw	r18, r24
+    7b4a:	44 27       	eor	r20, r20
+    7b4c:	37 fd       	sbrc	r19, 7
+    7b4e:	40 95       	com	r20
+    7b50:	54 2f       	mov	r21, r20
+    7b52:	2d 83       	std	Y+5, r18	; 0x05
+    7b54:	3e 83       	std	Y+6, r19	; 0x06
+    7b56:	4f 83       	std	Y+7, r20	; 0x07
+    7b58:	58 87       	std	Y+8, r21	; 0x08
+			s->y = (((u16) s->y / 8) + 1) * 8;
+		}
+	}
+	
+	// Right
+	for (u8 y = 0; y < tile_height; y++)
+    7b5a:	29 85       	ldd	r18, Y+9	; 0x09
+    7b5c:	3a 85       	ldd	r19, Y+10	; 0x0a
+    7b5e:	02 17       	cp	r16, r18
+    7b60:	13 07       	cpc	r17, r19
+    7b62:	09 f4       	brne	.+2      	; 0x7b66 <collision_detect_level+0x19e>
+    7b64:	a8 c0       	rjmp	.+336    	; 0x7cb6 <collision_detect_level+0x2ee>
+	{
+		lt1 = get_level_tile(game.current_level, (s->x + tile_width * 8 - 1) / 8, s->y / 8 + y);
+    7b66:	b8 01       	movw	r22, r16
+    7b68:	88 27       	eor	r24, r24
+    7b6a:	77 fd       	sbrc	r23, 7
+    7b6c:	80 95       	com	r24
+    7b6e:	98 2f       	mov	r25, r24
+    7b70:	0e 94 45 42 	call	0x848a	; 0x848a <__floatsisf>
+    7b74:	4b 01       	movw	r8, r22
+    7b76:	5c 01       	movw	r10, r24
+    7b78:	6d 81       	ldd	r22, Y+5	; 0x05
+    7b7a:	7e 81       	ldd	r23, Y+6	; 0x06
+    7b7c:	8f 81       	ldd	r24, Y+7	; 0x07
+    7b7e:	98 85       	ldd	r25, Y+8	; 0x08
+    7b80:	0e 94 45 42 	call	0x848a	; 0x848a <__floatsisf>
+    7b84:	6b 01       	movw	r12, r22
+    7b86:	7c 01       	movw	r14, r24
+    7b88:	20 e0       	ldi	r18, 0x00	; 0
+    7b8a:	30 e0       	ldi	r19, 0x00	; 0
+    7b8c:	40 e0       	ldi	r20, 0x00	; 0
+    7b8e:	5e e3       	ldi	r21, 0x3E	; 62
+    7b90:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7b92:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7b94:	64 85       	ldd	r22, Z+12	; 0x0c
+    7b96:	75 85       	ldd	r23, Z+13	; 0x0d
+    7b98:	86 85       	ldd	r24, Z+14	; 0x0e
+    7b9a:	97 85       	ldd	r25, Z+15	; 0x0f
+    7b9c:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7ba0:	a5 01       	movw	r20, r10
+    7ba2:	94 01       	movw	r18, r8
+    7ba4:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7ba8:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7bac:	2b 01       	movw	r4, r22
+    7bae:	3c 01       	movw	r6, r24
+    7bb0:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7bb2:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7bb4:	20 85       	ldd	r18, Z+8	; 0x08
+    7bb6:	31 85       	ldd	r19, Z+9	; 0x09
+    7bb8:	42 85       	ldd	r20, Z+10	; 0x0a
+    7bba:	53 85       	ldd	r21, Z+11	; 0x0b
+    7bbc:	c7 01       	movw	r24, r14
+    7bbe:	b6 01       	movw	r22, r12
+    7bc0:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7bc4:	20 e0       	ldi	r18, 0x00	; 0
+    7bc6:	30 e0       	ldi	r19, 0x00	; 0
+    7bc8:	40 e8       	ldi	r20, 0x80	; 128
+    7bca:	5f e3       	ldi	r21, 0x3F	; 63
+    7bcc:	0e 94 ae 41 	call	0x835c	; 0x835c <__subsf3>
+    7bd0:	20 e0       	ldi	r18, 0x00	; 0
+    7bd2:	30 e0       	ldi	r19, 0x00	; 0
+    7bd4:	40 e0       	ldi	r20, 0x00	; 0
+    7bd6:	5e e3       	ldi	r21, 0x3E	; 62
+    7bd8:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7bdc:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7be0:	a2 01       	movw	r20, r4
+    7be2:	80 91 91 0d 	lds	r24, 0x0D91
+    7be6:	0e 94 c6 39 	call	0x738c	; 0x738c <get_level_tile>
+    7bea:	78 2e       	mov	r7, r24
+		lt2 = get_level_tile(game.current_level, (s->x + tile_width * 8 - 1) / 8, (s->y+7) / 8 + y);
+    7bec:	20 e0       	ldi	r18, 0x00	; 0
+    7bee:	30 e0       	ldi	r19, 0x00	; 0
+    7bf0:	40 ee       	ldi	r20, 0xE0	; 224
+    7bf2:	50 e4       	ldi	r21, 0x40	; 64
+    7bf4:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7bf6:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7bf8:	64 85       	ldd	r22, Z+12	; 0x0c
+    7bfa:	75 85       	ldd	r23, Z+13	; 0x0d
+    7bfc:	86 85       	ldd	r24, Z+14	; 0x0e
+    7bfe:	97 85       	ldd	r25, Z+15	; 0x0f
+    7c00:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7c04:	20 e0       	ldi	r18, 0x00	; 0
+    7c06:	30 e0       	ldi	r19, 0x00	; 0
+    7c08:	40 e0       	ldi	r20, 0x00	; 0
+    7c0a:	5e e3       	ldi	r21, 0x3E	; 62
+    7c0c:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7c10:	a5 01       	movw	r20, r10
+    7c12:	94 01       	movw	r18, r8
+    7c14:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7c18:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7c1c:	4b 01       	movw	r8, r22
+    7c1e:	5c 01       	movw	r10, r24
+    7c20:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7c22:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7c24:	20 85       	ldd	r18, Z+8	; 0x08
+    7c26:	31 85       	ldd	r19, Z+9	; 0x09
+    7c28:	42 85       	ldd	r20, Z+10	; 0x0a
+    7c2a:	53 85       	ldd	r21, Z+11	; 0x0b
+    7c2c:	c7 01       	movw	r24, r14
+    7c2e:	b6 01       	movw	r22, r12
+    7c30:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7c34:	20 e0       	ldi	r18, 0x00	; 0
+    7c36:	30 e0       	ldi	r19, 0x00	; 0
+    7c38:	40 e8       	ldi	r20, 0x80	; 128
+    7c3a:	5f e3       	ldi	r21, 0x3F	; 63
+    7c3c:	0e 94 ae 41 	call	0x835c	; 0x835c <__subsf3>
+    7c40:	20 e0       	ldi	r18, 0x00	; 0
+    7c42:	30 e0       	ldi	r19, 0x00	; 0
+    7c44:	40 e0       	ldi	r20, 0x00	; 0
+    7c46:	5e e3       	ldi	r21, 0x3E	; 62
+    7c48:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7c4c:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7c50:	a4 01       	movw	r20, r8
+    7c52:	80 91 91 0d 	lds	r24, 0x0D91
+    7c56:	0e 94 c6 39 	call	0x738c	; 0x738c <get_level_tile>
+    7c5a:	f8 2e       	mov	r15, r24
+		if (solid_tile(lt1) || solid_tile(lt2))
+    7c5c:	87 2d       	mov	r24, r7
+    7c5e:	0e 94 e0 3a 	call	0x75c0	; 0x75c0 <solid_tile>
+    7c62:	81 11       	cpse	r24, r1
+    7c64:	05 c0       	rjmp	.+10     	; 0x7c70 <collision_detect_level+0x2a8>
+    7c66:	8f 2d       	mov	r24, r15
+    7c68:	0e 94 e0 3a 	call	0x75c0	; 0x75c0 <solid_tile>
+    7c6c:	88 23       	and	r24, r24
+    7c6e:	01 f1       	breq	.+64     	; 0x7cb0 <collision_detect_level+0x2e8>
+		{
+			s->vx =  0;
+    7c70:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7c72:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7c74:	10 82       	st	Z, r1
+    7c76:	11 82       	std	Z+1, r1	; 0x01
+    7c78:	12 82       	std	Z+2, r1	; 0x02
+    7c7a:	13 82       	std	Z+3, r1	; 0x03
+			s->x = ((u16) s->x / 8) * 8;
+    7c7c:	60 85       	ldd	r22, Z+8	; 0x08
+    7c7e:	71 85       	ldd	r23, Z+9	; 0x09
+    7c80:	82 85       	ldd	r24, Z+10	; 0x0a
+    7c82:	93 85       	ldd	r25, Z+11	; 0x0b
+    7c84:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7c88:	43 e0       	ldi	r20, 0x03	; 3
+    7c8a:	76 95       	lsr	r23
+    7c8c:	67 95       	ror	r22
+    7c8e:	4a 95       	dec	r20
+    7c90:	e1 f7       	brne	.-8      	; 0x7c8a <collision_detect_level+0x2c2>
+    7c92:	53 e0       	ldi	r21, 0x03	; 3
+    7c94:	66 0f       	add	r22, r22
+    7c96:	77 1f       	adc	r23, r23
+    7c98:	5a 95       	dec	r21
+    7c9a:	e1 f7       	brne	.-8      	; 0x7c94 <collision_detect_level+0x2cc>
+    7c9c:	80 e0       	ldi	r24, 0x00	; 0
+    7c9e:	90 e0       	ldi	r25, 0x00	; 0
+    7ca0:	0e 94 43 42 	call	0x8486	; 0x8486 <__floatunsisf>
+    7ca4:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7ca6:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7ca8:	60 87       	std	Z+8, r22	; 0x08
+    7caa:	71 87       	std	Z+9, r23	; 0x09
+    7cac:	82 87       	std	Z+10, r24	; 0x0a
+    7cae:	93 87       	std	Z+11, r25	; 0x0b
+    7cb0:	0f 5f       	subi	r16, 0xFF	; 255
+    7cb2:	1f 4f       	sbci	r17, 0xFF	; 255
+    7cb4:	52 cf       	rjmp	.-348    	; 0x7b5a <collision_detect_level+0x192>
+	}
+	
+	// Bottom
+	for (u8 x = 0; x < tile_width; x++)
+	{
+		lt1 = get_level_tile(game.current_level, s->x / 8 + x, (s->y + tile_height*8 - 1) / 8);
+    7cb6:	49 81       	ldd	r20, Y+1	; 0x01
+    7cb8:	38 e0       	ldi	r19, 0x08	; 8
+    7cba:	43 9f       	mul	r20, r19
+    7cbc:	c0 01       	movw	r24, r0
+    7cbe:	11 24       	eor	r1, r1
+    7cc0:	00 e0       	ldi	r16, 0x00	; 0
+    7cc2:	10 e0       	ldi	r17, 0x00	; 0
+    7cc4:	9c 01       	movw	r18, r24
+    7cc6:	44 27       	eor	r20, r20
+    7cc8:	37 fd       	sbrc	r19, 7
+    7cca:	40 95       	com	r20
+    7ccc:	54 2f       	mov	r21, r20
+    7cce:	29 83       	std	Y+1, r18	; 0x01
+    7cd0:	3a 83       	std	Y+2, r19	; 0x02
+    7cd2:	4b 83       	std	Y+3, r20	; 0x03
+    7cd4:	5c 83       	std	Y+4, r21	; 0x04
+			s->x = ((u16) s->x / 8) * 8;
+		}
+	}
+	
+	// Bottom
+	for (u8 x = 0; x < tile_width; x++)
+    7cd6:	02 15       	cp	r16, r2
+    7cd8:	13 05       	cpc	r17, r3
+    7cda:	09 f4       	brne	.+2      	; 0x7cde <collision_detect_level+0x316>
+    7cdc:	a9 c0       	rjmp	.+338    	; 0x7e30 <collision_detect_level+0x468>
+	{
+		lt1 = get_level_tile(game.current_level, s->x / 8 + x, (s->y + tile_height*8 - 1) / 8);
+    7cde:	69 81       	ldd	r22, Y+1	; 0x01
+    7ce0:	7a 81       	ldd	r23, Y+2	; 0x02
+    7ce2:	8b 81       	ldd	r24, Y+3	; 0x03
+    7ce4:	9c 81       	ldd	r25, Y+4	; 0x04
+    7ce6:	0e 94 45 42 	call	0x848a	; 0x848a <__floatsisf>
+    7cea:	4b 01       	movw	r8, r22
+    7cec:	5c 01       	movw	r10, r24
+    7cee:	b8 01       	movw	r22, r16
+    7cf0:	88 27       	eor	r24, r24
+    7cf2:	77 fd       	sbrc	r23, 7
+    7cf4:	80 95       	com	r24
+    7cf6:	98 2f       	mov	r25, r24
+    7cf8:	0e 94 45 42 	call	0x848a	; 0x848a <__floatsisf>
+    7cfc:	6b 01       	movw	r12, r22
+    7cfe:	7c 01       	movw	r14, r24
+    7d00:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7d02:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7d04:	24 85       	ldd	r18, Z+12	; 0x0c
+    7d06:	35 85       	ldd	r19, Z+13	; 0x0d
+    7d08:	46 85       	ldd	r20, Z+14	; 0x0e
+    7d0a:	57 85       	ldd	r21, Z+15	; 0x0f
+    7d0c:	c5 01       	movw	r24, r10
+    7d0e:	b4 01       	movw	r22, r8
+    7d10:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7d14:	20 e0       	ldi	r18, 0x00	; 0
+    7d16:	30 e0       	ldi	r19, 0x00	; 0
+    7d18:	40 e8       	ldi	r20, 0x80	; 128
+    7d1a:	5f e3       	ldi	r21, 0x3F	; 63
+    7d1c:	0e 94 ae 41 	call	0x835c	; 0x835c <__subsf3>
+    7d20:	20 e0       	ldi	r18, 0x00	; 0
+    7d22:	30 e0       	ldi	r19, 0x00	; 0
+    7d24:	40 e0       	ldi	r20, 0x00	; 0
+    7d26:	5e e3       	ldi	r21, 0x3E	; 62
+    7d28:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7d2c:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7d30:	2b 01       	movw	r4, r22
+    7d32:	3c 01       	movw	r6, r24
+    7d34:	20 e0       	ldi	r18, 0x00	; 0
+    7d36:	30 e0       	ldi	r19, 0x00	; 0
+    7d38:	40 e0       	ldi	r20, 0x00	; 0
+    7d3a:	5e e3       	ldi	r21, 0x3E	; 62
+    7d3c:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7d3e:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7d40:	60 85       	ldd	r22, Z+8	; 0x08
+    7d42:	71 85       	ldd	r23, Z+9	; 0x09
+    7d44:	82 85       	ldd	r24, Z+10	; 0x0a
+    7d46:	93 85       	ldd	r25, Z+11	; 0x0b
+    7d48:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7d4c:	a7 01       	movw	r20, r14
+    7d4e:	96 01       	movw	r18, r12
+    7d50:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7d54:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7d58:	a2 01       	movw	r20, r4
+    7d5a:	80 91 91 0d 	lds	r24, 0x0D91
+    7d5e:	0e 94 c6 39 	call	0x738c	; 0x738c <get_level_tile>
+    7d62:	78 2e       	mov	r7, r24
+		lt2 = get_level_tile(game.current_level, (s->x+7) / 8 + x, (s->y + tile_height*8 - 1) / 8);
+    7d64:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7d66:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7d68:	24 85       	ldd	r18, Z+12	; 0x0c
+    7d6a:	35 85       	ldd	r19, Z+13	; 0x0d
+    7d6c:	46 85       	ldd	r20, Z+14	; 0x0e
+    7d6e:	57 85       	ldd	r21, Z+15	; 0x0f
+    7d70:	c5 01       	movw	r24, r10
+    7d72:	b4 01       	movw	r22, r8
+    7d74:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7d78:	20 e0       	ldi	r18, 0x00	; 0
+    7d7a:	30 e0       	ldi	r19, 0x00	; 0
+    7d7c:	40 e8       	ldi	r20, 0x80	; 128
+    7d7e:	5f e3       	ldi	r21, 0x3F	; 63
+    7d80:	0e 94 ae 41 	call	0x835c	; 0x835c <__subsf3>
+    7d84:	20 e0       	ldi	r18, 0x00	; 0
+    7d86:	30 e0       	ldi	r19, 0x00	; 0
+    7d88:	40 e0       	ldi	r20, 0x00	; 0
+    7d8a:	5e e3       	ldi	r21, 0x3E	; 62
+    7d8c:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7d90:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7d94:	4b 01       	movw	r8, r22
+    7d96:	5c 01       	movw	r10, r24
+    7d98:	20 e0       	ldi	r18, 0x00	; 0
+    7d9a:	30 e0       	ldi	r19, 0x00	; 0
+    7d9c:	40 ee       	ldi	r20, 0xE0	; 224
+    7d9e:	50 e4       	ldi	r21, 0x40	; 64
+    7da0:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7da2:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7da4:	60 85       	ldd	r22, Z+8	; 0x08
+    7da6:	71 85       	ldd	r23, Z+9	; 0x09
+    7da8:	82 85       	ldd	r24, Z+10	; 0x0a
+    7daa:	93 85       	ldd	r25, Z+11	; 0x0b
+    7dac:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7db0:	20 e0       	ldi	r18, 0x00	; 0
+    7db2:	30 e0       	ldi	r19, 0x00	; 0
+    7db4:	40 e0       	ldi	r20, 0x00	; 0
+    7db6:	5e e3       	ldi	r21, 0x3E	; 62
+    7db8:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7dbc:	a7 01       	movw	r20, r14
+    7dbe:	96 01       	movw	r18, r12
+    7dc0:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7dc4:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7dc8:	a4 01       	movw	r20, r8
+    7dca:	80 91 91 0d 	lds	r24, 0x0D91
+    7dce:	0e 94 c6 39 	call	0x738c	; 0x738c <get_level_tile>
+    7dd2:	f8 2e       	mov	r15, r24
+		if (solid_tile(lt1) || solid_tile(lt2))
+    7dd4:	87 2d       	mov	r24, r7
+    7dd6:	0e 94 e0 3a 	call	0x75c0	; 0x75c0 <solid_tile>
+    7dda:	81 11       	cpse	r24, r1
+    7ddc:	05 c0       	rjmp	.+10     	; 0x7de8 <collision_detect_level+0x420>
+    7dde:	8f 2d       	mov	r24, r15
+    7de0:	0e 94 e0 3a 	call	0x75c0	; 0x75c0 <solid_tile>
+    7de4:	88 23       	and	r24, r24
+    7de6:	09 f1       	breq	.+66     	; 0x7e2a <collision_detect_level+0x462>
+		{
+			s->vy =  0;
+    7de8:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7dea:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7dec:	14 82       	std	Z+4, r1	; 0x04
+    7dee:	15 82       	std	Z+5, r1	; 0x05
+    7df0:	16 82       	std	Z+6, r1	; 0x06
+    7df2:	17 82       	std	Z+7, r1	; 0x07
+			s->gravity = 0;
+    7df4:	10 8a       	std	Z+16, r1	; 0x10
+			s->y = ((u16) s->y / 8) * 8;
+    7df6:	64 85       	ldd	r22, Z+12	; 0x0c
+    7df8:	75 85       	ldd	r23, Z+13	; 0x0d
+    7dfa:	86 85       	ldd	r24, Z+14	; 0x0e
+    7dfc:	97 85       	ldd	r25, Z+15	; 0x0f
+    7dfe:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7e02:	23 e0       	ldi	r18, 0x03	; 3
+    7e04:	76 95       	lsr	r23
+    7e06:	67 95       	ror	r22
+    7e08:	2a 95       	dec	r18
+    7e0a:	e1 f7       	brne	.-8      	; 0x7e04 <collision_detect_level+0x43c>
+    7e0c:	33 e0       	ldi	r19, 0x03	; 3
+    7e0e:	66 0f       	add	r22, r22
+    7e10:	77 1f       	adc	r23, r23
+    7e12:	3a 95       	dec	r19
+    7e14:	e1 f7       	brne	.-8      	; 0x7e0e <collision_detect_level+0x446>
+    7e16:	80 e0       	ldi	r24, 0x00	; 0
+    7e18:	90 e0       	ldi	r25, 0x00	; 0
+    7e1a:	0e 94 43 42 	call	0x8486	; 0x8486 <__floatunsisf>
+    7e1e:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7e20:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7e22:	64 87       	std	Z+12, r22	; 0x0c
+    7e24:	75 87       	std	Z+13, r23	; 0x0d
+    7e26:	86 87       	std	Z+14, r24	; 0x0e
+    7e28:	97 87       	std	Z+15, r25	; 0x0f
+    7e2a:	0f 5f       	subi	r16, 0xFF	; 255
+    7e2c:	1f 4f       	sbci	r17, 0xFF	; 255
+    7e2e:	53 cf       	rjmp	.-346    	; 0x7cd6 <collision_detect_level+0x30e>
+    7e30:	00 e0       	ldi	r16, 0x00	; 0
+    7e32:	10 e0       	ldi	r17, 0x00	; 0
+		}
+	}
+	
+	// Left
+	for (u8 y = 0; y < tile_height; y++)
+    7e34:	29 85       	ldd	r18, Y+9	; 0x09
+    7e36:	3a 85       	ldd	r19, Y+10	; 0x0a
+    7e38:	02 17       	cp	r16, r18
+    7e3a:	13 07       	cpc	r17, r19
+    7e3c:	09 f4       	brne	.+2      	; 0x7e40 <collision_detect_level+0x478>
+    7e3e:	8e c0       	rjmp	.+284    	; 0x7f5c <collision_detect_level+0x594>
+	{
+		lt1 = get_level_tile(game.current_level, s->x / 8, s->y / 8 + y);
+    7e40:	b8 01       	movw	r22, r16
+    7e42:	88 27       	eor	r24, r24
+    7e44:	77 fd       	sbrc	r23, 7
+    7e46:	80 95       	com	r24
+    7e48:	98 2f       	mov	r25, r24
+    7e4a:	0e 94 45 42 	call	0x848a	; 0x848a <__floatsisf>
+    7e4e:	6b 01       	movw	r12, r22
+    7e50:	7c 01       	movw	r14, r24
+    7e52:	20 e0       	ldi	r18, 0x00	; 0
+    7e54:	30 e0       	ldi	r19, 0x00	; 0
+    7e56:	40 e0       	ldi	r20, 0x00	; 0
+    7e58:	5e e3       	ldi	r21, 0x3E	; 62
+    7e5a:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7e5c:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7e5e:	64 85       	ldd	r22, Z+12	; 0x0c
+    7e60:	75 85       	ldd	r23, Z+13	; 0x0d
+    7e62:	86 85       	ldd	r24, Z+14	; 0x0e
+    7e64:	97 85       	ldd	r25, Z+15	; 0x0f
+    7e66:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7e6a:	a7 01       	movw	r20, r14
+    7e6c:	96 01       	movw	r18, r12
+    7e6e:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7e72:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7e76:	4b 01       	movw	r8, r22
+    7e78:	5c 01       	movw	r10, r24
+    7e7a:	20 e0       	ldi	r18, 0x00	; 0
+    7e7c:	30 e0       	ldi	r19, 0x00	; 0
+    7e7e:	40 e0       	ldi	r20, 0x00	; 0
+    7e80:	5e e3       	ldi	r21, 0x3E	; 62
+    7e82:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7e84:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7e86:	60 85       	ldd	r22, Z+8	; 0x08
+    7e88:	71 85       	ldd	r23, Z+9	; 0x09
+    7e8a:	82 85       	ldd	r24, Z+10	; 0x0a
+    7e8c:	93 85       	ldd	r25, Z+11	; 0x0b
+    7e8e:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7e92:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7e96:	a4 01       	movw	r20, r8
+    7e98:	80 91 91 0d 	lds	r24, 0x0D91
+    7e9c:	0e 94 c6 39 	call	0x738c	; 0x738c <get_level_tile>
+    7ea0:	b8 2e       	mov	r11, r24
+		lt2 = get_level_tile(game.current_level, s->x / 8, (s->y+7) / 8 + y);
+    7ea2:	20 e0       	ldi	r18, 0x00	; 0
+    7ea4:	30 e0       	ldi	r19, 0x00	; 0
+    7ea6:	40 ee       	ldi	r20, 0xE0	; 224
+    7ea8:	50 e4       	ldi	r21, 0x40	; 64
+    7eaa:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7eac:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7eae:	64 85       	ldd	r22, Z+12	; 0x0c
+    7eb0:	75 85       	ldd	r23, Z+13	; 0x0d
+    7eb2:	86 85       	ldd	r24, Z+14	; 0x0e
+    7eb4:	97 85       	ldd	r25, Z+15	; 0x0f
+    7eb6:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7eba:	20 e0       	ldi	r18, 0x00	; 0
+    7ebc:	30 e0       	ldi	r19, 0x00	; 0
+    7ebe:	40 e0       	ldi	r20, 0x00	; 0
+    7ec0:	5e e3       	ldi	r21, 0x3E	; 62
+    7ec2:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7ec6:	a7 01       	movw	r20, r14
+    7ec8:	96 01       	movw	r18, r12
+    7eca:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7ece:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7ed2:	6b 01       	movw	r12, r22
+    7ed4:	7c 01       	movw	r14, r24
+    7ed6:	20 e0       	ldi	r18, 0x00	; 0
+    7ed8:	30 e0       	ldi	r19, 0x00	; 0
+    7eda:	40 e0       	ldi	r20, 0x00	; 0
+    7edc:	5e e3       	ldi	r21, 0x3E	; 62
+    7ede:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7ee0:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7ee2:	60 85       	ldd	r22, Z+8	; 0x08
+    7ee4:	71 85       	ldd	r23, Z+9	; 0x09
+    7ee6:	82 85       	ldd	r24, Z+10	; 0x0a
+    7ee8:	93 85       	ldd	r25, Z+11	; 0x0b
+    7eea:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7eee:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7ef2:	a6 01       	movw	r20, r12
+    7ef4:	80 91 91 0d 	lds	r24, 0x0D91
+    7ef8:	0e 94 c6 39 	call	0x738c	; 0x738c <get_level_tile>
+    7efc:	f8 2e       	mov	r15, r24
+		if (solid_tile(lt1) || solid_tile(lt2))
+    7efe:	8b 2d       	mov	r24, r11
+    7f00:	0e 94 e0 3a 	call	0x75c0	; 0x75c0 <solid_tile>
+    7f04:	81 11       	cpse	r24, r1
+    7f06:	05 c0       	rjmp	.+10     	; 0x7f12 <collision_detect_level+0x54a>
+    7f08:	8f 2d       	mov	r24, r15
+    7f0a:	0e 94 e0 3a 	call	0x75c0	; 0x75c0 <solid_tile>
+    7f0e:	88 23       	and	r24, r24
+    7f10:	11 f1       	breq	.+68     	; 0x7f56 <collision_detect_level+0x58e>
+		{
+			s->vx =  0;
+    7f12:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7f14:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7f16:	10 82       	st	Z, r1
+    7f18:	11 82       	std	Z+1, r1	; 0x01
+    7f1a:	12 82       	std	Z+2, r1	; 0x02
+    7f1c:	13 82       	std	Z+3, r1	; 0x03
+			s->x = (((u16) s->x / 8) + 1) * 8;
+    7f1e:	60 85       	ldd	r22, Z+8	; 0x08
+    7f20:	71 85       	ldd	r23, Z+9	; 0x09
+    7f22:	82 85       	ldd	r24, Z+10	; 0x0a
+    7f24:	93 85       	ldd	r25, Z+11	; 0x0b
+    7f26:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    7f2a:	83 e0       	ldi	r24, 0x03	; 3
+    7f2c:	76 95       	lsr	r23
+    7f2e:	67 95       	ror	r22
+    7f30:	8a 95       	dec	r24
+    7f32:	e1 f7       	brne	.-8      	; 0x7f2c <collision_detect_level+0x564>
+    7f34:	6f 5f       	subi	r22, 0xFF	; 255
+    7f36:	7f 4f       	sbci	r23, 0xFF	; 255
+    7f38:	93 e0       	ldi	r25, 0x03	; 3
+    7f3a:	66 0f       	add	r22, r22
+    7f3c:	77 1f       	adc	r23, r23
+    7f3e:	9a 95       	dec	r25
+    7f40:	e1 f7       	brne	.-8      	; 0x7f3a <collision_detect_level+0x572>
+    7f42:	80 e0       	ldi	r24, 0x00	; 0
+    7f44:	90 e0       	ldi	r25, 0x00	; 0
+    7f46:	0e 94 43 42 	call	0x8486	; 0x8486 <__floatunsisf>
+    7f4a:	eb 85       	ldd	r30, Y+11	; 0x0b
+    7f4c:	fc 85       	ldd	r31, Y+12	; 0x0c
+    7f4e:	60 87       	std	Z+8, r22	; 0x08
+    7f50:	71 87       	std	Z+9, r23	; 0x09
+    7f52:	82 87       	std	Z+10, r24	; 0x0a
+    7f54:	93 87       	std	Z+11, r25	; 0x0b
+    7f56:	0f 5f       	subi	r16, 0xFF	; 255
+    7f58:	1f 4f       	sbci	r17, 0xFF	; 255
+    7f5a:	6c cf       	rjmp	.-296    	; 0x7e34 <collision_detect_level+0x46c>
+		}
 	}
 }
+    7f5c:	2c 96       	adiw	r28, 0x0c	; 12
+    7f5e:	0f b6       	in	r0, 0x3f	; 63
+    7f60:	f8 94       	cli
+    7f62:	de bf       	out	0x3e, r29	; 62
+    7f64:	0f be       	out	0x3f, r0	; 63
+    7f66:	cd bf       	out	0x3d, r28	; 61
+    7f68:	df 91       	pop	r29
+    7f6a:	cf 91       	pop	r28
+    7f6c:	1f 91       	pop	r17
+    7f6e:	0f 91       	pop	r16
+    7f70:	ff 90       	pop	r15
+    7f72:	ef 90       	pop	r14
+    7f74:	df 90       	pop	r13
+    7f76:	cf 90       	pop	r12
+    7f78:	bf 90       	pop	r11
+    7f7a:	af 90       	pop	r10
+    7f7c:	9f 90       	pop	r9
+    7f7e:	8f 90       	pop	r8
+    7f80:	7f 90       	pop	r7
+    7f82:	6f 90       	pop	r6
+    7f84:	5f 90       	pop	r5
+    7f86:	4f 90       	pop	r4
+    7f88:	3f 90       	pop	r3
+    7f8a:	2f 90       	pop	r2
+    7f8c:	08 95       	ret
+
+00007f8e <update_player_position>:
 
 void update_player_position()
 {
-    763e:	cf 92       	push	r12
-    7640:	df 92       	push	r13
-    7642:	ef 92       	push	r14
-    7644:	ff 92       	push	r15
-    7646:	0f 93       	push	r16
-    7648:	1f 93       	push	r17
-    764a:	cf 93       	push	r28
-    764c:	df 93       	push	r29
+    7f8e:	cf 92       	push	r12
+    7f90:	df 92       	push	r13
+    7f92:	ef 92       	push	r14
+    7f94:	ff 92       	push	r15
+    7f96:	0f 93       	push	r16
+    7f98:	cf 93       	push	r28
+    7f9a:	df 93       	push	r29
+	//Gravity
+	game.player.shared.vy = game.player.shared.vy + game.player.shared.gravity*FRAME_TIME;
+    7f9c:	c0 e9       	ldi	r28, 0x90	; 144
+    7f9e:	dd e0       	ldi	r29, 0x0D	; 13
+    7fa0:	6c 8d       	ldd	r22, Y+28	; 0x1c
+    7fa2:	70 e0       	ldi	r23, 0x00	; 0
+    7fa4:	80 e0       	ldi	r24, 0x00	; 0
+    7fa6:	90 e0       	ldi	r25, 0x00	; 0
+    7fa8:	0e 94 45 42 	call	0x848a	; 0x848a <__floatsisf>
+    7fac:	29 e8       	ldi	r18, 0x89	; 137
+    7fae:	38 e8       	ldi	r19, 0x88	; 136
+    7fb0:	48 e8       	ldi	r20, 0x88	; 136
+    7fb2:	5c e3       	ldi	r21, 0x3C	; 60
+    7fb4:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7fb8:	28 89       	ldd	r18, Y+16	; 0x10
+    7fba:	39 89       	ldd	r19, Y+17	; 0x11
+    7fbc:	4a 89       	ldd	r20, Y+18	; 0x12
+    7fbe:	5b 89       	ldd	r21, Y+19	; 0x13
+    7fc0:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7fc4:	6b 01       	movw	r12, r22
+    7fc6:	7c 01       	movw	r14, r24
+    7fc8:	68 8b       	std	Y+16, r22	; 0x10
+    7fca:	79 8b       	std	Y+17, r23	; 0x11
+    7fcc:	8a 8b       	std	Y+18, r24	; 0x12
+    7fce:	9b 8b       	std	Y+19, r25	; 0x13
 	game.player.shared.x += game.player.shared.vx*FRAME_TIME;
-    764e:	c0 e9       	ldi	r28, 0x90	; 144
-    7650:	dd e0       	ldi	r29, 0x0D	; 13
-    7652:	6f 85       	ldd	r22, Y+15	; 0x0f
-    7654:	78 89       	ldd	r23, Y+16	; 0x10
-    7656:	80 e0       	ldi	r24, 0x00	; 0
-    7658:	90 e0       	ldi	r25, 0x00	; 0
-    765a:	0e 94 57 3d 	call	0x7aae	; 0x7aae <__floatunsisf>
-    765e:	6b 01       	movw	r12, r22
-    7660:	7c 01       	movw	r14, r24
-    7662:	8c 85       	ldd	r24, Y+12	; 0x0c
-    7664:	68 2f       	mov	r22, r24
-    7666:	77 27       	eor	r23, r23
-    7668:	67 fd       	sbrc	r22, 7
-    766a:	70 95       	com	r23
-    766c:	87 2f       	mov	r24, r23
-    766e:	97 2f       	mov	r25, r23
-    7670:	0e 94 59 3d 	call	0x7ab2	; 0x7ab2 <__floatsisf>
-    7674:	29 e8       	ldi	r18, 0x89	; 137
-    7676:	38 e8       	ldi	r19, 0x88	; 136
-    7678:	48 e8       	ldi	r20, 0x88	; 136
-    767a:	5c e3       	ldi	r21, 0x3C	; 60
-    767c:	0e 94 e5 3d 	call	0x7bca	; 0x7bca <__mulsf3>
-    7680:	9b 01       	movw	r18, r22
-    7682:	ac 01       	movw	r20, r24
-    7684:	c7 01       	movw	r24, r14
-    7686:	b6 01       	movw	r22, r12
-    7688:	0e 94 c7 3c 	call	0x798e	; 0x798e <__addsf3>
-    768c:	0e 94 2b 3d 	call	0x7a56	; 0x7a56 <__fixunssfsi>
-    7690:	16 2f       	mov	r17, r22
-    7692:	6f 87       	std	Y+15, r22	; 0x0f
-    7694:	78 8b       	std	Y+16, r23	; 0x10
+    7fd0:	29 e8       	ldi	r18, 0x89	; 137
+    7fd2:	38 e8       	ldi	r19, 0x88	; 136
+    7fd4:	48 e8       	ldi	r20, 0x88	; 136
+    7fd6:	5c e3       	ldi	r21, 0x3C	; 60
+    7fd8:	6c 85       	ldd	r22, Y+12	; 0x0c
+    7fda:	7d 85       	ldd	r23, Y+13	; 0x0d
+    7fdc:	8e 85       	ldd	r24, Y+14	; 0x0e
+    7fde:	9f 85       	ldd	r25, Y+15	; 0x0f
+    7fe0:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    7fe4:	9b 01       	movw	r18, r22
+    7fe6:	ac 01       	movw	r20, r24
+    7fe8:	6c 89       	ldd	r22, Y+20	; 0x14
+    7fea:	7d 89       	ldd	r23, Y+21	; 0x15
+    7fec:	8e 89       	ldd	r24, Y+22	; 0x16
+    7fee:	9f 89       	ldd	r25, Y+23	; 0x17
+    7ff0:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    7ff4:	6c 8b       	std	Y+20, r22	; 0x14
+    7ff6:	7d 8b       	std	Y+21, r23	; 0x15
+    7ff8:	8e 8b       	std	Y+22, r24	; 0x16
+    7ffa:	9f 8b       	std	Y+23, r25	; 0x17
 	game.player.shared.y += game.player.shared.vy*FRAME_TIME;
-    7696:	69 89       	ldd	r22, Y+17	; 0x11
-    7698:	7a 89       	ldd	r23, Y+18	; 0x12
-    769a:	80 e0       	ldi	r24, 0x00	; 0
-    769c:	90 e0       	ldi	r25, 0x00	; 0
-    769e:	0e 94 57 3d 	call	0x7aae	; 0x7aae <__floatunsisf>
-    76a2:	6b 01       	movw	r12, r22
-    76a4:	7c 01       	movw	r14, r24
-    76a6:	8d 85       	ldd	r24, Y+13	; 0x0d
-    76a8:	68 2f       	mov	r22, r24
-    76aa:	77 27       	eor	r23, r23
-    76ac:	67 fd       	sbrc	r22, 7
-    76ae:	70 95       	com	r23
-    76b0:	87 2f       	mov	r24, r23
-    76b2:	97 2f       	mov	r25, r23
-    76b4:	0e 94 59 3d 	call	0x7ab2	; 0x7ab2 <__floatsisf>
-    76b8:	29 e8       	ldi	r18, 0x89	; 137
-    76ba:	38 e8       	ldi	r19, 0x88	; 136
-    76bc:	48 e8       	ldi	r20, 0x88	; 136
-    76be:	5c e3       	ldi	r21, 0x3C	; 60
-    76c0:	0e 94 e5 3d 	call	0x7bca	; 0x7bca <__mulsf3>
-    76c4:	9b 01       	movw	r18, r22
-    76c6:	ac 01       	movw	r20, r24
-    76c8:	c7 01       	movw	r24, r14
-    76ca:	b6 01       	movw	r22, r12
-    76cc:	0e 94 c7 3c 	call	0x798e	; 0x798e <__addsf3>
-    76d0:	0e 94 2b 3d 	call	0x7a56	; 0x7a56 <__fixunssfsi>
-    76d4:	69 8b       	std	Y+17, r22	; 0x11
-    76d6:	7a 8b       	std	Y+18, r23	; 0x12
+    7ffc:	29 e8       	ldi	r18, 0x89	; 137
+    7ffe:	38 e8       	ldi	r19, 0x88	; 136
+    8000:	48 e8       	ldi	r20, 0x88	; 136
+    8002:	5c e3       	ldi	r21, 0x3C	; 60
+    8004:	c7 01       	movw	r24, r14
+    8006:	b6 01       	movw	r22, r12
+    8008:	0e 94 f9 42 	call	0x85f2	; 0x85f2 <__mulsf3>
+    800c:	9b 01       	movw	r18, r22
+    800e:	ac 01       	movw	r20, r24
+    8010:	68 8d       	ldd	r22, Y+24	; 0x18
+    8012:	79 8d       	ldd	r23, Y+25	; 0x19
+    8014:	8a 8d       	ldd	r24, Y+26	; 0x1a
+    8016:	9b 8d       	ldd	r25, Y+27	; 0x1b
+    8018:	0e 94 af 41 	call	0x835e	; 0x835e <__addsf3>
+    801c:	68 8f       	std	Y+24, r22	; 0x18
+    801e:	79 8f       	std	Y+25, r23	; 0x19
+    8020:	8a 8f       	std	Y+26, r24	; 0x1a
+    8022:	9b 8f       	std	Y+27, r25	; 0x1b
+	collision_detect_level(&game.player.shared, 2, 3);
+    8024:	43 e0       	ldi	r20, 0x03	; 3
+    8026:	62 e0       	ldi	r22, 0x02	; 2
+    8028:	8c e9       	ldi	r24, 0x9C	; 156
+    802a:	9d e0       	ldi	r25, 0x0D	; 13
+    802c:	0e 94 e4 3c 	call	0x79c8	; 0x79c8 <collision_detect_level>
 	LBMoveSprite(0, game.player.shared.x - game.camera_x, game.player.shared.y - game.camera_y, 2, 3);
-    76d8:	8a 85       	ldd	r24, Y+10	; 0x0a
-    76da:	46 2f       	mov	r20, r22
-    76dc:	48 1b       	sub	r20, r24
-    76de:	88 85       	ldd	r24, Y+8	; 0x08
-    76e0:	61 2f       	mov	r22, r17
-    76e2:	68 1b       	sub	r22, r24
-    76e4:	03 e0       	ldi	r16, 0x03	; 3
-    76e6:	22 e0       	ldi	r18, 0x02	; 2
-    76e8:	80 e0       	ldi	r24, 0x00	; 0
-    76ea:	0e 94 33 38 	call	0x7066	; 0x7066 <LBMoveSprite>
+    8030:	6a 85       	ldd	r22, Y+10	; 0x0a
+    8032:	7b 85       	ldd	r23, Y+11	; 0x0b
+    8034:	80 e0       	ldi	r24, 0x00	; 0
+    8036:	90 e0       	ldi	r25, 0x00	; 0
+    8038:	0e 94 43 42 	call	0x8486	; 0x8486 <__floatunsisf>
+    803c:	9b 01       	movw	r18, r22
+    803e:	ac 01       	movw	r20, r24
+    8040:	68 8d       	ldd	r22, Y+24	; 0x18
+    8042:	79 8d       	ldd	r23, Y+25	; 0x19
+    8044:	8a 8d       	ldd	r24, Y+26	; 0x1a
+    8046:	9b 8d       	ldd	r25, Y+27	; 0x1b
+    8048:	0e 94 ae 41 	call	0x835c	; 0x835c <__subsf3>
+    804c:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    8050:	f6 2e       	mov	r15, r22
+    8052:	68 85       	ldd	r22, Y+8	; 0x08
+    8054:	79 85       	ldd	r23, Y+9	; 0x09
+    8056:	80 e0       	ldi	r24, 0x00	; 0
+    8058:	90 e0       	ldi	r25, 0x00	; 0
+    805a:	0e 94 43 42 	call	0x8486	; 0x8486 <__floatunsisf>
+    805e:	9b 01       	movw	r18, r22
+    8060:	ac 01       	movw	r20, r24
+    8062:	6c 89       	ldd	r22, Y+20	; 0x14
+    8064:	7d 89       	ldd	r23, Y+21	; 0x15
+    8066:	8e 89       	ldd	r24, Y+22	; 0x16
+    8068:	9f 89       	ldd	r25, Y+23	; 0x17
+    806a:	0e 94 ae 41 	call	0x835c	; 0x835c <__subsf3>
+    806e:	0e 94 17 42 	call	0x842e	; 0x842e <__fixunssfsi>
+    8072:	03 e0       	ldi	r16, 0x03	; 3
+    8074:	22 e0       	ldi	r18, 0x02	; 2
+    8076:	4f 2d       	mov	r20, r15
+    8078:	80 e0       	ldi	r24, 0x00	; 0
+    807a:	0e 94 33 38 	call	0x7066	; 0x7066 <LBMoveSprite>
 }
-    76ee:	df 91       	pop	r29
-    76f0:	cf 91       	pop	r28
-    76f2:	1f 91       	pop	r17
-    76f4:	0f 91       	pop	r16
-    76f6:	ff 90       	pop	r15
-    76f8:	ef 90       	pop	r14
-    76fa:	df 90       	pop	r13
-    76fc:	cf 90       	pop	r12
-    76fe:	08 95       	ret
+    807e:	df 91       	pop	r29
+    8080:	cf 91       	pop	r28
+    8082:	0f 91       	pop	r16
+    8084:	ff 90       	pop	r15
+    8086:	ef 90       	pop	r14
+    8088:	df 90       	pop	r13
+    808a:	cf 90       	pop	r12
+    808c:	08 95       	ret
 
-00007700 <update_level>:
+0000808e <update_level>:
 
 void update_level()
 {
+    808e:	cf 93       	push	r28
+    8090:	df 93       	push	r29
 	if (game.player.shared.vx > 0 &&
-    7700:	80 91 9c 0d 	lds	r24, 0x0D9C
-    7704:	18 16       	cp	r1, r24
-    7706:	14 f5       	brge	.+68     	; 0x774c <update_level+0x4c>
+    8092:	20 e0       	ldi	r18, 0x00	; 0
+    8094:	30 e0       	ldi	r19, 0x00	; 0
+    8096:	a9 01       	movw	r20, r18
+    8098:	60 91 9c 0d 	lds	r22, 0x0D9C
+    809c:	70 91 9d 0d 	lds	r23, 0x0D9D
+    80a0:	80 91 9e 0d 	lds	r24, 0x0D9E
+    80a4:	90 91 9f 0d 	lds	r25, 0x0D9F
+    80a8:	0e 94 f5 42 	call	0x85ea	; 0x85ea <__gesf2>
+    80ac:	18 16       	cp	r1, r24
+    80ae:	a4 f5       	brge	.+104    	; 0x8118 <update_level+0x8a>
 	    (game.player.shared.x - game.camera_x) >= (CAMERA_WIDTH / 2 * 8) &&
-    7708:	80 91 98 0d 	lds	r24, 0x0D98
-    770c:	90 91 99 0d 	lds	r25, 0x0D99
-    7710:	20 91 9f 0d 	lds	r18, 0x0D9F
-    7714:	30 91 a0 0d 	lds	r19, 0x0DA0
-    7718:	28 1b       	sub	r18, r24
-    771a:	39 0b       	sbc	r19, r25
+    80b0:	c0 91 98 0d 	lds	r28, 0x0D98
+    80b4:	d0 91 99 0d 	lds	r29, 0x0D99
+    80b8:	be 01       	movw	r22, r28
+    80ba:	80 e0       	ldi	r24, 0x00	; 0
+    80bc:	90 e0       	ldi	r25, 0x00	; 0
+    80be:	0e 94 43 42 	call	0x8486	; 0x8486 <__floatunsisf>
+    80c2:	9b 01       	movw	r18, r22
+    80c4:	ac 01       	movw	r20, r24
+    80c6:	60 91 a4 0d 	lds	r22, 0x0DA4
+    80ca:	70 91 a5 0d 	lds	r23, 0x0DA5
+    80ce:	80 91 a6 0d 	lds	r24, 0x0DA6
+    80d2:	90 91 a7 0d 	lds	r25, 0x0DA7
+    80d6:	0e 94 ae 41 	call	0x835c	; 0x835c <__subsf3>
 	LBMoveSprite(0, game.player.shared.x - game.camera_x, game.player.shared.y - game.camera_y, 2, 3);
 }
 
 void update_level()
 {
 	if (game.player.shared.vx > 0 &&
-    771c:	20 37       	cpi	r18, 0x70	; 112
-    771e:	31 05       	cpc	r19, r1
-    7720:	a8 f0       	brcs	.+42     	; 0x774c <update_level+0x4c>
+    80da:	20 e0       	ldi	r18, 0x00	; 0
+    80dc:	30 e0       	ldi	r19, 0x00	; 0
+    80de:	40 ee       	ldi	r20, 0xE0	; 224
+    80e0:	52 e4       	ldi	r21, 0x42	; 66
+    80e2:	0e 94 f5 42 	call	0x85ea	; 0x85ea <__gesf2>
+    80e6:	87 fd       	sbrc	r24, 7
+    80e8:	17 c0       	rjmp	.+46     	; 0x8118 <update_level+0x8a>
 	    (game.player.shared.x - game.camera_x) >= (CAMERA_WIDTH / 2 * 8) &&
 		(game.camera_x/8 + CAMERA_WIDTH < LEVEL_WIDTH) &&
-    7722:	33 e0       	ldi	r19, 0x03	; 3
-    7724:	96 95       	lsr	r25
-    7726:	87 95       	ror	r24
-    7728:	3a 95       	dec	r19
-    772a:	e1 f7       	brne	.-8      	; 0x7724 <update_level+0x24>
-    772c:	4c 96       	adiw	r24, 0x1c	; 28
+    80ea:	33 e0       	ldi	r19, 0x03	; 3
+    80ec:	d6 95       	lsr	r29
+    80ee:	c7 95       	ror	r28
+    80f0:	3a 95       	dec	r19
+    80f2:	e1 f7       	brne	.-8      	; 0x80ec <update_level+0x5e>
+    80f4:	6c 96       	adiw	r28, 0x1c	; 28
 }
 
 void update_level()
 {
 	if (game.player.shared.vx > 0 &&
 	    (game.player.shared.x - game.camera_x) >= (CAMERA_WIDTH / 2 * 8) &&
-    772e:	cc 97       	sbiw	r24, 0x3c	; 60
-    7730:	68 f4       	brcc	.+26     	; 0x774c <update_level+0x4c>
+    80f6:	ec 97       	sbiw	r28, 0x3c	; 60
+    80f8:	78 f4       	brcc	.+30     	; 0x8118 <update_level+0x8a>
 		(game.camera_x/8 + CAMERA_WIDTH < LEVEL_WIDTH) &&
 		(game.camera_y/8 + CAMERA_HEIGHT < LEVEL_HEIGHT))
-    7732:	80 91 9a 0d 	lds	r24, 0x0D9A
-    7736:	90 91 9b 0d 	lds	r25, 0x0D9B
-    773a:	23 e0       	ldi	r18, 0x03	; 3
-    773c:	96 95       	lsr	r25
-    773e:	87 95       	ror	r24
-    7740:	2a 95       	dec	r18
-    7742:	e1 f7       	brne	.-8      	; 0x773c <update_level+0x3c>
+    80fa:	80 91 9a 0d 	lds	r24, 0x0D9A
+    80fe:	90 91 9b 0d 	lds	r25, 0x0D9B
+    8102:	23 e0       	ldi	r18, 0x03	; 3
+    8104:	96 95       	lsr	r25
+    8106:	87 95       	ror	r24
+    8108:	2a 95       	dec	r18
+    810a:	e1 f7       	brne	.-8      	; 0x8104 <update_level+0x76>
 
 void update_level()
 {
 	if (game.player.shared.vx > 0 &&
 	    (game.player.shared.x - game.camera_x) >= (CAMERA_WIDTH / 2 * 8) &&
 		(game.camera_x/8 + CAMERA_WIDTH < LEVEL_WIDTH) &&
-    7744:	89 2b       	or	r24, r25
-    7746:	11 f4       	brne	.+4      	; 0x774c <update_level+0x4c>
+    810c:	89 2b       	or	r24, r25
+    810e:	21 f4       	brne	.+8      	; 0x8118 <update_level+0x8a>
 		(game.camera_y/8 + CAMERA_HEIGHT < LEVEL_HEIGHT))
 	{
 		move_camera_x();
-    7748:	0c 94 56 3a 	jmp	0x74ac	; 0x74ac <move_camera_x>
-    774c:	08 95       	ret
+	}
+}
+    8110:	df 91       	pop	r29
+    8112:	cf 91       	pop	r28
+	if (game.player.shared.vx > 0 &&
+	    (game.player.shared.x - game.camera_x) >= (CAMERA_WIDTH / 2 * 8) &&
+		(game.camera_x/8 + CAMERA_WIDTH < LEVEL_WIDTH) &&
+		(game.camera_y/8 + CAMERA_HEIGHT < LEVEL_HEIGHT))
+	{
+		move_camera_x();
+    8114:	0c 94 5b 3a 	jmp	0x74b6	; 0x74b6 <move_camera_x>
+	}
+}
+    8118:	df 91       	pop	r29
+    811a:	cf 91       	pop	r28
+    811c:	08 95       	ret
 
-0000774e <clear_sprites>:
+0000811e <clear_sprites>:
+
+void clear_sprites()
+{
+    811e:	0f 93       	push	r16
+    8120:	cf 93       	push	r28
+	for(char i = 0; i < MAX_EXTENDED_SPRITES; i++)
+    8122:	c0 e0       	ldi	r28, 0x00	; 0
+	{
+		LBMoveSprite(i, OFF_SCREEN, 0, 1, 1);
+    8124:	01 e0       	ldi	r16, 0x01	; 1
+    8126:	21 e0       	ldi	r18, 0x01	; 1
+    8128:	40 e0       	ldi	r20, 0x00	; 0
+    812a:	60 ee       	ldi	r22, 0xE0	; 224
+    812c:	8c 2f       	mov	r24, r28
+    812e:	0e 94 33 38 	call	0x7066	; 0x7066 <LBMoveSprite>
+    8132:	cf 5f       	subi	r28, 0xFF	; 255
 	}
 }
 
 void clear_sprites()
 {
-    774e:	0f 93       	push	r16
-    7750:	cf 93       	push	r28
 	for(char i = 0; i < MAX_EXTENDED_SPRITES; i++)
-    7752:	c0 e0       	ldi	r28, 0x00	; 0
-	{
-		LBMoveSprite(i, OFF_SCREEN, 0, 1, 1);
-    7754:	01 e0       	ldi	r16, 0x01	; 1
-    7756:	21 e0       	ldi	r18, 0x01	; 1
-    7758:	40 e0       	ldi	r20, 0x00	; 0
-    775a:	60 ee       	ldi	r22, 0xE0	; 224
-    775c:	8c 2f       	mov	r24, r28
-    775e:	0e 94 33 38 	call	0x7066	; 0x7066 <LBMoveSprite>
-    7762:	cf 5f       	subi	r28, 0xFF	; 255
-	}
-}
-
-void clear_sprites()
-{
-	for(char i = 0; i < MAX_EXTENDED_SPRITES; i++)
-    7764:	cc 31       	cpi	r28, 0x1C	; 28
-    7766:	b1 f7       	brne	.-20     	; 0x7754 <clear_sprites+0x6>
+    8134:	cc 31       	cpi	r28, 0x1C	; 28
+    8136:	b1 f7       	brne	.-20     	; 0x8124 <clear_sprites+0x6>
 	{
 		LBMoveSprite(i, OFF_SCREEN, 0, 1, 1);
 	}
 	LBRotateSprites(MAX_SPRITES);
-    7768:	8e e0       	ldi	r24, 0x0E	; 14
+    8138:	8e e0       	ldi	r24, 0x0E	; 14
 }
-    776a:	cf 91       	pop	r28
-    776c:	0f 91       	pop	r16
+    813a:	cf 91       	pop	r28
+    813c:	0f 91       	pop	r16
 {
 	for(char i = 0; i < MAX_EXTENDED_SPRITES; i++)
 	{
 		LBMoveSprite(i, OFF_SCREEN, 0, 1, 1);
 	}
 	LBRotateSprites(MAX_SPRITES);
-    776e:	0c 94 71 38 	jmp	0x70e2	; 0x70e2 <LBRotateSprites>
+    813e:	0c 94 71 38 	jmp	0x70e2	; 0x70e2 <LBRotateSprites>
 
-00007772 <level_transition>:
+00008142 <level_transition>:
 	render_camera_view();
 	LBMapSprite(0, LBGetNextFrame(&game.player.idle), 0);
 }
 
 void level_transition(u8 index)
 {
-    7772:	cf 93       	push	r28
-    7774:	c8 2f       	mov	r28, r24
+    8142:	cf 93       	push	r28
+    8144:	c8 2f       	mov	r28, r24
 	FadeOut(FRAMES_PER_FADE, true);
-    7776:	61 e0       	ldi	r22, 0x01	; 1
-    7778:	83 e0       	ldi	r24, 0x03	; 3
-    777a:	0e 94 2c 37 	call	0x6e58	; 0x6e58 <FadeOut>
+    8146:	61 e0       	ldi	r22, 0x01	; 1
+    8148:	83 e0       	ldi	r24, 0x03	; 3
+    814a:	0e 94 2c 37 	call	0x6e58	; 0x6e58 <FadeOut>
 	ClearVram();
-    777e:	0e 94 4d 29 	call	0x529a	; 0x529a <ClearVram>
+    814e:	0e 94 4d 29 	call	0x529a	; 0x529a <ClearVram>
 	clear_sprites();
-    7782:	0e 94 a7 3b 	call	0x774e	; 0x774e <clear_sprites>
+    8152:	0e 94 8f 40 	call	0x811e	; 0x811e <clear_sprites>
 	Print(8, 12, (char*) strLevels+index*16);
-    7786:	80 e1       	ldi	r24, 0x10	; 16
-    7788:	c8 9f       	mul	r28, r24
-    778a:	a0 01       	movw	r20, r0
-    778c:	11 24       	eor	r1, r1
-    778e:	45 5a       	subi	r20, 0xA5	; 165
-    7790:	56 4f       	sbci	r21, 0xF6	; 246
-    7792:	6c e0       	ldi	r22, 0x0C	; 12
-    7794:	70 e0       	ldi	r23, 0x00	; 0
-    7796:	88 e0       	ldi	r24, 0x08	; 8
-    7798:	90 e0       	ldi	r25, 0x00	; 0
-    779a:	0e 94 a9 36 	call	0x6d52	; 0x6d52 <Print>
+    8156:	80 e1       	ldi	r24, 0x10	; 16
+    8158:	c8 9f       	mul	r28, r24
+    815a:	a0 01       	movw	r20, r0
+    815c:	11 24       	eor	r1, r1
+    815e:	45 5a       	subi	r20, 0xA5	; 165
+    8160:	56 4f       	sbci	r21, 0xF6	; 246
+    8162:	6c e0       	ldi	r22, 0x0C	; 12
+    8164:	70 e0       	ldi	r23, 0x00	; 0
+    8166:	88 e0       	ldi	r24, 0x08	; 8
+    8168:	90 e0       	ldi	r25, 0x00	; 0
+    816a:	0e 94 a9 36 	call	0x6d52	; 0x6d52 <Print>
 	FadeIn(1, true);
-    779e:	61 e0       	ldi	r22, 0x01	; 1
-    77a0:	81 e0       	ldi	r24, 0x01	; 1
-    77a2:	0e 94 20 37 	call	0x6e40	; 0x6e40 <FadeIn>
+    816e:	61 e0       	ldi	r22, 0x01	; 1
+    8170:	81 e0       	ldi	r24, 0x01	; 1
+    8172:	0e 94 20 37 	call	0x6e40	; 0x6e40 <FadeIn>
 	LBWaitSeconds(TEXT_LINGER);
-    77a6:	83 e0       	ldi	r24, 0x03	; 3
-    77a8:	0e 94 d2 37 	call	0x6fa4	; 0x6fa4 <LBWaitSeconds>
+    8176:	83 e0       	ldi	r24, 0x03	; 3
+    8178:	0e 94 d2 37 	call	0x6fa4	; 0x6fa4 <LBWaitSeconds>
 	FadeOut(1, true);
-    77ac:	61 e0       	ldi	r22, 0x01	; 1
-    77ae:	81 e0       	ldi	r24, 0x01	; 1
-    77b0:	0e 94 2c 37 	call	0x6e58	; 0x6e58 <FadeOut>
+    817c:	61 e0       	ldi	r22, 0x01	; 1
+    817e:	81 e0       	ldi	r24, 0x01	; 1
+    8180:	0e 94 2c 37 	call	0x6e58	; 0x6e58 <FadeOut>
 	ClearVram();
-    77b4:	0e 94 4d 29 	call	0x529a	; 0x529a <ClearVram>
+    8184:	0e 94 4d 29 	call	0x529a	; 0x529a <ClearVram>
 	FadeIn(FRAMES_PER_FADE, false);
-    77b8:	60 e0       	ldi	r22, 0x00	; 0
-    77ba:	83 e0       	ldi	r24, 0x03	; 3
-    77bc:	0e 94 20 37 	call	0x6e40	; 0x6e40 <FadeIn>
+    8188:	60 e0       	ldi	r22, 0x00	; 0
+    818a:	83 e0       	ldi	r24, 0x03	; 3
+    818c:	0e 94 20 37 	call	0x6e40	; 0x6e40 <FadeIn>
 	load_level(index);
-    77c0:	8c 2f       	mov	r24, r28
+    8190:	8c 2f       	mov	r24, r28
 }
-    77c2:	cf 91       	pop	r28
+    8192:	cf 91       	pop	r28
 	FadeIn(1, true);
 	LBWaitSeconds(TEXT_LINGER);
 	FadeOut(1, true);
 	ClearVram();
 	FadeIn(FRAMES_PER_FADE, false);
 	load_level(index);
-    77c4:	0c 94 6f 3a 	jmp	0x74de	; 0x74de <load_level>
+    8194:	0c 94 74 3a 	jmp	0x74e8	; 0x74e8 <load_level>
 
-000077c8 <load_splash>:
+00008198 <load_splash>:
 	init_game_state();
 	load_splash();
 }
 
 void load_splash()
 {
-    77c8:	0f 93       	push	r16
+    8198:	0f 93       	push	r16
 	game.current_screen = SPLASH;
-    77ca:	e0 e9       	ldi	r30, 0x90	; 144
-    77cc:	fd e0       	ldi	r31, 0x0D	; 13
-    77ce:	10 82       	st	Z, r1
+    819a:	e0 e9       	ldi	r30, 0x90	; 144
+    819c:	fd e0       	ldi	r31, 0x0D	; 13
+    819e:	10 82       	st	Z, r1
 	game.selection = START_SELECTED;
-    77d0:	13 82       	std	Z+3, r1	; 0x03
+    81a0:	13 82       	std	Z+3, r1	; 0x03
 	clear_sprites();
-    77d2:	0e 94 a7 3b 	call	0x774e	; 0x774e <clear_sprites>
+    81a2:	0e 94 8f 40 	call	0x811e	; 0x811e <clear_sprites>
 	Print(8, 15, (char*) str1Player);
-    77d6:	4c ea       	ldi	r20, 0xAC	; 172
-    77d8:	59 e0       	ldi	r21, 0x09	; 9
-    77da:	6f e0       	ldi	r22, 0x0F	; 15
-    77dc:	70 e0       	ldi	r23, 0x00	; 0
-    77de:	88 e0       	ldi	r24, 0x08	; 8
-    77e0:	90 e0       	ldi	r25, 0x00	; 0
-    77e2:	0e 94 a9 36 	call	0x6d52	; 0x6d52 <Print>
+    81a6:	4c ea       	ldi	r20, 0xAC	; 172
+    81a8:	59 e0       	ldi	r21, 0x09	; 9
+    81aa:	6f e0       	ldi	r22, 0x0F	; 15
+    81ac:	70 e0       	ldi	r23, 0x00	; 0
+    81ae:	88 e0       	ldi	r24, 0x08	; 8
+    81b0:	90 e0       	ldi	r25, 0x00	; 0
+    81b2:	0e 94 a9 36 	call	0x6d52	; 0x6d52 <Print>
 	Print(8, 16, (char*) strHighscores);
-    77e6:	40 ea       	ldi	r20, 0xA0	; 160
-    77e8:	59 e0       	ldi	r21, 0x09	; 9
-    77ea:	60 e1       	ldi	r22, 0x10	; 16
-    77ec:	70 e0       	ldi	r23, 0x00	; 0
-    77ee:	88 e0       	ldi	r24, 0x08	; 8
-    77f0:	90 e0       	ldi	r25, 0x00	; 0
-    77f2:	0e 94 a9 36 	call	0x6d52	; 0x6d52 <Print>
+    81b6:	40 ea       	ldi	r20, 0xA0	; 160
+    81b8:	59 e0       	ldi	r21, 0x09	; 9
+    81ba:	60 e1       	ldi	r22, 0x10	; 16
+    81bc:	70 e0       	ldi	r23, 0x00	; 0
+    81be:	88 e0       	ldi	r24, 0x08	; 8
+    81c0:	90 e0       	ldi	r25, 0x00	; 0
+    81c2:	0e 94 a9 36 	call	0x6d52	; 0x6d52 <Print>
 	Print(6, 21, (char*) strSelectHandle);
-    77f6:	4f e8       	ldi	r20, 0x8F	; 143
-    77f8:	59 e0       	ldi	r21, 0x09	; 9
-    77fa:	65 e1       	ldi	r22, 0x15	; 21
-    77fc:	70 e0       	ldi	r23, 0x00	; 0
-    77fe:	86 e0       	ldi	r24, 0x06	; 6
-    7800:	90 e0       	ldi	r25, 0x00	; 0
-    7802:	0e 94 a9 36 	call	0x6d52	; 0x6d52 <Print>
+    81c6:	4f e8       	ldi	r20, 0x8F	; 143
+    81c8:	59 e0       	ldi	r21, 0x09	; 9
+    81ca:	65 e1       	ldi	r22, 0x15	; 21
+    81cc:	70 e0       	ldi	r23, 0x00	; 0
+    81ce:	86 e0       	ldi	r24, 0x06	; 6
+    81d0:	90 e0       	ldi	r25, 0x00	; 0
+    81d2:	0e 94 a9 36 	call	0x6d52	; 0x6d52 <Print>
 	Print(4, 26, (char*) strCopyright);
-    7806:	42 eb       	ldi	r20, 0xB2	; 178
-    7808:	59 e0       	ldi	r21, 0x09	; 9
-    780a:	6a e1       	ldi	r22, 0x1A	; 26
-    780c:	70 e0       	ldi	r23, 0x00	; 0
-    780e:	84 e0       	ldi	r24, 0x04	; 4
-    7810:	90 e0       	ldi	r25, 0x00	; 0
-    7812:	0e 94 a9 36 	call	0x6d52	; 0x6d52 <Print>
+    81d6:	42 eb       	ldi	r20, 0xB2	; 178
+    81d8:	59 e0       	ldi	r21, 0x09	; 9
+    81da:	6a e1       	ldi	r22, 0x1A	; 26
+    81dc:	70 e0       	ldi	r23, 0x00	; 0
+    81de:	84 e0       	ldi	r24, 0x04	; 4
+    81e0:	90 e0       	ldi	r25, 0x00	; 0
+    81e2:	0e 94 a9 36 	call	0x6d52	; 0x6d52 <Print>
 	DrawMap2(6, 5, (const char*) map_splash);
-    7816:	41 e8       	ldi	r20, 0x81	; 129
-    7818:	57 e4       	ldi	r21, 0x47	; 71
-    781a:	65 e0       	ldi	r22, 0x05	; 5
-    781c:	86 e0       	ldi	r24, 0x06	; 6
-    781e:	0e 94 5c 36 	call	0x6cb8	; 0x6cb8 <DrawMap>
+    81e6:	41 e8       	ldi	r20, 0x81	; 129
+    81e8:	57 e4       	ldi	r21, 0x47	; 71
+    81ea:	65 e0       	ldi	r22, 0x05	; 5
+    81ec:	86 e0       	ldi	r24, 0x06	; 6
+    81ee:	0e 94 5c 36 	call	0x6cb8	; 0x6cb8 <DrawMap>
 	LBMapSprite(0, map_right_arrow, 0);
-    7822:	40 e0       	ldi	r20, 0x00	; 0
-    7824:	65 e9       	ldi	r22, 0x95	; 149
-    7826:	7e e2       	ldi	r23, 0x2E	; 46
-    7828:	80 e0       	ldi	r24, 0x00	; 0
-    782a:	0e 94 e1 37 	call	0x6fc2	; 0x6fc2 <LBMapSprite>
+    81f2:	40 e0       	ldi	r20, 0x00	; 0
+    81f4:	65 e9       	ldi	r22, 0x95	; 149
+    81f6:	7e e2       	ldi	r23, 0x2E	; 46
+    81f8:	80 e0       	ldi	r24, 0x00	; 0
+    81fa:	0e 94 e1 37 	call	0x6fc2	; 0x6fc2 <LBMapSprite>
 	LBMoveSprite(0, 7*8, 15*8, 1, 1);
-    782e:	01 e0       	ldi	r16, 0x01	; 1
-    7830:	21 e0       	ldi	r18, 0x01	; 1
-    7832:	48 e7       	ldi	r20, 0x78	; 120
-    7834:	68 e3       	ldi	r22, 0x38	; 56
-    7836:	80 e0       	ldi	r24, 0x00	; 0
-    7838:	0e 94 33 38 	call	0x7066	; 0x7066 <LBMoveSprite>
+    81fe:	01 e0       	ldi	r16, 0x01	; 1
+    8200:	21 e0       	ldi	r18, 0x01	; 1
+    8202:	48 e7       	ldi	r20, 0x78	; 120
+    8204:	68 e3       	ldi	r22, 0x38	; 56
+    8206:	80 e0       	ldi	r24, 0x00	; 0
+    8208:	0e 94 33 38 	call	0x7066	; 0x7066 <LBMoveSprite>
 	LBRotateSprites(1);
-    783c:	81 e0       	ldi	r24, 0x01	; 1
+    820c:	81 e0       	ldi	r24, 0x01	; 1
 }
-    783e:	0f 91       	pop	r16
+    820e:	0f 91       	pop	r16
 	Print(6, 21, (char*) strSelectHandle);
 	Print(4, 26, (char*) strCopyright);
 	DrawMap2(6, 5, (const char*) map_splash);
 	LBMapSprite(0, map_right_arrow, 0);
 	LBMoveSprite(0, 7*8, 15*8, 1, 1);
 	LBRotateSprites(1);
-    7840:	0c 94 71 38 	jmp	0x70e2	; 0x70e2 <LBRotateSprites>
+    8210:	0c 94 71 38 	jmp	0x70e2	; 0x70e2 <LBRotateSprites>
 
-00007844 <select_pressed>:
+00008214 <select_pressed>:
 }
 
 char select_pressed(JoyPadState* p)
 {
-    7844:	fc 01       	movw	r30, r24
-    7846:	20 81       	ld	r18, Z
-    7848:	31 81       	ldd	r19, Z+1	; 0x01
-    784a:	28 70       	andi	r18, 0x08	; 8
-    784c:	31 70       	andi	r19, 0x01	; 1
+    8214:	fc 01       	movw	r30, r24
+    8216:	20 81       	ld	r18, Z
+    8218:	31 81       	ldd	r19, Z+1	; 0x01
+    821a:	28 70       	andi	r18, 0x08	; 8
+    821c:	31 70       	andi	r19, 0x01	; 1
 	return (p->pressed & BTN_A) || (p->pressed & BTN_START);
-    784e:	81 e0       	ldi	r24, 0x01	; 1
-    7850:	23 2b       	or	r18, r19
-    7852:	09 f4       	brne	.+2      	; 0x7856 <select_pressed+0x12>
-    7854:	80 e0       	ldi	r24, 0x00	; 0
+    821e:	81 e0       	ldi	r24, 0x01	; 1
+    8220:	23 2b       	or	r18, r19
+    8222:	09 f4       	brne	.+2      	; 0x8226 <select_pressed+0x12>
+    8224:	80 e0       	ldi	r24, 0x00	; 0
 }
-    7856:	08 95       	ret
+    8226:	08 95       	ret
 
-00007858 <update_splash>:
+00008228 <update_splash>:
 
 void update_splash()
 {
-    7858:	0f 93       	push	r16
+    8228:	0f 93       	push	r16
 	if (game.joypadState.pressed & BTN_DOWN && game.selection == START_SELECTED)
-    785a:	80 91 1a 0e 	lds	r24, 0x0E1A
-    785e:	85 ff       	sbrs	r24, 5
-    7860:	0b c0       	rjmp	.+22     	; 0x7878 <update_splash+0x20>
-    7862:	90 91 93 0d 	lds	r25, 0x0D93
-    7866:	91 11       	cpse	r25, r1
-    7868:	07 c0       	rjmp	.+14     	; 0x7878 <update_splash+0x20>
+    822a:	80 91 4c 0e 	lds	r24, 0x0E4C
+    822e:	85 ff       	sbrs	r24, 5
+    8230:	0b c0       	rjmp	.+22     	; 0x8248 <update_splash+0x20>
+    8232:	90 91 93 0d 	lds	r25, 0x0D93
+    8236:	91 11       	cpse	r25, r1
+    8238:	07 c0       	rjmp	.+14     	; 0x8248 <update_splash+0x20>
 	{
 		game.selection = HIGH_SCORES_SELECTED;
-    786a:	81 e0       	ldi	r24, 0x01	; 1
-    786c:	80 93 93 0d 	sts	0x0D93, r24
+    823a:	81 e0       	ldi	r24, 0x01	; 1
+    823c:	80 93 93 0d 	sts	0x0D93, r24
 		LBMoveSprite(0, 7*8, 16*8, 1, 1);
-    7870:	01 e0       	ldi	r16, 0x01	; 1
-    7872:	21 e0       	ldi	r18, 0x01	; 1
-    7874:	40 e8       	ldi	r20, 0x80	; 128
-    7876:	0b c0       	rjmp	.+22     	; 0x788e <update_splash+0x36>
+    8240:	01 e0       	ldi	r16, 0x01	; 1
+    8242:	21 e0       	ldi	r18, 0x01	; 1
+    8244:	40 e8       	ldi	r20, 0x80	; 128
+    8246:	0b c0       	rjmp	.+22     	; 0x825e <update_splash+0x36>
 	}
 	else if (game.joypadState.pressed & BTN_UP && game.selection == HIGH_SCORES_SELECTED)
-    7878:	84 ff       	sbrs	r24, 4
-    787a:	0e c0       	rjmp	.+28     	; 0x7898 <update_splash+0x40>
-    787c:	80 91 93 0d 	lds	r24, 0x0D93
-    7880:	81 30       	cpi	r24, 0x01	; 1
-    7882:	51 f4       	brne	.+20     	; 0x7898 <update_splash+0x40>
+    8248:	84 ff       	sbrs	r24, 4
+    824a:	0e c0       	rjmp	.+28     	; 0x8268 <update_splash+0x40>
+    824c:	80 91 93 0d 	lds	r24, 0x0D93
+    8250:	81 30       	cpi	r24, 0x01	; 1
+    8252:	51 f4       	brne	.+20     	; 0x8268 <update_splash+0x40>
 	{
 		game.selection = START_SELECTED;
-    7884:	10 92 93 0d 	sts	0x0D93, r1
+    8254:	10 92 93 0d 	sts	0x0D93, r1
 		LBMoveSprite(0, 7*8, 15*8, 1, 1);
-    7888:	01 e0       	ldi	r16, 0x01	; 1
-    788a:	21 e0       	ldi	r18, 0x01	; 1
-    788c:	48 e7       	ldi	r20, 0x78	; 120
-    788e:	68 e3       	ldi	r22, 0x38	; 56
-    7890:	80 e0       	ldi	r24, 0x00	; 0
-    7892:	0e 94 33 38 	call	0x7066	; 0x7066 <LBMoveSprite>
-    7896:	11 c0       	rjmp	.+34     	; 0x78ba <update_splash+0x62>
+    8258:	01 e0       	ldi	r16, 0x01	; 1
+    825a:	21 e0       	ldi	r18, 0x01	; 1
+    825c:	48 e7       	ldi	r20, 0x78	; 120
+    825e:	68 e3       	ldi	r22, 0x38	; 56
+    8260:	80 e0       	ldi	r24, 0x00	; 0
+    8262:	0e 94 33 38 	call	0x7066	; 0x7066 <LBMoveSprite>
+    8266:	11 c0       	rjmp	.+34     	; 0x828a <update_splash+0x62>
 	}
 	else if (select_pressed(&game.joypadState) && game.selection == START_SELECTED)
-    7898:	8a e1       	ldi	r24, 0x1A	; 26
-    789a:	9e e0       	ldi	r25, 0x0E	; 14
-    789c:	0e 94 22 3c 	call	0x7844	; 0x7844 <select_pressed>
-    78a0:	88 23       	and	r24, r24
-    78a2:	59 f0       	breq	.+22     	; 0x78ba <update_splash+0x62>
-    78a4:	80 91 93 0d 	lds	r24, 0x0D93
-    78a8:	81 11       	cpse	r24, r1
-    78aa:	07 c0       	rjmp	.+14     	; 0x78ba <update_splash+0x62>
+    8268:	8c e4       	ldi	r24, 0x4C	; 76
+    826a:	9e e0       	ldi	r25, 0x0E	; 14
+    826c:	0e 94 0a 41 	call	0x8214	; 0x8214 <select_pressed>
+    8270:	88 23       	and	r24, r24
+    8272:	59 f0       	breq	.+22     	; 0x828a <update_splash+0x62>
+    8274:	80 91 93 0d 	lds	r24, 0x0D93
+    8278:	81 11       	cpse	r24, r1
+    827a:	07 c0       	rjmp	.+14     	; 0x828a <update_splash+0x62>
 	{
 		game.current_screen = LEVEL;
-    78ac:	82 e0       	ldi	r24, 0x02	; 2
-    78ae:	80 93 90 0d 	sts	0x0D90, r24
+    827c:	82 e0       	ldi	r24, 0x02	; 2
+    827e:	80 93 90 0d 	sts	0x0D90, r24
 		level_transition(0);
-    78b2:	80 e0       	ldi	r24, 0x00	; 0
+    8282:	80 e0       	ldi	r24, 0x00	; 0
 		return;
 	}
 }
-    78b4:	0f 91       	pop	r16
+    8284:	0f 91       	pop	r16
 		LBMoveSprite(0, 7*8, 15*8, 1, 1);
 	}
 	else if (select_pressed(&game.joypadState) && game.selection == START_SELECTED)
 	{
 		game.current_screen = LEVEL;
 		level_transition(0);
-    78b6:	0c 94 b9 3b 	jmp	0x7772	; 0x7772 <level_transition>
+    8286:	0c 94 a1 40 	jmp	0x8142	; 0x8142 <level_transition>
 		return;
 	}
 }
-    78ba:	0f 91       	pop	r16
-    78bc:	08 95       	ret
+    828a:	0f 91       	pop	r16
+    828c:	08 95       	ret
 
-000078be <main>:
+0000828e <main>:
 
 int main()
 {
 	// Initialize
 	InitMusicPlayer(my_patches);
-    78be:	89 e3       	ldi	r24, 0x39	; 57
-    78c0:	9b e1       	ldi	r25, 0x1B	; 27
-    78c2:	0e 94 24 2b 	call	0x5648	; 0x5648 <InitMusicPlayer>
+    828e:	89 e3       	ldi	r24, 0x39	; 57
+    8290:	9b e1       	ldi	r25, 0x1B	; 27
+    8292:	0e 94 24 2b 	call	0x5648	; 0x5648 <InitMusicPlayer>
 	ClearVram();
-    78c6:	0e 94 4d 29 	call	0x529a	; 0x529a <ClearVram>
+    8296:	0e 94 4d 29 	call	0x529a	; 0x529a <ClearVram>
 	SetMasterVolume(0x05);
-    78ca:	85 e0       	ldi	r24, 0x05	; 5
-    78cc:	0e 94 a1 2e 	call	0x5d42	; 0x5d42 <SetMasterVolume>
+    829a:	85 e0       	ldi	r24, 0x05	; 5
+    829c:	0e 94 a1 2e 	call	0x5d42	; 0x5d42 <SetMasterVolume>
 	SetTileTable(tiles_data);
-    78d0:	8b e9       	ldi	r24, 0x9B	; 155
-    78d2:	9e e2       	ldi	r25, 0x2E	; 46
-    78d4:	0e 94 6f 29 	call	0x52de	; 0x52de <SetTileTable>
+    82a0:	8b e9       	ldi	r24, 0x9B	; 155
+    82a2:	9e e2       	ldi	r25, 0x2E	; 46
+    82a4:	0e 94 6f 29 	call	0x52de	; 0x52de <SetTileTable>
 	SetSpritesTileTable(sprites_data);
-    78d8:	8b ea       	ldi	r24, 0xAB	; 171
-    78da:	91 e2       	ldi	r25, 0x21	; 33
-    78dc:	0e 94 48 29 	call	0x5290	; 0x5290 <SetSpritesTileTable>
+    82a8:	8b ea       	ldi	r24, 0xAB	; 171
+    82aa:	91 e2       	ldi	r25, 0x21	; 33
+    82ac:	0e 94 48 29 	call	0x5290	; 0x5290 <SetSpritesTileTable>
 	SetFontTilesIndex(TILES_DATA_SIZE);
-    78e0:	83 e2       	ldi	r24, 0x23	; 35
-    78e2:	0e 94 6c 29 	call	0x52d8	; 0x52d8 <SetFontTilesIndex>
+    82b0:	83 e2       	ldi	r24, 0x23	; 35
+    82b2:	0e 94 6c 29 	call	0x52d8	; 0x52d8 <SetFontTilesIndex>
 	FadeIn(FRAMES_PER_FADE, false);
-    78e6:	60 e0       	ldi	r22, 0x00	; 0
-    78e8:	83 e0       	ldi	r24, 0x03	; 3
-    78ea:	0e 94 20 37 	call	0x6e40	; 0x6e40 <FadeIn>
+    82b6:	60 e0       	ldi	r22, 0x00	; 0
+    82b8:	83 e0       	ldi	r24, 0x03	; 3
+    82ba:	0e 94 20 37 	call	0x6e40	; 0x6e40 <FadeIn>
 	init_game_state();
-    78ee:	0e 94 d8 38 	call	0x71b0	; 0x71b0 <init_game_state>
+    82be:	0e 94 d8 38 	call	0x71b0	; 0x71b0 <init_game_state>
 	load_splash();
-    78f2:	0e 94 e4 3b 	call	0x77c8	; 0x77c8 <load_splash>
+    82c2:	0e 94 cc 40 	call	0x8198	; 0x8198 <load_splash>
 	while (1)
 	{
 		WaitVsync(1);
-    78f6:	81 e0       	ldi	r24, 0x01	; 1
-    78f8:	90 e0       	ldi	r25, 0x00	; 0
-    78fa:	0e 94 c4 36 	call	0x6d88	; 0x6d88 <WaitVsync>
+    82c6:	81 e0       	ldi	r24, 0x01	; 1
+    82c8:	90 e0       	ldi	r25, 0x00	; 0
+    82ca:	0e 94 c4 36 	call	0x6d88	; 0x6d88 <WaitVsync>
 		LBGetJoyPadState(&game.joypadState, 0);
-    78fe:	60 e0       	ldi	r22, 0x00	; 0
-    7900:	8a e1       	ldi	r24, 0x1A	; 26
-    7902:	9e e0       	ldi	r25, 0x0E	; 14
-    7904:	0e 94 87 37 	call	0x6f0e	; 0x6f0e <LBGetJoyPadState>
+    82ce:	60 e0       	ldi	r22, 0x00	; 0
+    82d0:	8c e4       	ldi	r24, 0x4C	; 76
+    82d2:	9e e0       	ldi	r25, 0x0E	; 14
+    82d4:	0e 94 87 37 	call	0x6f0e	; 0x6f0e <LBGetJoyPadState>
 		switch (game.current_screen)
-    7908:	80 91 90 0d 	lds	r24, 0x0D90
-    790c:	88 23       	and	r24, r24
-    790e:	51 f0       	breq	.+20     	; 0x7924 <main+0x66>
-    7910:	82 30       	cpi	r24, 0x02	; 2
-    7912:	89 f7       	brne	.-30     	; 0x78f6 <main+0x38>
+    82d8:	80 91 90 0d 	lds	r24, 0x0D90
+    82dc:	88 23       	and	r24, r24
+    82de:	51 f0       	breq	.+20     	; 0x82f4 <main+0x66>
+    82e0:	82 30       	cpi	r24, 0x02	; 2
+    82e2:	89 f7       	brne	.-30     	; 0x82c6 <main+0x38>
 			case SPLASH:
 				update_splash();
 				LBRotateSprites(1);
 				break;
 			case LEVEL:
 				update_level();
-    7914:	0e 94 80 3b 	call	0x7700	; 0x7700 <update_level>
+    82e4:	0e 94 47 40 	call	0x808e	; 0x808e <update_level>
 				update_player();
-    7918:	0e 94 c9 3a 	call	0x7592	; 0x7592 <update_player>
+    82e8:	0e 94 b2 3b 	call	0x7764	; 0x7764 <update_player>
 				update_player_position();
-    791c:	0e 94 1f 3b 	call	0x763e	; 0x763e <update_player_position>
+    82ec:	0e 94 c7 3f 	call	0x7f8e	; 0x7f8e <update_player_position>
 				LBRotateSprites(6);
-    7920:	86 e0       	ldi	r24, 0x06	; 6
-    7922:	03 c0       	rjmp	.+6      	; 0x792a <main+0x6c>
+    82f0:	86 e0       	ldi	r24, 0x06	; 6
+    82f2:	03 c0       	rjmp	.+6      	; 0x82fa <main+0x6c>
 		WaitVsync(1);
 		LBGetJoyPadState(&game.joypadState, 0);
 		switch (game.current_screen)
 		{
 			case SPLASH:
 				update_splash();
-    7924:	0e 94 2c 3c 	call	0x7858	; 0x7858 <update_splash>
+    82f4:	0e 94 14 41 	call	0x8228	; 0x8228 <update_splash>
 				LBRotateSprites(1);
-    7928:	81 e0       	ldi	r24, 0x01	; 1
+    82f8:	81 e0       	ldi	r24, 0x01	; 1
 				break;
 			case LEVEL:
 				update_level();
 				update_player();
 				update_player_position();
 				LBRotateSprites(6);
-    792a:	0e 94 71 38 	call	0x70e2	; 0x70e2 <LBRotateSprites>
+    82fa:	0e 94 71 38 	call	0x70e2	; 0x70e2 <LBRotateSprites>
 				break;
-    792e:	e3 cf       	rjmp	.-58     	; 0x78f6 <main+0x38>
+    82fe:	e3 cf       	rjmp	.-58     	; 0x82c6 <main+0x38>
 
-00007930 <__udivmodhi4>:
-    7930:	aa 1b       	sub	r26, r26
-    7932:	bb 1b       	sub	r27, r27
-    7934:	51 e1       	ldi	r21, 0x11	; 17
-    7936:	07 c0       	rjmp	.+14     	; 0x7946 <__udivmodhi4_ep>
+00008300 <__udivmodhi4>:
+    8300:	aa 1b       	sub	r26, r26
+    8302:	bb 1b       	sub	r27, r27
+    8304:	51 e1       	ldi	r21, 0x11	; 17
+    8306:	07 c0       	rjmp	.+14     	; 0x8316 <__udivmodhi4_ep>
 
-00007938 <__udivmodhi4_loop>:
-    7938:	aa 1f       	adc	r26, r26
-    793a:	bb 1f       	adc	r27, r27
-    793c:	a6 17       	cp	r26, r22
-    793e:	b7 07       	cpc	r27, r23
-    7940:	10 f0       	brcs	.+4      	; 0x7946 <__udivmodhi4_ep>
-    7942:	a6 1b       	sub	r26, r22
-    7944:	b7 0b       	sbc	r27, r23
+00008308 <__udivmodhi4_loop>:
+    8308:	aa 1f       	adc	r26, r26
+    830a:	bb 1f       	adc	r27, r27
+    830c:	a6 17       	cp	r26, r22
+    830e:	b7 07       	cpc	r27, r23
+    8310:	10 f0       	brcs	.+4      	; 0x8316 <__udivmodhi4_ep>
+    8312:	a6 1b       	sub	r26, r22
+    8314:	b7 0b       	sbc	r27, r23
 
-00007946 <__udivmodhi4_ep>:
-    7946:	88 1f       	adc	r24, r24
-    7948:	99 1f       	adc	r25, r25
-    794a:	5a 95       	dec	r21
-    794c:	a9 f7       	brne	.-22     	; 0x7938 <__udivmodhi4_loop>
-    794e:	80 95       	com	r24
-    7950:	90 95       	com	r25
-    7952:	bc 01       	movw	r22, r24
-    7954:	cd 01       	movw	r24, r26
-    7956:	08 95       	ret
+00008316 <__udivmodhi4_ep>:
+    8316:	88 1f       	adc	r24, r24
+    8318:	99 1f       	adc	r25, r25
+    831a:	5a 95       	dec	r21
+    831c:	a9 f7       	brne	.-22     	; 0x8308 <__udivmodhi4_loop>
+    831e:	80 95       	com	r24
+    8320:	90 95       	com	r25
+    8322:	bc 01       	movw	r22, r24
+    8324:	cd 01       	movw	r24, r26
+    8326:	08 95       	ret
 
-00007958 <__divmodhi4>:
-    7958:	97 fb       	bst	r25, 7
-    795a:	07 2e       	mov	r0, r23
-    795c:	16 f4       	brtc	.+4      	; 0x7962 <__divmodhi4+0xa>
-    795e:	00 94       	com	r0
-    7960:	07 d0       	rcall	.+14     	; 0x7970 <__divmodhi4_neg1>
-    7962:	77 fd       	sbrc	r23, 7
-    7964:	09 d0       	rcall	.+18     	; 0x7978 <__divmodhi4_neg2>
-    7966:	0e 94 98 3c 	call	0x7930	; 0x7930 <__udivmodhi4>
-    796a:	07 fc       	sbrc	r0, 7
-    796c:	05 d0       	rcall	.+10     	; 0x7978 <__divmodhi4_neg2>
-    796e:	3e f4       	brtc	.+14     	; 0x797e <__divmodhi4_exit>
+00008328 <__divmodhi4>:
+    8328:	97 fb       	bst	r25, 7
+    832a:	07 2e       	mov	r0, r23
+    832c:	16 f4       	brtc	.+4      	; 0x8332 <__divmodhi4+0xa>
+    832e:	00 94       	com	r0
+    8330:	07 d0       	rcall	.+14     	; 0x8340 <__divmodhi4_neg1>
+    8332:	77 fd       	sbrc	r23, 7
+    8334:	09 d0       	rcall	.+18     	; 0x8348 <__divmodhi4_neg2>
+    8336:	0e 94 80 41 	call	0x8300	; 0x8300 <__udivmodhi4>
+    833a:	07 fc       	sbrc	r0, 7
+    833c:	05 d0       	rcall	.+10     	; 0x8348 <__divmodhi4_neg2>
+    833e:	3e f4       	brtc	.+14     	; 0x834e <__divmodhi4_exit>
 
-00007970 <__divmodhi4_neg1>:
-    7970:	90 95       	com	r25
-    7972:	81 95       	neg	r24
-    7974:	9f 4f       	sbci	r25, 0xFF	; 255
-    7976:	08 95       	ret
+00008340 <__divmodhi4_neg1>:
+    8340:	90 95       	com	r25
+    8342:	81 95       	neg	r24
+    8344:	9f 4f       	sbci	r25, 0xFF	; 255
+    8346:	08 95       	ret
 
-00007978 <__divmodhi4_neg2>:
-    7978:	70 95       	com	r23
-    797a:	61 95       	neg	r22
-    797c:	7f 4f       	sbci	r23, 0xFF	; 255
+00008348 <__divmodhi4_neg2>:
+    8348:	70 95       	com	r23
+    834a:	61 95       	neg	r22
+    834c:	7f 4f       	sbci	r23, 0xFF	; 255
 
-0000797e <__divmodhi4_exit>:
-    797e:	08 95       	ret
+0000834e <__divmodhi4_exit>:
+    834e:	08 95       	ret
 
-00007980 <__tablejump2__>:
-    7980:	ee 0f       	add	r30, r30
-    7982:	ff 1f       	adc	r31, r31
-    7984:	05 90       	lpm	r0, Z+
-    7986:	f4 91       	lpm	r31, Z
-    7988:	e0 2d       	mov	r30, r0
-    798a:	09 94       	ijmp
+00008350 <__tablejump2__>:
+    8350:	ee 0f       	add	r30, r30
+    8352:	ff 1f       	adc	r31, r31
+    8354:	05 90       	lpm	r0, Z+
+    8356:	f4 91       	lpm	r31, Z
+    8358:	e0 2d       	mov	r30, r0
+    835a:	09 94       	ijmp
 
-0000798c <__subsf3>:
-    798c:	50 58       	subi	r21, 0x80	; 128
+0000835c <__subsf3>:
+    835c:	50 58       	subi	r21, 0x80	; 128
 
-0000798e <__addsf3>:
-    798e:	bb 27       	eor	r27, r27
-    7990:	aa 27       	eor	r26, r26
-    7992:	0e d0       	rcall	.+28     	; 0x79b0 <__addsf3x>
-    7994:	e0 c0       	rjmp	.+448    	; 0x7b56 <__fp_round>
-    7996:	d1 d0       	rcall	.+418    	; 0x7b3a <__fp_pscA>
-    7998:	30 f0       	brcs	.+12     	; 0x79a6 <__addsf3+0x18>
-    799a:	d6 d0       	rcall	.+428    	; 0x7b48 <__fp_pscB>
-    799c:	20 f0       	brcs	.+8      	; 0x79a6 <__addsf3+0x18>
-    799e:	31 f4       	brne	.+12     	; 0x79ac <__addsf3+0x1e>
-    79a0:	9f 3f       	cpi	r25, 0xFF	; 255
-    79a2:	11 f4       	brne	.+4      	; 0x79a8 <__addsf3+0x1a>
-    79a4:	1e f4       	brtc	.+6      	; 0x79ac <__addsf3+0x1e>
-    79a6:	c6 c0       	rjmp	.+396    	; 0x7b34 <__fp_nan>
-    79a8:	0e f4       	brtc	.+2      	; 0x79ac <__addsf3+0x1e>
-    79aa:	e0 95       	com	r30
-    79ac:	e7 fb       	bst	r30, 7
-    79ae:	bc c0       	rjmp	.+376    	; 0x7b28 <__fp_inf>
+0000835e <__addsf3>:
+    835e:	bb 27       	eor	r27, r27
+    8360:	aa 27       	eor	r26, r26
+    8362:	0e d0       	rcall	.+28     	; 0x8380 <__addsf3x>
+    8364:	08 c1       	rjmp	.+528    	; 0x8576 <__fp_round>
+    8366:	f9 d0       	rcall	.+498    	; 0x855a <__fp_pscA>
+    8368:	30 f0       	brcs	.+12     	; 0x8376 <__addsf3+0x18>
+    836a:	fe d0       	rcall	.+508    	; 0x8568 <__fp_pscB>
+    836c:	20 f0       	brcs	.+8      	; 0x8376 <__addsf3+0x18>
+    836e:	31 f4       	brne	.+12     	; 0x837c <__addsf3+0x1e>
+    8370:	9f 3f       	cpi	r25, 0xFF	; 255
+    8372:	11 f4       	brne	.+4      	; 0x8378 <__addsf3+0x1a>
+    8374:	1e f4       	brtc	.+6      	; 0x837c <__addsf3+0x1e>
+    8376:	ee c0       	rjmp	.+476    	; 0x8554 <__fp_nan>
+    8378:	0e f4       	brtc	.+2      	; 0x837c <__addsf3+0x1e>
+    837a:	e0 95       	com	r30
+    837c:	e7 fb       	bst	r30, 7
+    837e:	e4 c0       	rjmp	.+456    	; 0x8548 <__fp_inf>
 
-000079b0 <__addsf3x>:
-    79b0:	e9 2f       	mov	r30, r25
-    79b2:	e2 d0       	rcall	.+452    	; 0x7b78 <__fp_split3>
-    79b4:	80 f3       	brcs	.-32     	; 0x7996 <__addsf3+0x8>
-    79b6:	ba 17       	cp	r27, r26
-    79b8:	62 07       	cpc	r22, r18
-    79ba:	73 07       	cpc	r23, r19
-    79bc:	84 07       	cpc	r24, r20
-    79be:	95 07       	cpc	r25, r21
-    79c0:	18 f0       	brcs	.+6      	; 0x79c8 <__addsf3x+0x18>
-    79c2:	71 f4       	brne	.+28     	; 0x79e0 <__addsf3x+0x30>
-    79c4:	9e f5       	brtc	.+102    	; 0x7a2c <__addsf3x+0x7c>
-    79c6:	fa c0       	rjmp	.+500    	; 0x7bbc <__fp_zero>
-    79c8:	0e f4       	brtc	.+2      	; 0x79cc <__addsf3x+0x1c>
-    79ca:	e0 95       	com	r30
-    79cc:	0b 2e       	mov	r0, r27
-    79ce:	ba 2f       	mov	r27, r26
-    79d0:	a0 2d       	mov	r26, r0
-    79d2:	0b 01       	movw	r0, r22
-    79d4:	b9 01       	movw	r22, r18
-    79d6:	90 01       	movw	r18, r0
-    79d8:	0c 01       	movw	r0, r24
-    79da:	ca 01       	movw	r24, r20
-    79dc:	a0 01       	movw	r20, r0
-    79de:	11 24       	eor	r1, r1
-    79e0:	ff 27       	eor	r31, r31
-    79e2:	59 1b       	sub	r21, r25
-    79e4:	99 f0       	breq	.+38     	; 0x7a0c <__addsf3x+0x5c>
-    79e6:	59 3f       	cpi	r21, 0xF9	; 249
-    79e8:	50 f4       	brcc	.+20     	; 0x79fe <__addsf3x+0x4e>
-    79ea:	50 3e       	cpi	r21, 0xE0	; 224
-    79ec:	68 f1       	brcs	.+90     	; 0x7a48 <__addsf3x+0x98>
-    79ee:	1a 16       	cp	r1, r26
-    79f0:	f0 40       	sbci	r31, 0x00	; 0
-    79f2:	a2 2f       	mov	r26, r18
-    79f4:	23 2f       	mov	r18, r19
-    79f6:	34 2f       	mov	r19, r20
-    79f8:	44 27       	eor	r20, r20
-    79fa:	58 5f       	subi	r21, 0xF8	; 248
-    79fc:	f3 cf       	rjmp	.-26     	; 0x79e4 <__addsf3x+0x34>
-    79fe:	46 95       	lsr	r20
-    7a00:	37 95       	ror	r19
-    7a02:	27 95       	ror	r18
-    7a04:	a7 95       	ror	r26
-    7a06:	f0 40       	sbci	r31, 0x00	; 0
-    7a08:	53 95       	inc	r21
-    7a0a:	c9 f7       	brne	.-14     	; 0x79fe <__addsf3x+0x4e>
-    7a0c:	7e f4       	brtc	.+30     	; 0x7a2c <__addsf3x+0x7c>
-    7a0e:	1f 16       	cp	r1, r31
-    7a10:	ba 0b       	sbc	r27, r26
-    7a12:	62 0b       	sbc	r22, r18
-    7a14:	73 0b       	sbc	r23, r19
-    7a16:	84 0b       	sbc	r24, r20
-    7a18:	ba f0       	brmi	.+46     	; 0x7a48 <__addsf3x+0x98>
-    7a1a:	91 50       	subi	r25, 0x01	; 1
-    7a1c:	a1 f0       	breq	.+40     	; 0x7a46 <__addsf3x+0x96>
-    7a1e:	ff 0f       	add	r31, r31
-    7a20:	bb 1f       	adc	r27, r27
-    7a22:	66 1f       	adc	r22, r22
-    7a24:	77 1f       	adc	r23, r23
-    7a26:	88 1f       	adc	r24, r24
-    7a28:	c2 f7       	brpl	.-16     	; 0x7a1a <__addsf3x+0x6a>
-    7a2a:	0e c0       	rjmp	.+28     	; 0x7a48 <__addsf3x+0x98>
-    7a2c:	ba 0f       	add	r27, r26
-    7a2e:	62 1f       	adc	r22, r18
-    7a30:	73 1f       	adc	r23, r19
-    7a32:	84 1f       	adc	r24, r20
-    7a34:	48 f4       	brcc	.+18     	; 0x7a48 <__addsf3x+0x98>
-    7a36:	87 95       	ror	r24
-    7a38:	77 95       	ror	r23
-    7a3a:	67 95       	ror	r22
-    7a3c:	b7 95       	ror	r27
-    7a3e:	f7 95       	ror	r31
-    7a40:	9e 3f       	cpi	r25, 0xFE	; 254
-    7a42:	08 f0       	brcs	.+2      	; 0x7a46 <__addsf3x+0x96>
-    7a44:	b3 cf       	rjmp	.-154    	; 0x79ac <__addsf3+0x1e>
-    7a46:	93 95       	inc	r25
-    7a48:	88 0f       	add	r24, r24
-    7a4a:	08 f0       	brcs	.+2      	; 0x7a4e <__addsf3x+0x9e>
-    7a4c:	99 27       	eor	r25, r25
-    7a4e:	ee 0f       	add	r30, r30
-    7a50:	97 95       	ror	r25
-    7a52:	87 95       	ror	r24
-    7a54:	08 95       	ret
+00008380 <__addsf3x>:
+    8380:	e9 2f       	mov	r30, r25
+    8382:	0a d1       	rcall	.+532    	; 0x8598 <__fp_split3>
+    8384:	80 f3       	brcs	.-32     	; 0x8366 <__addsf3+0x8>
+    8386:	ba 17       	cp	r27, r26
+    8388:	62 07       	cpc	r22, r18
+    838a:	73 07       	cpc	r23, r19
+    838c:	84 07       	cpc	r24, r20
+    838e:	95 07       	cpc	r25, r21
+    8390:	18 f0       	brcs	.+6      	; 0x8398 <__addsf3x+0x18>
+    8392:	71 f4       	brne	.+28     	; 0x83b0 <__addsf3x+0x30>
+    8394:	9e f5       	brtc	.+102    	; 0x83fc <__addsf3x+0x7c>
+    8396:	22 c1       	rjmp	.+580    	; 0x85dc <__fp_zero>
+    8398:	0e f4       	brtc	.+2      	; 0x839c <__addsf3x+0x1c>
+    839a:	e0 95       	com	r30
+    839c:	0b 2e       	mov	r0, r27
+    839e:	ba 2f       	mov	r27, r26
+    83a0:	a0 2d       	mov	r26, r0
+    83a2:	0b 01       	movw	r0, r22
+    83a4:	b9 01       	movw	r22, r18
+    83a6:	90 01       	movw	r18, r0
+    83a8:	0c 01       	movw	r0, r24
+    83aa:	ca 01       	movw	r24, r20
+    83ac:	a0 01       	movw	r20, r0
+    83ae:	11 24       	eor	r1, r1
+    83b0:	ff 27       	eor	r31, r31
+    83b2:	59 1b       	sub	r21, r25
+    83b4:	99 f0       	breq	.+38     	; 0x83dc <__addsf3x+0x5c>
+    83b6:	59 3f       	cpi	r21, 0xF9	; 249
+    83b8:	50 f4       	brcc	.+20     	; 0x83ce <__addsf3x+0x4e>
+    83ba:	50 3e       	cpi	r21, 0xE0	; 224
+    83bc:	68 f1       	brcs	.+90     	; 0x8418 <__addsf3x+0x98>
+    83be:	1a 16       	cp	r1, r26
+    83c0:	f0 40       	sbci	r31, 0x00	; 0
+    83c2:	a2 2f       	mov	r26, r18
+    83c4:	23 2f       	mov	r18, r19
+    83c6:	34 2f       	mov	r19, r20
+    83c8:	44 27       	eor	r20, r20
+    83ca:	58 5f       	subi	r21, 0xF8	; 248
+    83cc:	f3 cf       	rjmp	.-26     	; 0x83b4 <__addsf3x+0x34>
+    83ce:	46 95       	lsr	r20
+    83d0:	37 95       	ror	r19
+    83d2:	27 95       	ror	r18
+    83d4:	a7 95       	ror	r26
+    83d6:	f0 40       	sbci	r31, 0x00	; 0
+    83d8:	53 95       	inc	r21
+    83da:	c9 f7       	brne	.-14     	; 0x83ce <__addsf3x+0x4e>
+    83dc:	7e f4       	brtc	.+30     	; 0x83fc <__addsf3x+0x7c>
+    83de:	1f 16       	cp	r1, r31
+    83e0:	ba 0b       	sbc	r27, r26
+    83e2:	62 0b       	sbc	r22, r18
+    83e4:	73 0b       	sbc	r23, r19
+    83e6:	84 0b       	sbc	r24, r20
+    83e8:	ba f0       	brmi	.+46     	; 0x8418 <__addsf3x+0x98>
+    83ea:	91 50       	subi	r25, 0x01	; 1
+    83ec:	a1 f0       	breq	.+40     	; 0x8416 <__addsf3x+0x96>
+    83ee:	ff 0f       	add	r31, r31
+    83f0:	bb 1f       	adc	r27, r27
+    83f2:	66 1f       	adc	r22, r22
+    83f4:	77 1f       	adc	r23, r23
+    83f6:	88 1f       	adc	r24, r24
+    83f8:	c2 f7       	brpl	.-16     	; 0x83ea <__addsf3x+0x6a>
+    83fa:	0e c0       	rjmp	.+28     	; 0x8418 <__addsf3x+0x98>
+    83fc:	ba 0f       	add	r27, r26
+    83fe:	62 1f       	adc	r22, r18
+    8400:	73 1f       	adc	r23, r19
+    8402:	84 1f       	adc	r24, r20
+    8404:	48 f4       	brcc	.+18     	; 0x8418 <__addsf3x+0x98>
+    8406:	87 95       	ror	r24
+    8408:	77 95       	ror	r23
+    840a:	67 95       	ror	r22
+    840c:	b7 95       	ror	r27
+    840e:	f7 95       	ror	r31
+    8410:	9e 3f       	cpi	r25, 0xFE	; 254
+    8412:	08 f0       	brcs	.+2      	; 0x8416 <__addsf3x+0x96>
+    8414:	b3 cf       	rjmp	.-154    	; 0x837c <__addsf3+0x1e>
+    8416:	93 95       	inc	r25
+    8418:	88 0f       	add	r24, r24
+    841a:	08 f0       	brcs	.+2      	; 0x841e <__addsf3x+0x9e>
+    841c:	99 27       	eor	r25, r25
+    841e:	ee 0f       	add	r30, r30
+    8420:	97 95       	ror	r25
+    8422:	87 95       	ror	r24
+    8424:	08 95       	ret
 
-00007a56 <__fixunssfsi>:
-    7a56:	98 d0       	rcall	.+304    	; 0x7b88 <__fp_splitA>
-    7a58:	88 f0       	brcs	.+34     	; 0x7a7c <__fixunssfsi+0x26>
-    7a5a:	9f 57       	subi	r25, 0x7F	; 127
-    7a5c:	90 f0       	brcs	.+36     	; 0x7a82 <__fixunssfsi+0x2c>
-    7a5e:	b9 2f       	mov	r27, r25
-    7a60:	99 27       	eor	r25, r25
-    7a62:	b7 51       	subi	r27, 0x17	; 23
-    7a64:	a0 f0       	brcs	.+40     	; 0x7a8e <__fixunssfsi+0x38>
-    7a66:	d1 f0       	breq	.+52     	; 0x7a9c <__fixunssfsi+0x46>
-    7a68:	66 0f       	add	r22, r22
-    7a6a:	77 1f       	adc	r23, r23
-    7a6c:	88 1f       	adc	r24, r24
-    7a6e:	99 1f       	adc	r25, r25
-    7a70:	1a f0       	brmi	.+6      	; 0x7a78 <__fixunssfsi+0x22>
-    7a72:	ba 95       	dec	r27
-    7a74:	c9 f7       	brne	.-14     	; 0x7a68 <__fixunssfsi+0x12>
-    7a76:	12 c0       	rjmp	.+36     	; 0x7a9c <__fixunssfsi+0x46>
-    7a78:	b1 30       	cpi	r27, 0x01	; 1
-    7a7a:	81 f0       	breq	.+32     	; 0x7a9c <__fixunssfsi+0x46>
-    7a7c:	9f d0       	rcall	.+318    	; 0x7bbc <__fp_zero>
-    7a7e:	b1 e0       	ldi	r27, 0x01	; 1
-    7a80:	08 95       	ret
-    7a82:	9c c0       	rjmp	.+312    	; 0x7bbc <__fp_zero>
-    7a84:	67 2f       	mov	r22, r23
-    7a86:	78 2f       	mov	r23, r24
-    7a88:	88 27       	eor	r24, r24
-    7a8a:	b8 5f       	subi	r27, 0xF8	; 248
-    7a8c:	39 f0       	breq	.+14     	; 0x7a9c <__fixunssfsi+0x46>
-    7a8e:	b9 3f       	cpi	r27, 0xF9	; 249
-    7a90:	cc f3       	brlt	.-14     	; 0x7a84 <__fixunssfsi+0x2e>
-    7a92:	86 95       	lsr	r24
-    7a94:	77 95       	ror	r23
-    7a96:	67 95       	ror	r22
-    7a98:	b3 95       	inc	r27
-    7a9a:	d9 f7       	brne	.-10     	; 0x7a92 <__fixunssfsi+0x3c>
-    7a9c:	3e f4       	brtc	.+14     	; 0x7aac <__fixunssfsi+0x56>
-    7a9e:	90 95       	com	r25
-    7aa0:	80 95       	com	r24
-    7aa2:	70 95       	com	r23
-    7aa4:	61 95       	neg	r22
-    7aa6:	7f 4f       	sbci	r23, 0xFF	; 255
-    7aa8:	8f 4f       	sbci	r24, 0xFF	; 255
-    7aaa:	9f 4f       	sbci	r25, 0xFF	; 255
-    7aac:	08 95       	ret
+00008426 <__cmpsf2>:
+    8426:	6c d0       	rcall	.+216    	; 0x8500 <__fp_cmp>
+    8428:	08 f4       	brcc	.+2      	; 0x842c <__cmpsf2+0x6>
+    842a:	81 e0       	ldi	r24, 0x01	; 1
+    842c:	08 95       	ret
 
-00007aae <__floatunsisf>:
-    7aae:	e8 94       	clt
-    7ab0:	09 c0       	rjmp	.+18     	; 0x7ac4 <__floatsisf+0x12>
+0000842e <__fixunssfsi>:
+    842e:	bc d0       	rcall	.+376    	; 0x85a8 <__fp_splitA>
+    8430:	88 f0       	brcs	.+34     	; 0x8454 <__fixunssfsi+0x26>
+    8432:	9f 57       	subi	r25, 0x7F	; 127
+    8434:	90 f0       	brcs	.+36     	; 0x845a <__fixunssfsi+0x2c>
+    8436:	b9 2f       	mov	r27, r25
+    8438:	99 27       	eor	r25, r25
+    843a:	b7 51       	subi	r27, 0x17	; 23
+    843c:	a0 f0       	brcs	.+40     	; 0x8466 <__fixunssfsi+0x38>
+    843e:	d1 f0       	breq	.+52     	; 0x8474 <__fixunssfsi+0x46>
+    8440:	66 0f       	add	r22, r22
+    8442:	77 1f       	adc	r23, r23
+    8444:	88 1f       	adc	r24, r24
+    8446:	99 1f       	adc	r25, r25
+    8448:	1a f0       	brmi	.+6      	; 0x8450 <__fixunssfsi+0x22>
+    844a:	ba 95       	dec	r27
+    844c:	c9 f7       	brne	.-14     	; 0x8440 <__fixunssfsi+0x12>
+    844e:	12 c0       	rjmp	.+36     	; 0x8474 <__fixunssfsi+0x46>
+    8450:	b1 30       	cpi	r27, 0x01	; 1
+    8452:	81 f0       	breq	.+32     	; 0x8474 <__fixunssfsi+0x46>
+    8454:	c3 d0       	rcall	.+390    	; 0x85dc <__fp_zero>
+    8456:	b1 e0       	ldi	r27, 0x01	; 1
+    8458:	08 95       	ret
+    845a:	c0 c0       	rjmp	.+384    	; 0x85dc <__fp_zero>
+    845c:	67 2f       	mov	r22, r23
+    845e:	78 2f       	mov	r23, r24
+    8460:	88 27       	eor	r24, r24
+    8462:	b8 5f       	subi	r27, 0xF8	; 248
+    8464:	39 f0       	breq	.+14     	; 0x8474 <__fixunssfsi+0x46>
+    8466:	b9 3f       	cpi	r27, 0xF9	; 249
+    8468:	cc f3       	brlt	.-14     	; 0x845c <__fixunssfsi+0x2e>
+    846a:	86 95       	lsr	r24
+    846c:	77 95       	ror	r23
+    846e:	67 95       	ror	r22
+    8470:	b3 95       	inc	r27
+    8472:	d9 f7       	brne	.-10     	; 0x846a <__fixunssfsi+0x3c>
+    8474:	3e f4       	brtc	.+14     	; 0x8484 <__fixunssfsi+0x56>
+    8476:	90 95       	com	r25
+    8478:	80 95       	com	r24
+    847a:	70 95       	com	r23
+    847c:	61 95       	neg	r22
+    847e:	7f 4f       	sbci	r23, 0xFF	; 255
+    8480:	8f 4f       	sbci	r24, 0xFF	; 255
+    8482:	9f 4f       	sbci	r25, 0xFF	; 255
+    8484:	08 95       	ret
 
-00007ab2 <__floatsisf>:
-    7ab2:	97 fb       	bst	r25, 7
-    7ab4:	3e f4       	brtc	.+14     	; 0x7ac4 <__floatsisf+0x12>
-    7ab6:	90 95       	com	r25
-    7ab8:	80 95       	com	r24
-    7aba:	70 95       	com	r23
-    7abc:	61 95       	neg	r22
-    7abe:	7f 4f       	sbci	r23, 0xFF	; 255
-    7ac0:	8f 4f       	sbci	r24, 0xFF	; 255
-    7ac2:	9f 4f       	sbci	r25, 0xFF	; 255
-    7ac4:	99 23       	and	r25, r25
-    7ac6:	a9 f0       	breq	.+42     	; 0x7af2 <__floatsisf+0x40>
-    7ac8:	f9 2f       	mov	r31, r25
-    7aca:	96 e9       	ldi	r25, 0x96	; 150
-    7acc:	bb 27       	eor	r27, r27
-    7ace:	93 95       	inc	r25
-    7ad0:	f6 95       	lsr	r31
-    7ad2:	87 95       	ror	r24
-    7ad4:	77 95       	ror	r23
-    7ad6:	67 95       	ror	r22
-    7ad8:	b7 95       	ror	r27
-    7ada:	f1 11       	cpse	r31, r1
-    7adc:	f8 cf       	rjmp	.-16     	; 0x7ace <__floatsisf+0x1c>
-    7ade:	fa f4       	brpl	.+62     	; 0x7b1e <__floatsisf+0x6c>
-    7ae0:	bb 0f       	add	r27, r27
-    7ae2:	11 f4       	brne	.+4      	; 0x7ae8 <__floatsisf+0x36>
-    7ae4:	60 ff       	sbrs	r22, 0
-    7ae6:	1b c0       	rjmp	.+54     	; 0x7b1e <__floatsisf+0x6c>
-    7ae8:	6f 5f       	subi	r22, 0xFF	; 255
-    7aea:	7f 4f       	sbci	r23, 0xFF	; 255
-    7aec:	8f 4f       	sbci	r24, 0xFF	; 255
-    7aee:	9f 4f       	sbci	r25, 0xFF	; 255
-    7af0:	16 c0       	rjmp	.+44     	; 0x7b1e <__floatsisf+0x6c>
-    7af2:	88 23       	and	r24, r24
-    7af4:	11 f0       	breq	.+4      	; 0x7afa <__floatsisf+0x48>
-    7af6:	96 e9       	ldi	r25, 0x96	; 150
-    7af8:	11 c0       	rjmp	.+34     	; 0x7b1c <__floatsisf+0x6a>
-    7afa:	77 23       	and	r23, r23
-    7afc:	21 f0       	breq	.+8      	; 0x7b06 <__floatsisf+0x54>
-    7afe:	9e e8       	ldi	r25, 0x8E	; 142
-    7b00:	87 2f       	mov	r24, r23
-    7b02:	76 2f       	mov	r23, r22
-    7b04:	05 c0       	rjmp	.+10     	; 0x7b10 <__floatsisf+0x5e>
-    7b06:	66 23       	and	r22, r22
-    7b08:	71 f0       	breq	.+28     	; 0x7b26 <__floatsisf+0x74>
-    7b0a:	96 e8       	ldi	r25, 0x86	; 134
-    7b0c:	86 2f       	mov	r24, r22
-    7b0e:	70 e0       	ldi	r23, 0x00	; 0
-    7b10:	60 e0       	ldi	r22, 0x00	; 0
-    7b12:	2a f0       	brmi	.+10     	; 0x7b1e <__floatsisf+0x6c>
-    7b14:	9a 95       	dec	r25
-    7b16:	66 0f       	add	r22, r22
-    7b18:	77 1f       	adc	r23, r23
-    7b1a:	88 1f       	adc	r24, r24
-    7b1c:	da f7       	brpl	.-10     	; 0x7b14 <__floatsisf+0x62>
-    7b1e:	88 0f       	add	r24, r24
-    7b20:	96 95       	lsr	r25
-    7b22:	87 95       	ror	r24
-    7b24:	97 f9       	bld	r25, 7
-    7b26:	08 95       	ret
+00008486 <__floatunsisf>:
+    8486:	e8 94       	clt
+    8488:	09 c0       	rjmp	.+18     	; 0x849c <__floatsisf+0x12>
 
-00007b28 <__fp_inf>:
-    7b28:	97 f9       	bld	r25, 7
-    7b2a:	9f 67       	ori	r25, 0x7F	; 127
-    7b2c:	80 e8       	ldi	r24, 0x80	; 128
-    7b2e:	70 e0       	ldi	r23, 0x00	; 0
-    7b30:	60 e0       	ldi	r22, 0x00	; 0
-    7b32:	08 95       	ret
+0000848a <__floatsisf>:
+    848a:	97 fb       	bst	r25, 7
+    848c:	3e f4       	brtc	.+14     	; 0x849c <__floatsisf+0x12>
+    848e:	90 95       	com	r25
+    8490:	80 95       	com	r24
+    8492:	70 95       	com	r23
+    8494:	61 95       	neg	r22
+    8496:	7f 4f       	sbci	r23, 0xFF	; 255
+    8498:	8f 4f       	sbci	r24, 0xFF	; 255
+    849a:	9f 4f       	sbci	r25, 0xFF	; 255
+    849c:	99 23       	and	r25, r25
+    849e:	a9 f0       	breq	.+42     	; 0x84ca <__floatsisf+0x40>
+    84a0:	f9 2f       	mov	r31, r25
+    84a2:	96 e9       	ldi	r25, 0x96	; 150
+    84a4:	bb 27       	eor	r27, r27
+    84a6:	93 95       	inc	r25
+    84a8:	f6 95       	lsr	r31
+    84aa:	87 95       	ror	r24
+    84ac:	77 95       	ror	r23
+    84ae:	67 95       	ror	r22
+    84b0:	b7 95       	ror	r27
+    84b2:	f1 11       	cpse	r31, r1
+    84b4:	f8 cf       	rjmp	.-16     	; 0x84a6 <__floatsisf+0x1c>
+    84b6:	fa f4       	brpl	.+62     	; 0x84f6 <__floatsisf+0x6c>
+    84b8:	bb 0f       	add	r27, r27
+    84ba:	11 f4       	brne	.+4      	; 0x84c0 <__floatsisf+0x36>
+    84bc:	60 ff       	sbrs	r22, 0
+    84be:	1b c0       	rjmp	.+54     	; 0x84f6 <__floatsisf+0x6c>
+    84c0:	6f 5f       	subi	r22, 0xFF	; 255
+    84c2:	7f 4f       	sbci	r23, 0xFF	; 255
+    84c4:	8f 4f       	sbci	r24, 0xFF	; 255
+    84c6:	9f 4f       	sbci	r25, 0xFF	; 255
+    84c8:	16 c0       	rjmp	.+44     	; 0x84f6 <__floatsisf+0x6c>
+    84ca:	88 23       	and	r24, r24
+    84cc:	11 f0       	breq	.+4      	; 0x84d2 <__floatsisf+0x48>
+    84ce:	96 e9       	ldi	r25, 0x96	; 150
+    84d0:	11 c0       	rjmp	.+34     	; 0x84f4 <__floatsisf+0x6a>
+    84d2:	77 23       	and	r23, r23
+    84d4:	21 f0       	breq	.+8      	; 0x84de <__floatsisf+0x54>
+    84d6:	9e e8       	ldi	r25, 0x8E	; 142
+    84d8:	87 2f       	mov	r24, r23
+    84da:	76 2f       	mov	r23, r22
+    84dc:	05 c0       	rjmp	.+10     	; 0x84e8 <__floatsisf+0x5e>
+    84de:	66 23       	and	r22, r22
+    84e0:	71 f0       	breq	.+28     	; 0x84fe <__floatsisf+0x74>
+    84e2:	96 e8       	ldi	r25, 0x86	; 134
+    84e4:	86 2f       	mov	r24, r22
+    84e6:	70 e0       	ldi	r23, 0x00	; 0
+    84e8:	60 e0       	ldi	r22, 0x00	; 0
+    84ea:	2a f0       	brmi	.+10     	; 0x84f6 <__floatsisf+0x6c>
+    84ec:	9a 95       	dec	r25
+    84ee:	66 0f       	add	r22, r22
+    84f0:	77 1f       	adc	r23, r23
+    84f2:	88 1f       	adc	r24, r24
+    84f4:	da f7       	brpl	.-10     	; 0x84ec <__floatsisf+0x62>
+    84f6:	88 0f       	add	r24, r24
+    84f8:	96 95       	lsr	r25
+    84fa:	87 95       	ror	r24
+    84fc:	97 f9       	bld	r25, 7
+    84fe:	08 95       	ret
 
-00007b34 <__fp_nan>:
-    7b34:	9f ef       	ldi	r25, 0xFF	; 255
-    7b36:	80 ec       	ldi	r24, 0xC0	; 192
-    7b38:	08 95       	ret
+00008500 <__fp_cmp>:
+    8500:	99 0f       	add	r25, r25
+    8502:	00 08       	sbc	r0, r0
+    8504:	55 0f       	add	r21, r21
+    8506:	aa 0b       	sbc	r26, r26
+    8508:	e0 e8       	ldi	r30, 0x80	; 128
+    850a:	fe ef       	ldi	r31, 0xFE	; 254
+    850c:	16 16       	cp	r1, r22
+    850e:	17 06       	cpc	r1, r23
+    8510:	e8 07       	cpc	r30, r24
+    8512:	f9 07       	cpc	r31, r25
+    8514:	c0 f0       	brcs	.+48     	; 0x8546 <__fp_cmp+0x46>
+    8516:	12 16       	cp	r1, r18
+    8518:	13 06       	cpc	r1, r19
+    851a:	e4 07       	cpc	r30, r20
+    851c:	f5 07       	cpc	r31, r21
+    851e:	98 f0       	brcs	.+38     	; 0x8546 <__fp_cmp+0x46>
+    8520:	62 1b       	sub	r22, r18
+    8522:	73 0b       	sbc	r23, r19
+    8524:	84 0b       	sbc	r24, r20
+    8526:	95 0b       	sbc	r25, r21
+    8528:	39 f4       	brne	.+14     	; 0x8538 <__fp_cmp+0x38>
+    852a:	0a 26       	eor	r0, r26
+    852c:	61 f0       	breq	.+24     	; 0x8546 <__fp_cmp+0x46>
+    852e:	23 2b       	or	r18, r19
+    8530:	24 2b       	or	r18, r20
+    8532:	25 2b       	or	r18, r21
+    8534:	21 f4       	brne	.+8      	; 0x853e <__fp_cmp+0x3e>
+    8536:	08 95       	ret
+    8538:	0a 26       	eor	r0, r26
+    853a:	09 f4       	brne	.+2      	; 0x853e <__fp_cmp+0x3e>
+    853c:	a1 40       	sbci	r26, 0x01	; 1
+    853e:	a6 95       	lsr	r26
+    8540:	8f ef       	ldi	r24, 0xFF	; 255
+    8542:	81 1d       	adc	r24, r1
+    8544:	81 1d       	adc	r24, r1
+    8546:	08 95       	ret
 
-00007b3a <__fp_pscA>:
-    7b3a:	00 24       	eor	r0, r0
-    7b3c:	0a 94       	dec	r0
-    7b3e:	16 16       	cp	r1, r22
-    7b40:	17 06       	cpc	r1, r23
-    7b42:	18 06       	cpc	r1, r24
-    7b44:	09 06       	cpc	r0, r25
-    7b46:	08 95       	ret
+00008548 <__fp_inf>:
+    8548:	97 f9       	bld	r25, 7
+    854a:	9f 67       	ori	r25, 0x7F	; 127
+    854c:	80 e8       	ldi	r24, 0x80	; 128
+    854e:	70 e0       	ldi	r23, 0x00	; 0
+    8550:	60 e0       	ldi	r22, 0x00	; 0
+    8552:	08 95       	ret
 
-00007b48 <__fp_pscB>:
-    7b48:	00 24       	eor	r0, r0
-    7b4a:	0a 94       	dec	r0
-    7b4c:	12 16       	cp	r1, r18
-    7b4e:	13 06       	cpc	r1, r19
-    7b50:	14 06       	cpc	r1, r20
-    7b52:	05 06       	cpc	r0, r21
-    7b54:	08 95       	ret
+00008554 <__fp_nan>:
+    8554:	9f ef       	ldi	r25, 0xFF	; 255
+    8556:	80 ec       	ldi	r24, 0xC0	; 192
+    8558:	08 95       	ret
 
-00007b56 <__fp_round>:
-    7b56:	09 2e       	mov	r0, r25
-    7b58:	03 94       	inc	r0
-    7b5a:	00 0c       	add	r0, r0
-    7b5c:	11 f4       	brne	.+4      	; 0x7b62 <__fp_round+0xc>
-    7b5e:	88 23       	and	r24, r24
-    7b60:	52 f0       	brmi	.+20     	; 0x7b76 <__fp_round+0x20>
-    7b62:	bb 0f       	add	r27, r27
-    7b64:	40 f4       	brcc	.+16     	; 0x7b76 <__fp_round+0x20>
-    7b66:	bf 2b       	or	r27, r31
-    7b68:	11 f4       	brne	.+4      	; 0x7b6e <__fp_round+0x18>
-    7b6a:	60 ff       	sbrs	r22, 0
-    7b6c:	04 c0       	rjmp	.+8      	; 0x7b76 <__fp_round+0x20>
-    7b6e:	6f 5f       	subi	r22, 0xFF	; 255
-    7b70:	7f 4f       	sbci	r23, 0xFF	; 255
-    7b72:	8f 4f       	sbci	r24, 0xFF	; 255
-    7b74:	9f 4f       	sbci	r25, 0xFF	; 255
-    7b76:	08 95       	ret
+0000855a <__fp_pscA>:
+    855a:	00 24       	eor	r0, r0
+    855c:	0a 94       	dec	r0
+    855e:	16 16       	cp	r1, r22
+    8560:	17 06       	cpc	r1, r23
+    8562:	18 06       	cpc	r1, r24
+    8564:	09 06       	cpc	r0, r25
+    8566:	08 95       	ret
 
-00007b78 <__fp_split3>:
-    7b78:	57 fd       	sbrc	r21, 7
-    7b7a:	90 58       	subi	r25, 0x80	; 128
-    7b7c:	44 0f       	add	r20, r20
-    7b7e:	55 1f       	adc	r21, r21
-    7b80:	59 f0       	breq	.+22     	; 0x7b98 <__fp_splitA+0x10>
-    7b82:	5f 3f       	cpi	r21, 0xFF	; 255
-    7b84:	71 f0       	breq	.+28     	; 0x7ba2 <__fp_splitA+0x1a>
-    7b86:	47 95       	ror	r20
+00008568 <__fp_pscB>:
+    8568:	00 24       	eor	r0, r0
+    856a:	0a 94       	dec	r0
+    856c:	12 16       	cp	r1, r18
+    856e:	13 06       	cpc	r1, r19
+    8570:	14 06       	cpc	r1, r20
+    8572:	05 06       	cpc	r0, r21
+    8574:	08 95       	ret
 
-00007b88 <__fp_splitA>:
-    7b88:	88 0f       	add	r24, r24
-    7b8a:	97 fb       	bst	r25, 7
-    7b8c:	99 1f       	adc	r25, r25
-    7b8e:	61 f0       	breq	.+24     	; 0x7ba8 <__fp_splitA+0x20>
-    7b90:	9f 3f       	cpi	r25, 0xFF	; 255
-    7b92:	79 f0       	breq	.+30     	; 0x7bb2 <__fp_splitA+0x2a>
-    7b94:	87 95       	ror	r24
-    7b96:	08 95       	ret
-    7b98:	12 16       	cp	r1, r18
-    7b9a:	13 06       	cpc	r1, r19
-    7b9c:	14 06       	cpc	r1, r20
-    7b9e:	55 1f       	adc	r21, r21
-    7ba0:	f2 cf       	rjmp	.-28     	; 0x7b86 <__fp_split3+0xe>
-    7ba2:	46 95       	lsr	r20
-    7ba4:	f1 df       	rcall	.-30     	; 0x7b88 <__fp_splitA>
-    7ba6:	08 c0       	rjmp	.+16     	; 0x7bb8 <__fp_splitA+0x30>
-    7ba8:	16 16       	cp	r1, r22
-    7baa:	17 06       	cpc	r1, r23
-    7bac:	18 06       	cpc	r1, r24
-    7bae:	99 1f       	adc	r25, r25
-    7bb0:	f1 cf       	rjmp	.-30     	; 0x7b94 <__fp_splitA+0xc>
-    7bb2:	86 95       	lsr	r24
-    7bb4:	71 05       	cpc	r23, r1
-    7bb6:	61 05       	cpc	r22, r1
-    7bb8:	08 94       	sec
-    7bba:	08 95       	ret
+00008576 <__fp_round>:
+    8576:	09 2e       	mov	r0, r25
+    8578:	03 94       	inc	r0
+    857a:	00 0c       	add	r0, r0
+    857c:	11 f4       	brne	.+4      	; 0x8582 <__fp_round+0xc>
+    857e:	88 23       	and	r24, r24
+    8580:	52 f0       	brmi	.+20     	; 0x8596 <__fp_round+0x20>
+    8582:	bb 0f       	add	r27, r27
+    8584:	40 f4       	brcc	.+16     	; 0x8596 <__fp_round+0x20>
+    8586:	bf 2b       	or	r27, r31
+    8588:	11 f4       	brne	.+4      	; 0x858e <__fp_round+0x18>
+    858a:	60 ff       	sbrs	r22, 0
+    858c:	04 c0       	rjmp	.+8      	; 0x8596 <__fp_round+0x20>
+    858e:	6f 5f       	subi	r22, 0xFF	; 255
+    8590:	7f 4f       	sbci	r23, 0xFF	; 255
+    8592:	8f 4f       	sbci	r24, 0xFF	; 255
+    8594:	9f 4f       	sbci	r25, 0xFF	; 255
+    8596:	08 95       	ret
 
-00007bbc <__fp_zero>:
-    7bbc:	e8 94       	clt
+00008598 <__fp_split3>:
+    8598:	57 fd       	sbrc	r21, 7
+    859a:	90 58       	subi	r25, 0x80	; 128
+    859c:	44 0f       	add	r20, r20
+    859e:	55 1f       	adc	r21, r21
+    85a0:	59 f0       	breq	.+22     	; 0x85b8 <__fp_splitA+0x10>
+    85a2:	5f 3f       	cpi	r21, 0xFF	; 255
+    85a4:	71 f0       	breq	.+28     	; 0x85c2 <__fp_splitA+0x1a>
+    85a6:	47 95       	ror	r20
 
-00007bbe <__fp_szero>:
-    7bbe:	bb 27       	eor	r27, r27
-    7bc0:	66 27       	eor	r22, r22
-    7bc2:	77 27       	eor	r23, r23
-    7bc4:	cb 01       	movw	r24, r22
-    7bc6:	97 f9       	bld	r25, 7
-    7bc8:	08 95       	ret
+000085a8 <__fp_splitA>:
+    85a8:	88 0f       	add	r24, r24
+    85aa:	97 fb       	bst	r25, 7
+    85ac:	99 1f       	adc	r25, r25
+    85ae:	61 f0       	breq	.+24     	; 0x85c8 <__fp_splitA+0x20>
+    85b0:	9f 3f       	cpi	r25, 0xFF	; 255
+    85b2:	79 f0       	breq	.+30     	; 0x85d2 <__fp_splitA+0x2a>
+    85b4:	87 95       	ror	r24
+    85b6:	08 95       	ret
+    85b8:	12 16       	cp	r1, r18
+    85ba:	13 06       	cpc	r1, r19
+    85bc:	14 06       	cpc	r1, r20
+    85be:	55 1f       	adc	r21, r21
+    85c0:	f2 cf       	rjmp	.-28     	; 0x85a6 <__fp_split3+0xe>
+    85c2:	46 95       	lsr	r20
+    85c4:	f1 df       	rcall	.-30     	; 0x85a8 <__fp_splitA>
+    85c6:	08 c0       	rjmp	.+16     	; 0x85d8 <__fp_splitA+0x30>
+    85c8:	16 16       	cp	r1, r22
+    85ca:	17 06       	cpc	r1, r23
+    85cc:	18 06       	cpc	r1, r24
+    85ce:	99 1f       	adc	r25, r25
+    85d0:	f1 cf       	rjmp	.-30     	; 0x85b4 <__fp_splitA+0xc>
+    85d2:	86 95       	lsr	r24
+    85d4:	71 05       	cpc	r23, r1
+    85d6:	61 05       	cpc	r22, r1
+    85d8:	08 94       	sec
+    85da:	08 95       	ret
 
-00007bca <__mulsf3>:
-    7bca:	0b d0       	rcall	.+22     	; 0x7be2 <__mulsf3x>
-    7bcc:	c4 cf       	rjmp	.-120    	; 0x7b56 <__fp_round>
-    7bce:	b5 df       	rcall	.-150    	; 0x7b3a <__fp_pscA>
-    7bd0:	28 f0       	brcs	.+10     	; 0x7bdc <__mulsf3+0x12>
-    7bd2:	ba df       	rcall	.-140    	; 0x7b48 <__fp_pscB>
-    7bd4:	18 f0       	brcs	.+6      	; 0x7bdc <__mulsf3+0x12>
-    7bd6:	95 23       	and	r25, r21
-    7bd8:	09 f0       	breq	.+2      	; 0x7bdc <__mulsf3+0x12>
-    7bda:	a6 cf       	rjmp	.-180    	; 0x7b28 <__fp_inf>
-    7bdc:	ab cf       	rjmp	.-170    	; 0x7b34 <__fp_nan>
-    7bde:	11 24       	eor	r1, r1
-    7be0:	ee cf       	rjmp	.-36     	; 0x7bbe <__fp_szero>
+000085dc <__fp_zero>:
+    85dc:	e8 94       	clt
 
-00007be2 <__mulsf3x>:
-    7be2:	ca df       	rcall	.-108    	; 0x7b78 <__fp_split3>
-    7be4:	a0 f3       	brcs	.-24     	; 0x7bce <__mulsf3+0x4>
+000085de <__fp_szero>:
+    85de:	bb 27       	eor	r27, r27
+    85e0:	66 27       	eor	r22, r22
+    85e2:	77 27       	eor	r23, r23
+    85e4:	cb 01       	movw	r24, r22
+    85e6:	97 f9       	bld	r25, 7
+    85e8:	08 95       	ret
 
-00007be6 <__mulsf3_pse>:
-    7be6:	95 9f       	mul	r25, r21
-    7be8:	d1 f3       	breq	.-12     	; 0x7bde <__mulsf3+0x14>
-    7bea:	95 0f       	add	r25, r21
-    7bec:	50 e0       	ldi	r21, 0x00	; 0
-    7bee:	55 1f       	adc	r21, r21
-    7bf0:	62 9f       	mul	r22, r18
-    7bf2:	f0 01       	movw	r30, r0
-    7bf4:	72 9f       	mul	r23, r18
-    7bf6:	bb 27       	eor	r27, r27
-    7bf8:	f0 0d       	add	r31, r0
-    7bfa:	b1 1d       	adc	r27, r1
-    7bfc:	63 9f       	mul	r22, r19
-    7bfe:	aa 27       	eor	r26, r26
-    7c00:	f0 0d       	add	r31, r0
-    7c02:	b1 1d       	adc	r27, r1
-    7c04:	aa 1f       	adc	r26, r26
-    7c06:	64 9f       	mul	r22, r20
-    7c08:	66 27       	eor	r22, r22
-    7c0a:	b0 0d       	add	r27, r0
-    7c0c:	a1 1d       	adc	r26, r1
-    7c0e:	66 1f       	adc	r22, r22
-    7c10:	82 9f       	mul	r24, r18
-    7c12:	22 27       	eor	r18, r18
-    7c14:	b0 0d       	add	r27, r0
-    7c16:	a1 1d       	adc	r26, r1
-    7c18:	62 1f       	adc	r22, r18
-    7c1a:	73 9f       	mul	r23, r19
-    7c1c:	b0 0d       	add	r27, r0
-    7c1e:	a1 1d       	adc	r26, r1
-    7c20:	62 1f       	adc	r22, r18
-    7c22:	83 9f       	mul	r24, r19
-    7c24:	a0 0d       	add	r26, r0
-    7c26:	61 1d       	adc	r22, r1
-    7c28:	22 1f       	adc	r18, r18
-    7c2a:	74 9f       	mul	r23, r20
-    7c2c:	33 27       	eor	r19, r19
-    7c2e:	a0 0d       	add	r26, r0
-    7c30:	61 1d       	adc	r22, r1
-    7c32:	23 1f       	adc	r18, r19
-    7c34:	84 9f       	mul	r24, r20
-    7c36:	60 0d       	add	r22, r0
-    7c38:	21 1d       	adc	r18, r1
-    7c3a:	82 2f       	mov	r24, r18
-    7c3c:	76 2f       	mov	r23, r22
-    7c3e:	6a 2f       	mov	r22, r26
-    7c40:	11 24       	eor	r1, r1
-    7c42:	9f 57       	subi	r25, 0x7F	; 127
-    7c44:	50 40       	sbci	r21, 0x00	; 0
-    7c46:	8a f0       	brmi	.+34     	; 0x7c6a <__mulsf3_pse+0x84>
-    7c48:	e1 f0       	breq	.+56     	; 0x7c82 <__mulsf3_pse+0x9c>
-    7c4a:	88 23       	and	r24, r24
-    7c4c:	4a f0       	brmi	.+18     	; 0x7c60 <__mulsf3_pse+0x7a>
-    7c4e:	ee 0f       	add	r30, r30
-    7c50:	ff 1f       	adc	r31, r31
-    7c52:	bb 1f       	adc	r27, r27
-    7c54:	66 1f       	adc	r22, r22
-    7c56:	77 1f       	adc	r23, r23
-    7c58:	88 1f       	adc	r24, r24
-    7c5a:	91 50       	subi	r25, 0x01	; 1
-    7c5c:	50 40       	sbci	r21, 0x00	; 0
-    7c5e:	a9 f7       	brne	.-22     	; 0x7c4a <__mulsf3_pse+0x64>
-    7c60:	9e 3f       	cpi	r25, 0xFE	; 254
-    7c62:	51 05       	cpc	r21, r1
-    7c64:	70 f0       	brcs	.+28     	; 0x7c82 <__mulsf3_pse+0x9c>
-    7c66:	60 cf       	rjmp	.-320    	; 0x7b28 <__fp_inf>
-    7c68:	aa cf       	rjmp	.-172    	; 0x7bbe <__fp_szero>
-    7c6a:	5f 3f       	cpi	r21, 0xFF	; 255
-    7c6c:	ec f3       	brlt	.-6      	; 0x7c68 <__mulsf3_pse+0x82>
-    7c6e:	98 3e       	cpi	r25, 0xE8	; 232
-    7c70:	dc f3       	brlt	.-10     	; 0x7c68 <__mulsf3_pse+0x82>
-    7c72:	86 95       	lsr	r24
-    7c74:	77 95       	ror	r23
-    7c76:	67 95       	ror	r22
-    7c78:	b7 95       	ror	r27
-    7c7a:	f7 95       	ror	r31
-    7c7c:	e7 95       	ror	r30
-    7c7e:	9f 5f       	subi	r25, 0xFF	; 255
-    7c80:	c1 f7       	brne	.-16     	; 0x7c72 <__mulsf3_pse+0x8c>
-    7c82:	fe 2b       	or	r31, r30
-    7c84:	88 0f       	add	r24, r24
-    7c86:	91 1d       	adc	r25, r1
-    7c88:	96 95       	lsr	r25
-    7c8a:	87 95       	ror	r24
-    7c8c:	97 f9       	bld	r25, 7
-    7c8e:	08 95       	ret
+000085ea <__gesf2>:
+    85ea:	8a df       	rcall	.-236    	; 0x8500 <__fp_cmp>
+    85ec:	08 f4       	brcc	.+2      	; 0x85f0 <__gesf2+0x6>
+    85ee:	8f ef       	ldi	r24, 0xFF	; 255
+    85f0:	08 95       	ret
 
-00007c90 <_exit>:
-    7c90:	f8 94       	cli
+000085f2 <__mulsf3>:
+    85f2:	0b d0       	rcall	.+22     	; 0x860a <__mulsf3x>
+    85f4:	c0 cf       	rjmp	.-128    	; 0x8576 <__fp_round>
+    85f6:	b1 df       	rcall	.-158    	; 0x855a <__fp_pscA>
+    85f8:	28 f0       	brcs	.+10     	; 0x8604 <__mulsf3+0x12>
+    85fa:	b6 df       	rcall	.-148    	; 0x8568 <__fp_pscB>
+    85fc:	18 f0       	brcs	.+6      	; 0x8604 <__mulsf3+0x12>
+    85fe:	95 23       	and	r25, r21
+    8600:	09 f0       	breq	.+2      	; 0x8604 <__mulsf3+0x12>
+    8602:	a2 cf       	rjmp	.-188    	; 0x8548 <__fp_inf>
+    8604:	a7 cf       	rjmp	.-178    	; 0x8554 <__fp_nan>
+    8606:	11 24       	eor	r1, r1
+    8608:	ea cf       	rjmp	.-44     	; 0x85de <__fp_szero>
 
-00007c92 <__stop_program>:
-    7c92:	ff cf       	rjmp	.-2      	; 0x7c92 <__stop_program>
+0000860a <__mulsf3x>:
+    860a:	c6 df       	rcall	.-116    	; 0x8598 <__fp_split3>
+    860c:	a0 f3       	brcs	.-24     	; 0x85f6 <__mulsf3+0x4>
+
+0000860e <__mulsf3_pse>:
+    860e:	95 9f       	mul	r25, r21
+    8610:	d1 f3       	breq	.-12     	; 0x8606 <__mulsf3+0x14>
+    8612:	95 0f       	add	r25, r21
+    8614:	50 e0       	ldi	r21, 0x00	; 0
+    8616:	55 1f       	adc	r21, r21
+    8618:	62 9f       	mul	r22, r18
+    861a:	f0 01       	movw	r30, r0
+    861c:	72 9f       	mul	r23, r18
+    861e:	bb 27       	eor	r27, r27
+    8620:	f0 0d       	add	r31, r0
+    8622:	b1 1d       	adc	r27, r1
+    8624:	63 9f       	mul	r22, r19
+    8626:	aa 27       	eor	r26, r26
+    8628:	f0 0d       	add	r31, r0
+    862a:	b1 1d       	adc	r27, r1
+    862c:	aa 1f       	adc	r26, r26
+    862e:	64 9f       	mul	r22, r20
+    8630:	66 27       	eor	r22, r22
+    8632:	b0 0d       	add	r27, r0
+    8634:	a1 1d       	adc	r26, r1
+    8636:	66 1f       	adc	r22, r22
+    8638:	82 9f       	mul	r24, r18
+    863a:	22 27       	eor	r18, r18
+    863c:	b0 0d       	add	r27, r0
+    863e:	a1 1d       	adc	r26, r1
+    8640:	62 1f       	adc	r22, r18
+    8642:	73 9f       	mul	r23, r19
+    8644:	b0 0d       	add	r27, r0
+    8646:	a1 1d       	adc	r26, r1
+    8648:	62 1f       	adc	r22, r18
+    864a:	83 9f       	mul	r24, r19
+    864c:	a0 0d       	add	r26, r0
+    864e:	61 1d       	adc	r22, r1
+    8650:	22 1f       	adc	r18, r18
+    8652:	74 9f       	mul	r23, r20
+    8654:	33 27       	eor	r19, r19
+    8656:	a0 0d       	add	r26, r0
+    8658:	61 1d       	adc	r22, r1
+    865a:	23 1f       	adc	r18, r19
+    865c:	84 9f       	mul	r24, r20
+    865e:	60 0d       	add	r22, r0
+    8660:	21 1d       	adc	r18, r1
+    8662:	82 2f       	mov	r24, r18
+    8664:	76 2f       	mov	r23, r22
+    8666:	6a 2f       	mov	r22, r26
+    8668:	11 24       	eor	r1, r1
+    866a:	9f 57       	subi	r25, 0x7F	; 127
+    866c:	50 40       	sbci	r21, 0x00	; 0
+    866e:	8a f0       	brmi	.+34     	; 0x8692 <__mulsf3_pse+0x84>
+    8670:	e1 f0       	breq	.+56     	; 0x86aa <__mulsf3_pse+0x9c>
+    8672:	88 23       	and	r24, r24
+    8674:	4a f0       	brmi	.+18     	; 0x8688 <__mulsf3_pse+0x7a>
+    8676:	ee 0f       	add	r30, r30
+    8678:	ff 1f       	adc	r31, r31
+    867a:	bb 1f       	adc	r27, r27
+    867c:	66 1f       	adc	r22, r22
+    867e:	77 1f       	adc	r23, r23
+    8680:	88 1f       	adc	r24, r24
+    8682:	91 50       	subi	r25, 0x01	; 1
+    8684:	50 40       	sbci	r21, 0x00	; 0
+    8686:	a9 f7       	brne	.-22     	; 0x8672 <__mulsf3_pse+0x64>
+    8688:	9e 3f       	cpi	r25, 0xFE	; 254
+    868a:	51 05       	cpc	r21, r1
+    868c:	70 f0       	brcs	.+28     	; 0x86aa <__mulsf3_pse+0x9c>
+    868e:	5c cf       	rjmp	.-328    	; 0x8548 <__fp_inf>
+    8690:	a6 cf       	rjmp	.-180    	; 0x85de <__fp_szero>
+    8692:	5f 3f       	cpi	r21, 0xFF	; 255
+    8694:	ec f3       	brlt	.-6      	; 0x8690 <__mulsf3_pse+0x82>
+    8696:	98 3e       	cpi	r25, 0xE8	; 232
+    8698:	dc f3       	brlt	.-10     	; 0x8690 <__mulsf3_pse+0x82>
+    869a:	86 95       	lsr	r24
+    869c:	77 95       	ror	r23
+    869e:	67 95       	ror	r22
+    86a0:	b7 95       	ror	r27
+    86a2:	f7 95       	ror	r31
+    86a4:	e7 95       	ror	r30
+    86a6:	9f 5f       	subi	r25, 0xFF	; 255
+    86a8:	c1 f7       	brne	.-16     	; 0x869a <__mulsf3_pse+0x8c>
+    86aa:	fe 2b       	or	r31, r30
+    86ac:	88 0f       	add	r24, r24
+    86ae:	91 1d       	adc	r25, r1
+    86b0:	96 95       	lsr	r25
+    86b2:	87 95       	ror	r24
+    86b4:	97 f9       	bld	r25, 7
+    86b6:	08 95       	ret
+
+000086b8 <_exit>:
+    86b8:	f8 94       	cli
+
+000086ba <__stop_program>:
+    86ba:	ff cf       	rjmp	.-2      	; 0x86ba <__stop_program>

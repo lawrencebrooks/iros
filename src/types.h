@@ -22,11 +22,11 @@
 #include "macros.h"
 
 typedef struct sSpriteShared {
-	char vx;
-	char vy;
+	float vx;
+	float vy;
+	float x;
+	float y;
 	u8 gravity;
-	u16 x;
-	u16 y;
 } SpriteShared;
 
 typedef struct sShot {

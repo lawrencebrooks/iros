@@ -46,7 +46,8 @@
 // Player macros
 #define FRAMES_PER_RUN_CYCLE 12
 #define RUN_SPEED 60
-#define GRAVITY 80
+#define JUMP_SPEED 150
+#define GRAVITY 200
 #define MAX_SPEED 60
 
 // Player flags
