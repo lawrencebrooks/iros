@@ -40,15 +40,16 @@
 #define TEXT_LINGER 3
 #define CAMERA_WIDTH 28
 #define CAMERA_HEIGHT 26
-#define LEVEL_WIDTH 60
-#define LEVEL_HEIGHT 27
+#define LEVEL_WIDTH 255
+#define LEVEL_HEIGHT 255
+#define OVERLAP_THRESHOLD 4
 
 // Player macros
 #define FRAMES_PER_RUN_CYCLE 12
 #define RUN_SPEED 60
 #define JUMP_SPEED 150
-#define GRAVITY 200
-#define MAX_SPEED 60
+#define GRAVITY 255
+#define MAX_SPEED 120
 
 // Player flags
 #define JUMPING 1

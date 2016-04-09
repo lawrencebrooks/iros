@@ -56,9 +56,12 @@ void init_game_state()
 	game.current_screen = 0;
 	game.paused = 0;
 	game.selection = 0;
-	game.scroll = 0;
+	game.scroll_x = 0;
+	game.scroll_y = 0;
 	game.scroll_src_x=29;
     game.scroll_dest_x=29;
+	game.scroll_src_y=27;
+    game.scroll_dest_y=27;
 	game.player.active_shots = 0;
 	game.player.flags = IDLE;
 	game.player.grace_frame = 0;
@@ -202,9 +205,9 @@ void render_camera_view()
 	u16 camara_x_tile = game.camera_x/8;
 	u16 camera_y_tile = game.camera_y/8;
 	
-	for (u16 x = camara_x_tile; x < camara_x_tile + CAMERA_WIDTH + 1; x++)
+	for (u16 x = camara_x_tile; x <= camara_x_tile + CAMERA_WIDTH; x++)
 	{
-		for (u16 y = camera_y_tile; y < camera_y_tile + CAMERA_HEIGHT + 1; y++)
+		for (u16 y = camera_y_tile; y <= camera_y_tile + CAMERA_HEIGHT; y++)
 		{
 			level_tile = get_level_tile(game.current_level, x, y);
 			render_level_tile(level_tile, x - camara_x_tile, y - camera_y_tile);
@@ -216,10 +219,10 @@ void append_tile_column()
 {
 	u8 level_tile;
 
-    for (u8 y = 0; y < CAMERA_HEIGHT; y++)
+    for (u8 y = 0; y <= CAMERA_HEIGHT; y++)
 	{
-		level_tile = get_level_tile(game.current_level, game.scroll_src_x, y);
-		render_level_tile(level_tile, game.scroll_dest_x, y);
+		level_tile = get_level_tile(game.current_level, game.scroll_src_x, y + game.camera_y / 8);
+		render_level_tile(level_tile, game.scroll_dest_x, (y + Screen.scrollY / 8) % 30);
     }
 	
     game.scroll_src_x++;
@@ -227,14 +230,41 @@ void append_tile_column()
     if(game.scroll_dest_x>=32)game.scroll_dest_x=0;
 }
 
+void append_tile_row()
+{
+	u8 level_tile;
+
+    for (u8 x = 0; x <= CAMERA_WIDTH; x++)
+	{
+		level_tile = get_level_tile(game.current_level, x + game.camera_x / 8, game.scroll_src_y);
+		render_level_tile(level_tile, (x + Screen.scrollX / 8) % 32, game.scroll_dest_y);
+    }
+	
+    game.scroll_src_y++;
+	game.scroll_dest_y++;
+    if(game.scroll_dest_y>=30)game.scroll_dest_y=0;
+}
+
 void move_camera_x()
 {	
 	game.camera_x++;
 	Scroll(1,0);
-	if (++game.scroll == 8)
+	if (++game.scroll_x == 8)
 	{
-		game.scroll = 0;
+		game.scroll_x = 0;
 		append_tile_column();
+	}
+}
+
+void move_camera_y()
+{	
+	game.camera_y+=2;
+	game.scroll_y+=2;
+	Scroll(0,2);
+	if (game.scroll_y == 8)
+	{
+		game.scroll_y = 0;
+		append_tile_row();
 	}
 }
 
@@ -369,40 +399,42 @@ void update_player()
 	}
 }
 
+u8 pixel_overlap(u16 s1, u16 s2, u8 w1, u8 w2)
+{
+	u8 result = w1;
+	
+	if (s2 > s1)
+	{
+		result -= s2 - s1;
+	}
+	s1 = s1 + w1;
+	s2 = s2 + w2;
+	if (s2 < s1)
+	{
+		result -= s1 - s2;
+	}
+	return result;
+}
+
 void collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 {
 	u8 lt1, lt2;
 	
-	// Top
+	// Top and Bottom
 	for (u8 x = 0; x < tile_width; x++)
 	{
 		lt1 = get_level_tile(game.current_level, s->x / 8 + x, s->y / 8);
 		lt2 = get_level_tile(game.current_level, (s->x+7) / 8 + x, s->y / 8);
-		if (solid_tile(lt1) || solid_tile(lt2))
+		if ((solid_tile(lt1) && pixel_overlap(s->x, ((u16) s->x / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD) ||
+		    (solid_tile(lt2) && pixel_overlap(s->x, ((u16) (s->x+7) / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD))
 		{
 			s->vy =  0;
 			s->y = (((u16) s->y / 8) + 1) * 8;
 		}
-	}
-	
-	// Right
-	for (u8 y = 0; y < tile_height; y++)
-	{
-		lt1 = get_level_tile(game.current_level, (s->x + tile_width * 8 - 1) / 8, s->y / 8 + y);
-		lt2 = get_level_tile(game.current_level, (s->x + tile_width * 8 - 1) / 8, (s->y+7) / 8 + y);
-		if (solid_tile(lt1) || solid_tile(lt2))
-		{
-			s->vx =  0;
-			s->x = ((u16) s->x / 8) * 8;
-		}
-	}
-	
-	// Bottom
-	for (u8 x = 0; x < tile_width; x++)
-	{
 		lt1 = get_level_tile(game.current_level, s->x / 8 + x, (s->y + tile_height*8 - 1) / 8);
 		lt2 = get_level_tile(game.current_level, (s->x+7) / 8 + x, (s->y + tile_height*8 - 1) / 8);
-		if (solid_tile(lt1) || solid_tile(lt2))
+		if ((solid_tile(lt1) && pixel_overlap(s->x, ((u16) s->x / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD) || 
+		    (solid_tile(lt2) && pixel_overlap(s->x, ((u16) (s->x+7) / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD))
 		{
 			s->vy =  0;
 			s->gravity = 0;
@@ -410,15 +442,25 @@ void collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 		}
 	}
 	
-	// Left
+	// Left and Right
 	for (u8 y = 0; y < tile_height; y++)
 	{
 		lt1 = get_level_tile(game.current_level, s->x / 8, s->y / 8 + y);
 		lt2 = get_level_tile(game.current_level, s->x / 8, (s->y+7) / 8 + y);
-		if (solid_tile(lt1) || solid_tile(lt2))
+		if ((solid_tile(lt1) && pixel_overlap(s->y, ((u16) s->y / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD) ||
+		    (solid_tile(lt2) && pixel_overlap(s->y, ((u16) (s->y+7) / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD))
 		{
 			s->vx =  0;
 			s->x = (((u16) s->x / 8) + 1) * 8;
+		}
+		
+		lt1 = get_level_tile(game.current_level, (s->x + tile_width * 8 - 1) / 8, s->y / 8 + y);
+		lt2 = get_level_tile(game.current_level, (s->x + tile_width * 8 - 1) / 8, (s->y+7) / 8 + y);
+		if ((solid_tile(lt1) && pixel_overlap(s->y, ((u16) s->y / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD) ||
+		    (solid_tile(lt2) && pixel_overlap(s->y, ((u16) (s->y+7) / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD))
+		{
+			s->vx =  0;
+			s->x = ((u16) s->x / 8) * 8;
 		}
 	}
 }
@@ -427,6 +469,7 @@ void update_player_position()
 {
 	//Gravity
 	game.player.shared.vy = game.player.shared.vy + game.player.shared.gravity*FRAME_TIME;
+	if (game.player.shared.vy > MAX_SPEED) game.player.shared.vy = MAX_SPEED;
 	game.player.shared.x += game.player.shared.vx*FRAME_TIME;
 	game.player.shared.y += game.player.shared.vy*FRAME_TIME;
 	collision_detect_level(&game.player.shared, 2, 3);
@@ -437,10 +480,16 @@ void update_level()
 {
 	if (game.player.shared.vx > 0 &&
 	    (game.player.shared.x - game.camera_x) >= (CAMERA_WIDTH / 2 * 8) &&
-		(game.camera_x/8 + CAMERA_WIDTH < LEVEL_WIDTH) &&
-		(game.camera_y/8 + CAMERA_HEIGHT < LEVEL_HEIGHT))
+		(game.camera_x/8 + CAMERA_WIDTH < LEVEL_WIDTH))
 	{
 		move_camera_x();
+	}
+	
+	if (game.player.shared.vy > 0 &&
+	    (game.player.shared.y - game.camera_y + 24) >= ((CAMERA_HEIGHT - 2) * 8) &&
+		(game.camera_y/8 + CAMERA_HEIGHT < LEVEL_HEIGHT))
+	{
+		move_camera_y();
 	}
 }
 
