@@ -169,35 +169,56 @@ void clear_overlay(u8 overlayHeight)
 }
 
 #if RLE == 0
+u8 read_level_byte(u16 index)
+{
+	return pgm_read_byte(&level_data[index]);
+}
+#else
+u8 read_level_byte(u16 index)
+{
+	u16 rlength = 0;
+	u16 cumulative = 0;
+	u16 counter = 0;
+	
+	while (1)
+	{
+		rlength = pgm_read_word(&level_data[counter]);
+		cumulative += rlength;
+		if (cumulative > index)
+		{
+			return pgm_read_byte(&level_data[counter+2]);
+		}
+		counter += 3;
+	}
+	return 0;
+}
+
+#endif
 
 u8 get_camera_x(u8 level_index)
 {
-	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 0]);
+	return read_level_byte(level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 0);
 }
 
 u8 get_camera_y(u8 level_index)
 {
-	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 1]);
+	return read_level_byte(level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 1);
 }
 
 u8 get_hero_spawn_x(u8 level_index)
 {
-	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 2]);
+	return read_level_byte(level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 2);
 }
 
 u8 get_hero_spawn_y(u8 level_index)
 {
-	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 3]);
+	return read_level_byte(level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 3);
 }
 
 u8 get_level_tile(u8 level_index, u16 x, u16 y)
 {
-	return pgm_read_byte(&level_data[level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 4 + (y*LEVEL_WIDTH+x)]);
+	return read_level_byte(level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 4 + (y*LEVEL_WIDTH+x));
 }
-
-#else
-
-#endif
 
 void render_camera_view()
 {

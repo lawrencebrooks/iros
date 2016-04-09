@@ -1,0 +1,46 @@
+#!/usr/bin/python
+
+import sys
+import os
+
+usage = """
+Usage
+-----
+rlencode <input_file> <output_file>
+
+Description
+-----------
+'rlencode' takes a comma seperated list of 1 byte values
+and applies a run length encoding. The output is a comma
+seperated list of 1 byte values. Every run in the input is represented
+by 3 bytes in the outbout comprising a 16 bit length and an 8 bit value. eg:
+
+5, 5, 5, 5, 5, 5  ----> 6, 0, 5  (LSB, MSB, VALUE)
+"""
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print usage
+        exit(0)
+
+    fi = open(sys.argv[1], 'r')
+    lines = fi.readlines()
+    line = "".join(lines)
+    values = line.split(',')
+    values = map(lambda v: v.strip(), values)
+    values = filter(lambda v: v != '', values)
+
+    fo = open(sys.argv[2], 'w')
+    rlength = 1
+    result = ''
+    prev_value = values[0]
+    for v in values[1:]: 
+        if v != prev_value:
+            result += "%d,%d,%d," % (rlength & 255, (rlength & 65280) >> 8, int(prev_value))
+            rlength = 1
+            prev_value = v
+        else:
+            rlength += 1
+           
+    result += "%d,%d,%d," % (rlength & 255, (rlength & 65280) >> 8, int(prev_value)) 
+    fo.write(result)  

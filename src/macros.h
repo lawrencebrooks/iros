@@ -18,6 +18,10 @@
 #ifndef LB_MACROS_H
 #define LB_MACROS_H
 
+#ifndef RLE
+#define RLE 0
+#endif
+
 // EEPROM ID
 #define EEPROM_SCORES_ID 0x8C
 
