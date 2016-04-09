@@ -176,19 +176,19 @@ u8 read_level_byte(u16 index)
 #else
 u8 read_level_byte(u16 index)
 {
-	u16 rlength = 0;
-	u16 cumulative = 0;
-	u16 counter = 0;
+	RLEState* rle_state;
+	u16 counter = index / 255 * 4;
+	u32 result;
 	
 	while (1)
 	{
-		rlength = pgm_read_word(&level_data[counter]);
-		cumulative += rlength;
-		if (cumulative > index)
+		result = pgm_read_dword(&level_data[counter]);
+		rle_state = (RLEState*) &result;
+		if (rle_state->run_start_index + rle_state->rlength > index)
 		{
-			return pgm_read_byte(&level_data[counter+2]);
+			return rle_state->value;
 		}
-		counter += 3;
+		counter += 4;
 	}
 	return 0;
 }

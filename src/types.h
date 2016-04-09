@@ -69,4 +69,10 @@ typedef struct sGameState {
 	JoyPadState joypadState;
 } Game;
 
+typedef struct sRLEState {
+	u16 run_start_index;
+	u8 rlength;
+	u8 value;
+} RLEState;
+
 #endif
