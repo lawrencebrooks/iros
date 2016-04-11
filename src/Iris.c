@@ -47,6 +47,7 @@ char* idle_anim[1];
 char* jump_anim[1];
 char* prone_anim[1];
 char* run_anim[4];
+char* shot_anim[1];
 
 void init_game_state()
 {
@@ -63,6 +64,7 @@ void init_game_state()
 	game.scroll_src_y=27;
     game.scroll_dest_y=27;
 	game.player.active_shots = 0;
+	game.player.direction = D_RIGHT;
 	game.player.flags = IDLE;
 	game.player.grace_frame = 0;
 	game.player.shared.gravity = 0;
@@ -107,6 +109,24 @@ void init_game_state()
 	game.player.run.anims[1] = (char*) map_hero_step_1;
 	game.player.run.anims[2] = (char*) map_hero_step_2;
 	game.player.run.anims[3] = (char*) map_hero_step_3;
+	
+	for (u8 i = 0; i < MAX_PLAYER_SHOTS; i++)
+	{
+		game.player.shot[i].shared.gravity = 0;
+		game.player.shot[i].shared.vx = 0;
+		game.player.shot[i].shared.vy = 0;
+		game.player.shot[i].active = 0;
+		game.player.shot[i].hit_count = 1;
+		game.player.shot[i].shot_type = BASIC_SHOT;
+		game.player.shot[i].anim.anim_count = 1;
+		game.player.shot[i].anim.current_anim = 0;
+		game.player.shot[i].anim.frame_count = 0;
+		game.player.shot[i].anim.frames_per_anim = 1;
+		game.player.shot[i].anim.looped = 0;
+		game.player.shot[i].anim.reversing = 0;
+		game.player.shot[i].anim.anims = shot_anim;
+		game.player.shot[i].anim.anims[0] = (char*) map_hero_shot;
+	}
 }
 
 void load_eeprom(struct EepromBlockStruct* block)
@@ -330,7 +350,6 @@ void load_level(u8 index)
 	game.camera_x *= 8;
 	game.camera_y *= 8;
 	render_camera_view();
-	LBMapSprite(0, LBGetNextFrame(&game.player.idle), 0);
 }
 
 void level_transition(u8 index)
@@ -376,6 +395,59 @@ char on_solid_ground(SpriteShared* s, u8 tile_width, u8 tile_height)
 	return 0;
 }
 
+u8 find_shot_slot()
+{
+	for (u8 i = 0; i < MAX_PLAYER_SHOTS; i++)
+	{
+		if (!game.player.shot[i].active) return i;
+	}
+	return 0;
+}
+
+void update_shot()
+{
+	// Shot updates
+	u8 idx;
+	if (game.joypadState.pressed & BTN_A && game.player.active_shots < MAX_PLAYER_SHOTS)
+	{
+		idx = find_shot_slot();
+		LBMapSprite(PLAYER_SHOT_SLOT+idx, LBGetNextFrame(&game.player.shot[idx].anim), 0);
+		game.player.shot[idx].active = 1;
+		game.player.shot[idx].shared.y = game.player.shared.y+1*8;
+		if (game.player.direction == D_RIGHT)
+		{
+			game.player.shot[idx].shared.x = game.player.shared.x+2*8;
+			game.player.shot[idx].shared.vx = SHOT_SPEED;
+		}
+		else
+		{
+			game.player.shot[idx].shared.vx = -SHOT_SPEED;
+			game.player.shot[idx].shared.x = game.player.shared.x-1*8;
+		}
+		game.player.active_shots++;
+	}
+}
+
+void animate_shot()
+{
+	// Animate shots
+	for (u8 i = 0; i < MAX_PLAYER_SHOTS; i++)
+	{
+		if (game.player.shot[i].active)
+		{
+			game.player.shot[i].shared.x += game.player.shot[i].shared.vx*FRAME_TIME;
+			game.player.shot[i].shared.y += game.player.shot[i].shared.vy*FRAME_TIME;
+			LBMoveSprite(PLAYER_SHOT_SLOT+i, game.player.shot[i].shared.x - game.camera_x, game.player.shot[i].shared.y - game.camera_y, 1, 1);
+			if (game.player.shot[i].shared.x < game.camera_x || game.player.shot[i].shared.x+8 > game.camera_x + CAMERA_WIDTH*8)
+			{
+				game.player.shot[i].active = 0;
+				game.player.active_shots--;
+				LBMoveSprite(PLAYER_SHOT_SLOT+i, OFF_SCREEN, 0, 1, 1);
+			}
+		}
+	}
+}
+
 void update_player()
 {
 	
@@ -385,7 +457,7 @@ void update_player()
 		{
 			game.player.shared.gravity = GRAVITY;
 			game.player.flags = JUMPING;
-			LBMapSprite(0, LBGetNextFrame(&game.player.jump), sprites[0].flags);
+			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.jump), sprites[0].flags);
 		}
 		else
 		{
@@ -393,26 +465,28 @@ void update_player()
 			{
 				game.player.shared.vx = RUN_SPEED;
 				game.player.flags = RUNNING;
-				LBMapSprite(0, LBGetNextFrame(&game.player.run), 0);
+				game.player.direction = D_RIGHT;
+				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.run), 0);
 			}
 			else if ((game.joypadState.held & BTN_LEFT) && (game.player.shared.x > game.camera_x))
 			{
 				game.player.shared.vx = -RUN_SPEED;
 				game.player.flags = RUNNING;
-				LBMapSprite(0, LBGetNextFrame(&game.player.run), SPRITE_FLIP_X);
+				game.player.direction = D_LEFT;
+				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.run), SPRITE_FLIP_X);
 			}
 			else
 			{
 				game.player.flags = IDLE;
 				game.player.shared.vx = 0;
-				LBMapSprite(0, LBGetNextFrame(&game.player.idle), sprites[0].flags);
+				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.idle), sprites[0].flags);
 			}
 			if (game.joypadState.pressed & BTN_B)
 			{
 				game.player.shared.vy = -JUMP_SPEED;
 				game.player.shared.gravity = GRAVITY;
 				game.player.flags = JUMPING;
-				LBMapSprite(0, LBGetNextFrame(&game.player.jump), sprites[0].flags);
+				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.jump), sprites[0].flags);
 			}
 		}
 	}
@@ -421,17 +495,19 @@ void update_player()
 		if ((game.joypadState.held & BTN_RIGHT) && (game.player.shared.x/8 + 2 < LEVEL_WIDTH))
 		{
 			game.player.shared.vx = RUN_SPEED;
-			LBMapSprite(0, LBGetNextFrame(&game.player.jump), 0);
+			game.player.direction = D_RIGHT;
+			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.jump), 0);
 		}
 		else if ((game.joypadState.held & BTN_LEFT) && (game.player.shared.x > game.camera_x))
 		{
 			game.player.shared.vx = -RUN_SPEED;
-			LBMapSprite(0, LBGetNextFrame(&game.player.jump), SPRITE_FLIP_X);
+			game.player.direction = D_LEFT;
+			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.jump), SPRITE_FLIP_X);
 		}
 		else
 		{
 			game.player.shared.vx = 0;
-			LBMapSprite(0, LBGetNextFrame(&game.player.jump), sprites[0].flags);
+			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.jump), sprites[0].flags);
 		}
 		
 		if (game.player.shared.gravity == 0)
@@ -511,7 +587,7 @@ void collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 	}
 }
 
-void update_player_position()
+void animate_player()
 {
 	//Gravity
 	game.player.shared.vy = game.player.shared.vy + game.player.shared.gravity*FRAME_TIME;
@@ -627,8 +703,10 @@ int main()
 			case LEVEL:
 				update_level();
 				update_player();
-				update_player_position();
-				LBRotateSprites(6);
+				update_shot();
+				animate_player();
+				animate_shot();
+				LBRotateSprites(10);
 				break;
 			default:
 				break;

@@ -34,7 +34,6 @@ typedef struct sShot {
 	u8 shot_type;
 	u8 hit_count;
 	u8 active;
-	u8 distance;
 	Animation anim;
 
 } Shot;
@@ -44,7 +43,8 @@ typedef struct sPlayer {
 	u8 active_shots;
 	u8 flags;
 	u8 grace_frame;
-	Shot shot[MAX_SHOTS];
+	u8 direction;
+	Shot shot[MAX_PLAYER_SHOTS];
 	Animation idle;
 	Animation run;
 	Animation jump;

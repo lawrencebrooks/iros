@@ -40,7 +40,7 @@
 
 // General macros
 #define FRAME_TIME 0.016666666666666666
-#define MAX_SHOTS 4
+#define MAX_PLAYER_SHOTS 4
 #define TEXT_LINGER 3
 #define CAMERA_WIDTH 28
 #define CAMERA_HEIGHT 26
@@ -54,12 +54,22 @@
 #define JUMP_SPEED 150
 #define GRAVITY 255
 #define MAX_SPEED 120
+#define D_LEFT 0
+#define D_RIGHT 1
 
 // Player flags
 #define JUMPING 1
 #define RUNNING 2
 #define PRONE 4
 #define IDLE 8
+
+// Shot macros
+#define BASIC_SHOT 0
+#define SHOT_SPEED 250
+
+// Sprite slots
+#define PLAYER_SLOT 0
+#define PLAYER_SHOT_SLOT 6
 
 // Sound Effects
 #define SFX_NAVIGATE TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff)
