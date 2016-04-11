@@ -176,21 +176,46 @@ u8 read_level_byte(u16 index)
 #else
 u8 read_level_byte(u16 index)
 {
-	RLEState* rle_state;
-	u16 counter = index / 255 * 4;
-	u32 result;
+	// C Code
 	
-	while (1)
+	u16 counter = index / 128 * 16;
+	u16 cumulative_rlength = counter * 8;
+	u8 rlength = 0;
+	u8 value = 0;
+	
+	/*while (1)
 	{
-		result = pgm_read_dword(&level_data[counter]);
-		rle_state = (RLEState*) &result;
-		if (rle_state->run_start_index + rle_state->rlength > index)
+		rlength = pgm_read_byte(&level_data[counter]);
+		value = pgm_read_byte(&level_data[counter+1]);
+		cumulative_rlength += rlength;
+		if (cumulative_rlength > index)
 		{
-			return rle_state->value;
+			return value;
 		}
-		counter += 4;
+		counter += 2;
 	}
-	return 0;
+	return 0;*/
+	
+	// ASM Code
+	index += 1;
+	counter += (u16) &level_data;
+	asm volatile ("" "\n\t"
+	"while1:" "\n\t"
+	"lpm  %[rln]   , %a[cntr]+" "\n\t"
+	"lpm  %[vl]    , %a[cntr]+" "\n\t"
+	"add  %A[crln], %[rln]" "\n\t"
+	"adc  %B[crln], __zero_reg__" "\n\t"
+	"cp   %A[crln], %A[idx]" "\n\t"
+	"cpc  %B[crln], %B[idx]" "\n\t"
+	"brsh while1done" "\n\t"
+	"rjmp while1" "\n\t"
+	"while1done:" "\n\t"
+	: [idx]  "+r" (index),
+	  [cntr] "+z" (counter),
+	  [crln] "+r" (cumulative_rlength),
+	  [rln]  "+r" (rlength),
+	  [vl]   "=&r" (value));
+	return value;
 }
 
 #endif

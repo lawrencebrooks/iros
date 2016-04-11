@@ -13,9 +13,18 @@ Description
 'rlencode' takes a comma seperated list of 1 byte values
 and applies a run length encoding. The output is a comma
 seperated list of 1 byte values. Every run in the input is represented
-by 4 bytes in the outbout comprising a 16 bit original index where run length started, an 8 bit run length and an 8 bit value. eg:
+by 2 bytes in the output comprising an 8 bit run length and an 8 bit value.
 
-5, 5, 5, 5, 5, 5  ----> 0, 0, 6, 5
+The output is grouped into 16 byte blocks for every  128 bytes of input. A block
+is padded out with 0s to complete the 16 bytes where necessary. It is assumed that every
+128 bytes of input comprise at most 8 run length pairs.
+
+This is a decoding optimization at the cost of less effecient compression. A compressed output is 1/8 of the original
+input size.
+
+Example:
+
+5, 5, 5, 5, 5, 5,...  ----> 128, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 """
 
 if __name__ == "__main__":
@@ -32,19 +41,33 @@ if __name__ == "__main__":
 
     fo = open(sys.argv[2], 'w')
     rlength = 1
-    idx = 1
-    start_idx = 0
+    cumulative_rlength = 1
+    pairs_in_block = 0 
     result = ''
     prev_value = values[0]
     for v in values[1:]: 
-        if v != prev_value or rlength == 255:
-            result += "%d,%d,%d,%d," % (start_idx & 255, (start_idx >> 8) & 255, rlength, int(prev_value))
+        if v != prev_value or cumulative_rlength == 128:
+            result += "%d,%d," % (rlength, int(prev_value))
+            pairs_in_block += 1
             rlength = 1
             prev_value = v
-            start_idx = idx
+            if cumulative_rlength == 128:
+                # Pad the rest of the block with 0
+                for i in range(pairs_in_block, 8):
+                    result += "0,0,"
+                pairs_in_block = 0
+                cumulative_rlength = 1
+            else:
+                cumulative_rlength += 1
+                
         else:
             rlength += 1
-        idx += 1
+            cumulative_rlength += 1
+
+    # Finalize the rest of the LAST block
+    result += "%d,%d," % (rlength, int(prev_value))
+    pairs_in_block += 1
+    for i in range(pairs_in_block, 8):
+        result += "0,0,"
            
-    result += "%d,%d,%d,%d," % (start_idx & 255, (start_idx >> 8) & 255, rlength, int(prev_value))
     fo.write(result)  
