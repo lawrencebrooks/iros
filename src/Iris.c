@@ -34,7 +34,7 @@
 void load_eeprom(struct EepromBlockStruct* block);
 void save_eeprom(struct EepromBlockStruct* block);
 void fade_through();
-void clear_sprites();
+void clear_sprites(u8 from, u8 to);
 void level_transition(u8 index);
 void load_splash();
 void exit_game();
@@ -48,62 +48,38 @@ char* jump_anim[1];
 char* prone_anim[1];
 char* run_anim[4];
 char* shot_anim[1];
+char* spider_anim[2];
+char* enemy_shot_anim[1];
 
 void init_game_state()
 {
-	game.camera_x = 0;
-	game.camera_y = 0;
-	game.current_level = 0;
-	game.current_screen = 0;
-	game.paused = 0;
-	game.selection = 0;
-	game.scroll_x = 0;
-	game.scroll_y = 0;
 	game.scroll_src_x=29;
     game.scroll_dest_x=29;
 	game.scroll_src_y=27;
     game.scroll_dest_y=27;
-	game.player.active_shots = 0;
 	game.player.direction = D_RIGHT;
 	game.player.flags = IDLE;
-	game.player.grace_frame = 0;
-	game.player.shared.gravity = 0;
-	game.player.shared.vx = 0;
-	game.player.shared.vy = 0;
+	game.player.width = 2;
+	game.player.height = 3;
+	game.spawn_rate = BASE_SPAWN_RATE;
 	
 	game.player.idle.anim_count = 1;
-	game.player.idle.current_anim = 0;
-	game.player.idle.frame_count = 0;
 	game.player.idle.frames_per_anim = 1;
-	game.player.idle.looped = 0;
-	game.player.idle.reversing = 0;
 	game.player.idle.anims = idle_anim;
 	game.player.idle.anims[0] = (char*) map_hero_idle;
 	
 	game.player.jump.anim_count = 1;
-	game.player.jump.current_anim = 0;
-	game.player.jump.frame_count = 0;
 	game.player.jump.frames_per_anim = 1;
-	game.player.jump.looped = 0;
-	game.player.jump.reversing = 0;
 	game.player.jump.anims = jump_anim;
 	game.player.jump.anims[0] = (char*) map_hero_jump;
 	
 	game.player.prone.anim_count = 1;
-	game.player.prone.current_anim = 0;
-	game.player.prone.frame_count = 0;
 	game.player.prone.frames_per_anim = 1;
-	game.player.prone.looped = 0;
-	game.player.prone.reversing = 0;
 	game.player.prone.anims = prone_anim;
 	game.player.prone.anims[0] = (char*) map_hero_prone;
 	
 	game.player.run.anim_count = 4;
-	game.player.run.current_anim = 0;
-	game.player.run.frame_count = 0;
 	game.player.run.frames_per_anim = FRAMES_PER_RUN_CYCLE;
-	game.player.run.looped = 0;
-	game.player.run.reversing = 0;
 	game.player.run.anims = run_anim;
 	game.player.run.anims[0] = (char*) map_hero_step_0;
 	game.player.run.anims[1] = (char*) map_hero_step_1;
@@ -112,20 +88,50 @@ void init_game_state()
 	
 	for (u8 i = 0; i < MAX_PLAYER_SHOTS; i++)
 	{
-		game.player.shot[i].shared.gravity = 0;
-		game.player.shot[i].shared.vx = 0;
-		game.player.shot[i].shared.vy = 0;
-		game.player.shot[i].active = 0;
 		game.player.shot[i].hit_count = 1;
 		game.player.shot[i].shot_type = BASIC_SHOT;
 		game.player.shot[i].anim.anim_count = 1;
-		game.player.shot[i].anim.current_anim = 0;
-		game.player.shot[i].anim.frame_count = 0;
 		game.player.shot[i].anim.frames_per_anim = 1;
-		game.player.shot[i].anim.looped = 0;
-		game.player.shot[i].anim.reversing = 0;
 		game.player.shot[i].anim.anims = shot_anim;
 		game.player.shot[i].anim.anims[0] = (char*) map_hero_shot;
+	}
+}
+
+void init_enemy_spider(u8 i, u16 x, u16 y)
+{
+	game.enemies[i].active = 1;
+	game.enemies[i].active_shots = 0;
+	game.enemies[i].direction = D_LEFT;
+	game.enemies[i].flags = IDLE;
+	game.enemies[i].width = 1;
+	game.enemies[i].height = 1;
+	game.enemies[i].enemy_type = ENEMY_SPIDER;
+	game.enemies[i].frame_count = 0;
+	
+	game.enemies[i].anim.anim_count = 2;
+	game.enemies[i].anim.frames_per_anim = SPIDER_FRAMES_PER_IDLE;
+	game.enemies[i].anim.anims = spider_anim;
+	game.enemies[i].anim.anims[0] = (char*) map_enemy_spider_0;
+	game.enemies[i].anim.anims[1] = (char*) map_enemy_spider_1;
+	game.enemies[i].shared.gravity = 0;
+	game.enemies[i].shared.vx = 0;
+	game.enemies[i].shared.vy = 0;
+	game.enemies[i].shared.x = x;
+	game.enemies[i].shared.y = y;
+		
+	for (u8 j = 0; j < MAX_ENEMY_SHOTS; j++)
+	{
+		game.enemies[i].shot[j].hit_count = 1;
+		game.enemies[i].shot[j].active = 0;
+		game.enemies[i].shot[j].shot_type = ENEMY_SHOT;
+		game.enemies[i].shot[j].anim.anim_count = 1;
+		game.enemies[i].shot[j].anim.frames_per_anim = 1;
+		game.enemies[i].shot[j].anim.anims = enemy_shot_anim;
+		game.enemies[i].shot[j].anim.anims[0] = (char*) map_enemy_shot;
+		game.enemies[i].shot[j].shared.vx = 0;
+		game.enemies[i].shot[j].shared.vy = 0;
+		game.enemies[i].shot[j].shared.x = x;
+		game.enemies[i].shot[j].shared.y = y;
 	}
 }
 
@@ -281,14 +287,48 @@ void render_camera_view()
 	}
 }
 
+void spawn_enemy(u16 x, u16 y)
+{
+	for (u8 i = 0; i < MAX_ENEMIES; i++)
+	{
+		if (!game.enemies[i].active)
+		{
+			init_enemy_spider(i, x, y);
+			game.active_enemies++;
+			return;
+		}
+	}
+}
+
+char solid_tile(u8 level_tile)
+{
+	switch (level_tile)
+	{
+		case L_ICE_MIDDLE : return 1;
+		case L_ICE_LEFT : return 1;
+		case L_ICE_RIGHT : return 1;
+		case L_ICE_BOTTOM : return 1;
+	}
+	return 0;
+}
+
 void append_tile_column()
 {
+	static u16 column_count;
+	static u8 enemy_spawned;
 	u8 level_tile;
 
+	column_count++;
+	enemy_spawned = 0;
     for (u8 y = 0; y <= CAMERA_HEIGHT; y++)
 	{
 		level_tile = get_level_tile(game.current_level, game.scroll_src_x, y + game.camera_y / 8);
 		render_level_tile(level_tile, game.scroll_dest_x, (y + Screen.scrollY / 8) % 30);
+		if (column_count % game.spawn_rate == game.spawn_rate - 1 && game.active_enemies < MAX_ENEMIES && !enemy_spawned && solid_tile(level_tile))
+		{
+			spawn_enemy(game.camera_x+(CAMERA_WIDTH+1)*8, (game.camera_y / 8 + y - 1)*8);
+			enemy_spawned = 1;
+		}
     }
 	
     game.scroll_src_x++;
@@ -356,7 +396,8 @@ void level_transition(u8 index)
 {
 	FadeOut(FRAMES_PER_FADE, true);
 	ClearVram();
-	clear_sprites();
+	clear_sprites(0, MAX_EXTENDED_SPRITES-1);
+	LBRotateSprites(MAX_EXTENDED_SPRITES);
 	Print(8, 12, (char*) strLevels+index*16);
 	FadeIn(1, true);
 	LBWaitSeconds(TEXT_LINGER);
@@ -364,18 +405,6 @@ void level_transition(u8 index)
 	ClearVram();
 	FadeIn(FRAMES_PER_FADE, false);
 	load_level(index);
-}
-
-char solid_tile(u8 level_tile)
-{
-	switch (level_tile)
-	{
-		case L_ICE_MIDDLE : return 1;
-		case L_ICE_LEFT : return 1;
-		case L_ICE_RIGHT : return 1;
-		case L_ICE_BOTTOM : return 1;
-	}
-	return 0;
 }
 
 char on_solid_ground(SpriteShared* s, u8 tile_width, u8 tile_height)
@@ -413,7 +442,11 @@ void update_shot()
 		idx = find_shot_slot();
 		LBMapSprite(PLAYER_SHOT_SLOT+idx, LBGetNextFrame(&game.player.shot[idx].anim), 0);
 		game.player.shot[idx].active = 1;
-		game.player.shot[idx].shared.y = game.player.shared.y+1*8;
+		game.player.shot[idx].shared.y = (u16) game.player.shared.y / 8 * 8;
+		if (!(game.player.flags & PRONE))
+		{
+			game.player.shot[idx].shared.y += 8;
+		}
 		if (game.player.direction == D_RIGHT)
 		{
 			game.player.shot[idx].shared.x = game.player.shared.x+2*8;
@@ -453,7 +486,10 @@ void update_player()
 	
 	if (game.player.flags & (IDLE|RUNNING))
 	{
-		if (!on_solid_ground(&game.player.shared, 2, 3))
+		game.player.width = 2;
+		game.player.height = 3;
+		
+		if (!on_solid_ground(&game.player.shared, game.player.width, game.player.height))
 		{
 			game.player.shared.gravity = GRAVITY;
 			game.player.flags = JUMPING;
@@ -474,6 +510,20 @@ void update_player()
 				game.player.flags = RUNNING;
 				game.player.direction = D_LEFT;
 				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.run), SPRITE_FLIP_X);
+			}
+			else if (game.joypadState.pressed & BTN_DOWN)
+			{
+				game.player.shared.y += 16;
+				if(game.player.direction == D_RIGHT)
+				{
+					game.player.shared.x -= 8;
+				}
+				game.player.shared.vx = 0;
+				game.player.flags = PRONE;
+				game.player.width = 3;
+				game.player.height = 1;
+				clear_sprites(3, 5);
+				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.prone), sprites[0].flags);
 			}
 			else
 			{
@@ -515,9 +565,14 @@ void update_player()
 			game.player.flags = IDLE;
 		}
 	}
-	else if (game.player.flags & PRONE)
+	else if (game.player.flags & PRONE && game.joypadState.pressed & BTN_UP)
 	{
-		
+		game.player.flags = IDLE;	
+		game.player.shared.y -= 16;
+		if(game.player.direction == D_RIGHT)
+		{
+			game.player.shared.x += 8;
+		}
 	}
 }
 
@@ -540,62 +595,173 @@ u8 pixel_overlap(u16 s1, u16 s2, u8 w1, u8 w2)
 
 void collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 {
+	u16 x0_tile = s->x / 8;
+	u16 y0_tile = s->y / 8;
+	u16 x1_tile = (s->x+7) / 8;
+	u16 y1_tile = (s->y+7) / 8;
 	u8 lt1, lt2;
+	
+	// Only if moving
+	if (s->vx == 0 && s->vy == 0) return;
 	
 	// Top and Bottom
 	for (u8 x = 0; x < tile_width; x++)
 	{
-		lt1 = get_level_tile(game.current_level, s->x / 8 + x, s->y / 8);
-		lt2 = get_level_tile(game.current_level, (s->x+7) / 8 + x, s->y / 8);
-		if ((solid_tile(lt1) && pixel_overlap(s->x, ((u16) s->x / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD) ||
-		    (solid_tile(lt2) && pixel_overlap(s->x, ((u16) (s->x+7) / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD))
+		if (s->vy < 0)
 		{
-			s->vy =  0;
-			s->y = (((u16) s->y / 8) + 1) * 8;
+			lt1 = get_level_tile(game.current_level, x0_tile + x, y0_tile);
+			lt2 = get_level_tile(game.current_level, x1_tile + x, y0_tile);
+			if ((solid_tile(lt1) && pixel_overlap(s->x, x0_tile * 8, 8, 8) >= OVERLAP_THRESHOLD) ||
+				(solid_tile(lt2) && pixel_overlap(s->x, x1_tile * 8, 8, 8) >= OVERLAP_THRESHOLD))
+			{
+				s->vy =  0;
+				s->y = (y0_tile + 1) * 8;
+			}
 		}
-		lt1 = get_level_tile(game.current_level, s->x / 8 + x, (s->y + tile_height*8 - 1) / 8);
-		lt2 = get_level_tile(game.current_level, (s->x+7) / 8 + x, (s->y + tile_height*8 - 1) / 8);
-		if ((solid_tile(lt1) && pixel_overlap(s->x, ((u16) s->x / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD) || 
-		    (solid_tile(lt2) && pixel_overlap(s->x, ((u16) (s->x+7) / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD))
+		if (s->vy > 0)
 		{
-			s->vy =  0;
-			s->gravity = 0;
-			s->y = ((u16) s->y / 8) * 8;
+			lt1 = get_level_tile(game.current_level, x0_tile + x, (s->y + tile_height*8 - 1) / 8);
+			lt2 = get_level_tile(game.current_level, x1_tile + x, (s->y + tile_height*8 - 1) / 8);
+			if ((solid_tile(lt1) && pixel_overlap(s->x, x0_tile * 8, 8, 8) >= OVERLAP_THRESHOLD) || 
+				(solid_tile(lt2) && pixel_overlap(s->x, x1_tile * 8, 8, 8) >= OVERLAP_THRESHOLD))
+			{
+				s->vy =  0;
+				s->gravity = 0;
+				s->y = y0_tile * 8;
+			}
 		}
 	}
 	
 	// Left and Right
+    y0_tile = s->y / 8;
+	y1_tile = (s->y+7) / 8;
 	for (u8 y = 0; y < tile_height; y++)
 	{
-		lt1 = get_level_tile(game.current_level, s->x / 8, s->y / 8 + y);
-		lt2 = get_level_tile(game.current_level, s->x / 8, (s->y+7) / 8 + y);
-		if ((solid_tile(lt1) && pixel_overlap(s->y, ((u16) s->y / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD) ||
-		    (solid_tile(lt2) && pixel_overlap(s->y, ((u16) (s->y+7) / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD))
+		if (s->vx < 0)
 		{
-			s->vx =  0;
-			s->x = (((u16) s->x / 8) + 1) * 8;
+			lt1 = get_level_tile(game.current_level, x0_tile, y0_tile + y);
+			lt2 = get_level_tile(game.current_level, x0_tile, y1_tile + y);
+			if ((solid_tile(lt1) && pixel_overlap(s->y, y0_tile * 8, 8, 8) >= OVERLAP_THRESHOLD) ||
+				(solid_tile(lt2) && pixel_overlap(s->y, y1_tile * 8, 8, 8) >= OVERLAP_THRESHOLD))
+			{
+				s->vx =  0;
+				s->x = (x0_tile + 1) * 8;
+			}
 		}
 		
-		lt1 = get_level_tile(game.current_level, (s->x + tile_width * 8 - 1) / 8, s->y / 8 + y);
-		lt2 = get_level_tile(game.current_level, (s->x + tile_width * 8 - 1) / 8, (s->y+7) / 8 + y);
-		if ((solid_tile(lt1) && pixel_overlap(s->y, ((u16) s->y / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD) ||
-		    (solid_tile(lt2) && pixel_overlap(s->y, ((u16) (s->y+7) / 8) * 8, 8, 8) >= OVERLAP_THRESHOLD))
+		if (s->vx > 0)
 		{
-			s->vx =  0;
-			s->x = ((u16) s->x / 8) * 8;
+			lt1 = get_level_tile(game.current_level, (s->x + tile_width * 8 - 1) / 8, y0_tile + y);
+			lt2 = get_level_tile(game.current_level, (s->x + tile_width * 8 - 1) / 8, y1_tile + y);
+			if ((solid_tile(lt1) && pixel_overlap(s->y, y0_tile * 8, 8, 8) >= OVERLAP_THRESHOLD) ||
+				(solid_tile(lt2) && pixel_overlap(s->y, y1_tile * 8, 8, 8) >= OVERLAP_THRESHOLD))
+			{
+				s->vx =  0;
+				s->x = x0_tile * 8;
+			}
 		}
 	}
 }
 
-void animate_player()
+void animate_sprite(SpriteShared* s, u8 slot, u8 width, u8 height)
 {
 	//Gravity
-	game.player.shared.vy = game.player.shared.vy + game.player.shared.gravity*FRAME_TIME;
-	if (game.player.shared.vy > MAX_SPEED) game.player.shared.vy = MAX_SPEED;
-	game.player.shared.x += game.player.shared.vx*FRAME_TIME;
-	game.player.shared.y += game.player.shared.vy*FRAME_TIME;
-	collision_detect_level(&game.player.shared, 2, 3);
-	LBMoveSprite(0, game.player.shared.x - game.camera_x, game.player.shared.y - game.camera_y, 2, 3);
+	s->vy = s->vy + s->gravity*FRAME_TIME;
+	if (s->vy > MAX_SPEED) s->vy = MAX_SPEED;
+	s->x += s->vx*FRAME_TIME;
+	s->y += s->vy*FRAME_TIME;
+	collision_detect_level(s, width, height);
+	LBMoveSprite(slot, s->x - game.camera_x, s->y - game.camera_y, width, height);
+}
+
+void animate_player()
+{
+	animate_sprite(&game.player.shared, PLAYER_SLOT, game.player.width, game.player.height);
+}
+
+void update_spider_enemy(Enemy* e, u8 slot)
+{
+	if (e->flags & IDLE && e->frame_count == SPIDER_IDLE_FRAMES)
+	{
+		e->flags = JUMPING;
+		e->shared.vy = -SPIDER_JUMP_SPEED;
+		e->shared.gravity = GRAVITY;
+		e->shared.vx = SPIDER_SIDE_SPEED;
+		if (e->direction == D_LEFT)
+		{
+			e->shared.vx = -SPIDER_SIDE_SPEED;
+		}
+		LBMapSprite(slot, map_enemy_spider_1, 0);
+	}
+	else if (e->flags & JUMPING && e->shared.gravity == 0)
+	{
+		e->flags = IDLE;
+		e->shared.vx = 0;
+		e->frame_count = 0;
+		if (e->direction == D_LEFT)
+		{
+			e->direction = D_RIGHT;
+		}
+		else
+		{
+			e->direction = D_LEFT;
+		}
+	}
+	else if (e->flags & IDLE)
+	{
+		LBMapSprite(slot, LBGetNextFrame(&e->anim), 0);
+	}
+	e->frame_count++;
+}
+
+void update_enemies()
+{
+	u8 slot = ENEMY_SLOT;
+	
+	for (u8 i = 0; i < MAX_ENEMIES; i++)
+	{
+		if (game.enemies[i].active)
+		{
+			switch (game.enemies[i].enemy_type)
+			{
+				case ENEMY_SPIDER: update_spider_enemy(&game.enemies[i], slot); break;
+			}
+		}
+		slot += game.enemies[i].width * game.enemies[i].height;
+	}
+}
+
+void update_enemy_shots()
+{
+}
+
+void animate_enemies()
+{
+	//Gravity
+	u8 slot = ENEMY_SLOT;
+	
+	for (u8 i = 0; i < MAX_ENEMIES; i++)
+	{
+		if (game.enemies[i].active)
+		{
+			if (game.enemies[i].shared.x < game.camera_x || game.enemies[i].shared.y < game.camera_y || game.enemies[i].shared.y > game.camera_y + CAMERA_HEIGHT*8)
+			{
+				game.enemies[i].active = 0;
+				game.active_enemies--;
+				LBMoveSprite(slot, OFF_SCREEN, 0, game.enemies[i].width, game.enemies[i].height);
+			}
+			else
+			{
+				animate_sprite(&game.enemies[i].shared, slot, game.enemies[i].width, game.enemies[i].height);
+			}
+		}
+		slot +=  game.enemies[i].width * game.enemies[i].height;
+	}
+}
+
+void animate_enemy_shots()
+{
+	
 }
 
 void update_level()
@@ -615,13 +781,12 @@ void update_level()
 	}
 }
 
-void clear_sprites()
+void clear_sprites(u8 from, u8 to)
 {
-	for(char i = 0; i < MAX_EXTENDED_SPRITES; i++)
+	for(char i = from; i <= to; i++)
 	{
 		LBMoveSprite(i, OFF_SCREEN, 0, 1, 1);
 	}
-	LBRotateSprites(MAX_SPRITES);
 }
 
 void save_score()
@@ -642,7 +807,8 @@ void load_splash()
 {
 	game.current_screen = SPLASH;
 	game.selection = START_SELECTED;
-	clear_sprites();
+	clear_sprites(0, MAX_EXTENDED_SPRITES-1);
+	LBRotateSprites(MAX_EXTENDED_SPRITES);
 	Print(8, 15, (char*) str1Player);
 	Print(8, 16, (char*) strHighscores);
 	Print(6, 21, (char*) strSelectHandle);
@@ -704,9 +870,13 @@ int main()
 				update_level();
 				update_player();
 				update_shot();
+				update_enemies();
+				update_enemy_shots();
 				animate_player();
 				animate_shot();
-				LBRotateSprites(10);
+				animate_enemies();
+				animate_enemy_shots();
+				LBRotateSprites(15);
 				break;
 			default:
 				break;

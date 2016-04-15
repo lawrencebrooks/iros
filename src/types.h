@@ -22,10 +22,10 @@
 #include "macros.h"
 
 typedef struct sSpriteShared {
-	float vx;
 	float vy;
 	float x;
 	float y;
+	s16 vx;
 	u8 gravity;
 } SpriteShared;
 
@@ -38,12 +38,29 @@ typedef struct sShot {
 
 } Shot;
 
+typedef struct sEnemy {
+	SpriteShared shared;
+	u8 active_shots;
+	u8 active;
+	u8 flags;
+	u8 direction;
+	u8 width;
+	u8 height;
+	u8 enemy_type;
+	u8 frame_count;
+	Shot shot[MAX_ENEMY_SHOTS];
+	Animation anim;
+	
+} Enemy;
+
 typedef struct sPlayer {
 	SpriteShared shared;
 	u8 active_shots;
 	u8 flags;
 	u8 grace_frame;
 	u8 direction;
+	u8 width;
+	u8 height;
 	Shot shot[MAX_PLAYER_SHOTS];
 	Animation idle;
 	Animation run;
@@ -53,6 +70,10 @@ typedef struct sPlayer {
 } Player;
 
 typedef struct sGameState {
+	u16 scroll_src_x;
+	u16 scroll_src_y;
+	u16 camera_x;
+	u16 camera_y;
 	u8 current_screen;
 	u8 current_level;
 	u8 paused;
@@ -61,11 +82,10 @@ typedef struct sGameState {
 	u8 scroll_y;
 	u8 scroll_dest_x;
 	u8 scroll_dest_y;
-	u16 scroll_src_x;
-	u16 scroll_src_y;
-	u16 camera_x;
-	u16 camera_y;
+	u8 active_enemies;
+	u8 spawn_rate;
 	Player player;
+	Enemy enemies[MAX_ENEMIES];
 	JoyPadState joypadState;
 } Game;
 

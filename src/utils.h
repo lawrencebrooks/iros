@@ -89,7 +89,7 @@ void LBGetJoyPadState(JoyPadState* p, unsigned char index)
  * Get the current joy pad button state for index controller
  */
 {
-	static unsigned int p_prev[2] = {0,0};
+	static unsigned int p_prev[2];
 
 	p->held = ReadJoypad(index);
 
@@ -138,10 +138,10 @@ int LBRandom(unsigned int from, unsigned int to)
  * Return a random number between 'from' and 'to'.
  */
 {
-	static unsigned int random_seed = 0;
+	static unsigned int random_seed;
 	if (random_seed == 0) random_seed = GetTrueRandomSeed();
 	
-	static u8 shift_count = 0;
+	static u8 shift_count;
 	unsigned int shifted = random_seed >> shift_count;
 	unsigned int delta = to - from;
 
@@ -239,7 +239,7 @@ void LBMoveSprite(u8 startSprite,u8 x,u8 y,u8 width,u8 height)
 
 void LBRotateSprites(u8 mappedSpriteCount)
 {
-	static u8 swapped = 0;
+	static u8 swapped;
 	u8 counter = 0;
 	
 	if (swapped)

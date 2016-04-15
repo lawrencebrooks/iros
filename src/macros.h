@@ -57,7 +57,7 @@
 #define D_LEFT 0
 #define D_RIGHT 1
 
-// Player flags
+// State flags
 #define JUMPING 1
 #define RUNNING 2
 #define PRONE 4
@@ -65,11 +65,23 @@
 
 // Shot macros
 #define BASIC_SHOT 0
-#define SHOT_SPEED 250
+#define ENEMY_SHOT 1
+#define SHOT_SPEED 400
 
 // Sprite slots
 #define PLAYER_SLOT 0
 #define PLAYER_SHOT_SLOT 6
+#define ENEMY_SLOT 10
+
+// Enemy macros
+#define MAX_ENEMIES 5
+#define MAX_ENEMY_SHOTS 2
+#define ENEMY_SPIDER 0
+#define BASE_SPAWN_RATE 5
+#define SPIDER_IDLE_FRAMES 128
+#define SPIDER_JUMP_SPEED 100
+#define SPIDER_SIDE_SPEED 60
+#define SPIDER_FRAMES_PER_IDLE 10
 
 // Sound Effects
 #define SFX_NAVIGATE TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff)
