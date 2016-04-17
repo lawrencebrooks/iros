@@ -38,6 +38,9 @@ void clear_sprites(u8 from, u8 count);
 void level_transition(u8 index);
 void load_splash();
 void exit_game();
+void handle_player_death();
+u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height);
+u8 map_explosion(u8* flags, Animation* anim, u8 slot, u8 width, u8 height);
 
 // Globals
 Game game;
@@ -50,15 +53,26 @@ char* run_anim[4];
 char* shot_anim[1];
 char* spider_anim[2];
 char* enemy_shot_anim[1];
+char* expl_anim[3];
 
 void init_game_state()
 {
-	game.scroll_src_x=29;
-    game.scroll_dest_x=29;
-	game.scroll_src_y=27;
-    game.scroll_dest_y=27;
-	game.spawn_rate = BASE_SPAWN_RATE;
 	game.lives = LIVES;
+	game.score = 0;
+	game.time = 0;
+}
+
+void init_enemy_state()
+{
+	for (u8 i = 0; i < MAX_ENEMIES; i++)
+	{
+		game.enemies[i].active = 0;
+		for (u8 j = 0; j < MAX_ENEMY_SHOTS; j++)
+		{
+			game.enemies[i].shot[j].active = 0;
+		}
+	}
+	game.active_enemies = 0;
 }
 
 void init_player_state()
@@ -83,6 +97,13 @@ void init_player_state()
 	game.player.prone.anims = prone_anim;
 	game.player.prone.anims[0] = (char*) map_hero_prone;
 	
+	game.player.expl.anim_count = 3;
+	game.player.expl.frames_per_anim = EXPLOSION_FRAME_COUNT;
+	game.player.expl.anims = expl_anim;
+	game.player.expl.anims[0] = (char*) map_explosion_0;
+	game.player.expl.anims[1] = (char*) map_explosion_1;
+	game.player.expl.anims[2] = (char*) map_explosion_2;
+	
 	game.player.run.anim_count = 4;
 	game.player.run.frames_per_anim = FRAMES_PER_RUN_CYCLE;
 	game.player.run.anims = run_anim;
@@ -105,13 +126,13 @@ void init_player_state()
 void init_enemy_spider(u8 i, u16 x, u16 y)
 {
 	game.enemies[i].active = 1;
-	game.enemies[i].active_shots = 0;
 	game.enemies[i].direction = D_LEFT;
 	game.enemies[i].flags = IDLE;
 	game.enemies[i].width = 1;
 	game.enemies[i].height = 1;
 	game.enemies[i].enemy_type = ENEMY_SPIDER;
 	game.enemies[i].frame_count = 0;
+	game.enemies[i].shield = ENEMY_SPIDER_SHIELD;
 	
 	game.enemies[i].anim.anim_count = 2;
 	game.enemies[i].anim.frames_per_anim = SPIDER_FRAMES_PER_IDLE;
@@ -123,6 +144,13 @@ void init_enemy_spider(u8 i, u16 x, u16 y)
 	game.enemies[i].shared.vy = 0;
 	game.enemies[i].shared.x = x;
 	game.enemies[i].shared.y = y;
+	
+	game.enemies[i].expl.anim_count = 3;
+	game.enemies[i].expl.frames_per_anim = EXPLOSION_FRAME_COUNT;
+	game.enemies[i].expl.anims = expl_anim;
+	game.enemies[i].expl.anims[0] = (char*) map_explosion_0;
+	game.enemies[i].expl.anims[1] = (char*) map_explosion_1;
+	game.enemies[i].expl.anims[2] = (char*) map_explosion_2;
 		
 	for (u8 j = 0; j < MAX_ENEMY_SHOTS; j++)
 	{
@@ -319,17 +347,15 @@ char solid_tile(u8 level_tile)
 
 void append_tile_column()
 {
-	static u16 column_count;
-	static u8 enemy_spawned;
+	u8 enemy_spawned = 0;
 	u8 level_tile;
 
-	column_count++;
-	enemy_spawned = 0;
+	game.column_count++;
     for (u8 y = 0; y <= CAMERA_HEIGHT; y++)
 	{
 		level_tile = get_level_tile(game.current_level, game.scroll_src_x, y + game.camera_y / 8);
 		render_level_tile(level_tile, game.scroll_dest_x, (y + Screen.scrollY / 8) % 30);
-		if (column_count % game.spawn_rate == game.spawn_rate - 1 && game.active_enemies < MAX_ENEMIES && !enemy_spawned && solid_tile(level_tile))
+		if (game.column_count % game.spawn_rate == game.spawn_rate - 1 && game.active_enemies < MAX_ENEMIES && !enemy_spawned && solid_tile(level_tile))
 		{
 			spawn_enemy(game.camera_x+(CAMERA_WIDTH+1)*8, (game.camera_y / 8 + y - 1)*8);
 			enemy_spawned = 1;
@@ -388,12 +414,20 @@ void load_level(u8 index)
 	Screen.overlayHeight = 2;
 	clear_overlay(2);
 	game.current_level = index;
+	game.column_count = 0;
 	game.camera_x = get_camera_x(index);
 	game.camera_y = get_camera_y(index);
 	game.player.shared.x = get_hero_spawn_x(index)*8;
 	game.player.shared.y = get_hero_spawn_y(index)*8;
 	game.camera_x *= 8;
 	game.camera_y *= 8;
+	game.scroll_src_x = game.camera_x / 8 + CAMERA_WIDTH + 1;
+    game.scroll_dest_x = game.camera_x / 8 + CAMERA_WIDTH + 1;
+	game.scroll_src_y = game.camera_y / 8 + CAMERA_HEIGHT + 1;
+    game.scroll_dest_y =  game.camera_y / 8 + CAMERA_HEIGHT + 1;
+	game.scroll_x = 0;
+	game.scroll_y = 0;
+	game.spawn_rate = BASE_SPAWN_RATE;
 	render_camera_view();
 	Print(0, VRAM_TILES_V-1, (char*) strLives);
 	Print(17, VRAM_TILES_V-1, (char*) strScore);
@@ -408,6 +442,7 @@ void level_transition(u8 index)
 	clear_sprites(0, MAX_EXTENDED_SPRITES);
 	LBRotateSprites();
 	init_player_state();
+	init_enemy_state();
 	Print(8, 12, (char*) strLevels+index*16);
 	FadeIn(1, true);
 	LBWaitSeconds(TEXT_LINGER);
@@ -474,6 +509,7 @@ void update_shot()
 void animate_shot()
 {
 	// Animate shots
+	u8 slot = ENEMY_SLOT;
 	for (u8 i = 0; i < MAX_PLAYER_SHOTS; i++)
 	{
 		if (game.player.shot[i].active)
@@ -481,20 +517,73 @@ void animate_shot()
 			game.player.shot[i].shared.x += game.player.shot[i].shared.vx*FRAME_TIME;
 			game.player.shot[i].shared.y += game.player.shot[i].shared.vy*FRAME_TIME;
 			LBMoveSprite(PLAYER_SHOT_SLOT+i, game.player.shot[i].shared.x - game.camera_x, game.player.shot[i].shared.y - game.camera_y, 1, 1);
-			if (game.player.shot[i].shared.x < game.camera_x || game.player.shot[i].shared.x+8 > game.camera_x + CAMERA_WIDTH*8)
+			if (game.player.shot[i].shared.x < game.camera_x || game.player.shot[i].shared.x+8 > game.camera_x + CAMERA_WIDTH*8 ||
+			    collision_detect_level(&game.player.shot[i].shared, 1, 1))
 			{
 				game.player.shot[i].active = 0;
 				game.player.active_shots--;
 				LBMoveSprite(PLAYER_SHOT_SLOT+i, OFF_SCREEN, 0, 1, 1);
 			}
+			else
+			{
+				slot = ENEMY_SLOT;
+				for (u8 j = 0; j < MAX_ENEMIES; j++)
+				{
+					if (game.enemies[j].active &&
+					    LBCollides(game.player.shot[i].shared.x,game.player.shot[i].shared.y, 8, 8,
+							game.enemies[j].shared.x, game.enemies[j].shared.y, game.enemies[j].width*8, game.enemies[j].height*8
+						)
+					)
+					{
+						game.enemies[j].shield -= game.player.shot[i].hit_count;
+						if (game.enemies[j].shield <= 0)
+						{
+							game.enemies[j].flags = EXPLODING;
+							game.enemies[j].active = 0;
+							game.active_enemies--;
+							game.score += KILL_SCORE;
+							break;
+						}
+						game.player.shot[i].active = 0;
+						game.player.active_shots--;
+						LBMoveSprite(PLAYER_SHOT_SLOT+i, OFF_SCREEN, 0, 1, 1);
+					}
+					slot += game.enemies[j].width*game.enemies[j].height;
+				}
+			}
 		}
 	}
+}
+
+void handle_player_death()
+{
+	game.lives--;
+	if (game.lives == 0)
+	{
+		exit_game();
+		return;
+	}
+	FadeOut(FRAMES_PER_FADE, true);
+	ClearVram();
+	clear_sprites(0, MAX_EXTENDED_SPRITES);
+	LBRotateSprites();
+	init_player_state();
+	init_enemy_state();
+	FadeIn(FRAMES_PER_FADE, false);
+	load_level(game.current_level);
 }
 
 void update_player()
 {
 	
-	if (game.player.flags & (IDLE|RUNNING))
+	if (game.player.flags & EXPLODING)
+	{
+		if (map_explosion(&game.player.flags, &game.player.expl, PLAYER_SLOT, game.player.width, game.player.height))
+		{
+			handle_player_death();
+		}
+	}
+	else if (game.player.flags & (IDLE|RUNNING))
 	{
 		game.player.width = 2;
 		game.player.height = 3;
@@ -603,16 +692,17 @@ u8 pixel_overlap(u16 s1, u16 s2, u8 w1, u8 w2)
 	return result;
 }
 
-void collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
+u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 {
 	u16 x0_tile = s->x / 8;
 	u16 y0_tile = s->y / 8;
 	u16 x1_tile = (s->x+7) / 8;
 	u16 y1_tile = (s->y+7) / 8;
 	u8 lt1, lt2;
+	u8 result = 0;
 	
 	// Only if moving
-	if (s->vx == 0 && s->vy == 0) return;
+	if (s->vx == 0 && s->vy == 0) return result;
 	
 	// Top and Bottom
 	if (s->vy != 0)
@@ -628,6 +718,7 @@ void collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 				{
 					s->vy =  0;
 					s->y = (y0_tile + 1) * 8;
+					result = 1;
 				}
 			}
 			if (s->vy > 0)
@@ -640,6 +731,7 @@ void collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 					s->vy =  0;
 					s->gravity = 0;
 					s->y = y0_tile * 8;
+					result = 1;
 				}
 			}
 		}
@@ -661,6 +753,7 @@ void collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 				{
 					s->vx =  0;
 					s->x = (x0_tile + 1) * 8;
+					result = 1;
 				}
 			}
 			
@@ -673,10 +766,28 @@ void collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 				{
 					s->vx =  0;
 					s->x = x0_tile * 8;
+					result = 1;
 				}
 			}
 		}
 	}
+	return result;
+}
+
+u8 map_explosion(u8* flags, Animation* anim, u8 slot, u8 width, u8 height)
+{
+	char* frame;
+	frame = LBGetNextFrame(anim);
+	for (u8 i = 0; i < width*height; i++)
+	{
+		LBMapSprite(slot+i, frame, 0);
+	}
+	if (anim->looped)
+	{
+		*flags ^= EXPLODING;
+		LBMoveSprite(slot, OFF_SCREEN, 0, width, height);
+	}
+	return anim->looped;
 }
 
 void animate_sprite(SpriteShared* s, u8 slot, u8 width, u8 height)
@@ -691,7 +802,11 @@ void animate_sprite(SpriteShared* s, u8 slot, u8 width, u8 height)
 
 void animate_player()
 {
-	animate_sprite(&game.player.shared, PLAYER_SLOT, game.player.width, game.player.height);
+	if (game.player.flags & EXPLODING)
+	{
+		LBMoveSprite(PLAYER_SLOT, game.player.shared.x - game.camera_x, game.player.shared.y - game.camera_y, game.player.width, game.player.height);
+	}
+	else animate_sprite(&game.player.shared, PLAYER_SLOT, game.player.width, game.player.height);
 }
 
 void update_spider_enemy(Enemy* e, u8 slot)
@@ -740,7 +855,11 @@ void update_enemies()
 	
 	for (u8 i = 0; i < MAX_ENEMIES; i++)
 	{
-		if (game.enemies[i].active)
+		if (game.enemies[i].flags & EXPLODING)
+		{
+			map_explosion(&game.enemies[i].flags, &game.enemies[i].expl, slot, game.enemies[i].width, game.enemies[i].height);
+		}
+		else if (game.enemies[i].active)
 		{
 			switch (game.enemies[i].enemy_type)
 			{
@@ -788,7 +907,7 @@ void animate_enemies()
 	
 	for (u8 i = 0; i < MAX_ENEMIES; i++)
 	{
-		if (game.enemies[i].active)
+		if (game.enemies[i].active && !(game.enemies[i].flags & EXPLODING))
 		{
 			if (game.enemies[i].shared.x < game.camera_x || game.enemies[i].shared.y < game.camera_y || game.enemies[i].shared.y > game.camera_y + CAMERA_HEIGHT*8)
 			{
@@ -796,10 +915,23 @@ void animate_enemies()
 				game.active_enemies--;
 				LBMoveSprite(slot, OFF_SCREEN, 0, game.enemies[i].width, game.enemies[i].height);
 			}
+			else if (LBCollides(game.player.shared.x,game.player.shared.y, game.player.width*8, game.player.height*8,
+							game.enemies[i].shared.x, game.enemies[i].shared.y, 8, 8
+						)
+			)
+			{
+				game.player.shield = 0;
+				game.player.flags = EXPLODING;
+				return;
+			}
 			else
 			{
 				animate_sprite(&game.enemies[i].shared, slot, game.enemies[i].width, game.enemies[i].height);
 			}
+		}
+		else if (game.enemies[i].flags & EXPLODING)
+		{
+			LBMoveSprite(slot, game.enemies[i].shared.x - game.camera_x, game.enemies[i].shared.y - game.camera_y, game.enemies[i].width, game.enemies[i].height);
 		}
 		slot +=  game.enemies[i].width * game.enemies[i].height;
 	}
@@ -817,8 +949,22 @@ void animate_enemy_shots()
 			{
 				if (game.enemies[i].shot[j].active)
 				{
-					if (game.enemies[i].shot[j].shared.x < game.camera_x || game.enemies[i].shot[j].shared.x > game.camera_x + CAMERA_WIDTH*8)
+					if (game.enemies[i].shot[j].shared.x < game.camera_x || game.enemies[i].shot[j].shared.x > game.camera_x + CAMERA_WIDTH*8 ||
+					   collision_detect_level(&game.enemies[i].shot[j].shared, 1, 1))
 					{
+						game.enemies[i].shot[j].active = 0;
+						LBMoveSprite(slot, OFF_SCREEN, 0, 1, 1);
+					}
+					else if (LBCollides(game.player.shared.x,game.player.shared.y, game.player.width*8, game.player.height*8,
+							game.enemies[i].shot[j].shared.x, game.enemies[i].shot[j].shared.y, 8, 8
+						)
+					)
+					{
+						game.player.shield -= game.enemies[i].shot[j].hit_count;
+						if (game.player.shield <= 0)
+						{
+							game.player.flags = EXPLODING;
+						}
 						game.enemies[i].shot[j].active = 0;
 						LBMoveSprite(slot, OFF_SCREEN, 0, 1, 1);
 					}
@@ -867,8 +1013,9 @@ void update_level()
 
 void clear_sprites(u8 from, u8 count)
 {
-	for(char i = from; i < from+count; i++)
+	for(u8 i = from; i < from+count; i++)
 	{
+		LBMapSprite(i, map_none, 0);
 		LBMoveSprite(i, OFF_SCREEN, 0, 1, 1);
 	}
 }
@@ -882,13 +1029,20 @@ void exit_game()
 {
     save_score();
 	fade_through();
-	SetSpriteVisibility(true);
+	clear_sprites(0, MAX_EXTENDED_SPRITES);
+	LBRotateSprites();
 	init_game_state();
+	init_player_state();
+	init_enemy_state();
 	load_splash();
 }
 
 void load_splash()
 {
+	Screen.scrollX = 0;
+	Screen.scrollY = 0;
+	Screen.scrollHeight = 32;
+	Screen.overlayHeight = 0;
 	game.current_screen = SPLASH;
 	game.selection = START_SELECTED;
 	clear_sprites(0, MAX_EXTENDED_SPRITES);
@@ -899,8 +1053,6 @@ void load_splash()
 	Print(4, 26, (char*) strCopyright);
 	DrawMap2(6, 5, (const char*) map_splash);
 	LBMapSprite(0, map_right_arrow, 0);
-	LBMoveSprite(0, 7*8, 15*8, 1, 1);
-	LBRotateSprites();
 }
 
 char select_pressed(JoyPadState* p)
@@ -913,18 +1065,25 @@ void update_splash()
 	if (game.joypadState.pressed & BTN_DOWN && game.selection == START_SELECTED)
 	{
 		game.selection = HIGH_SCORES_SELECTED;
-		LBMoveSprite(0, 7*8, 16*8, 1, 1);
 	}
 	else if (game.joypadState.pressed & BTN_UP && game.selection == HIGH_SCORES_SELECTED)
 	{
 		game.selection = START_SELECTED;
-		LBMoveSprite(0, 7*8, 15*8, 1, 1);
 	}
 	else if (select_pressed(&game.joypadState) && game.selection == START_SELECTED)
 	{
 		game.current_screen = LEVEL;
 		level_transition(0);
 		return;
+	}
+	
+	if (game.selection == START_SELECTED)
+	{
+		LBMoveSprite(0, 7*8, 15*8, 1, 1);
+	}
+	else
+	{
+		LBMoveSprite(0, 7*8, 16*8, 1, 1);
 	}
 }
 

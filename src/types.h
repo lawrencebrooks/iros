@@ -40,7 +40,6 @@ typedef struct sShot {
 
 typedef struct sEnemy {
 	SpriteShared shared;
-	u8 active_shots;
 	u8 active;
 	u8 flags;
 	u8 direction;
@@ -48,9 +47,10 @@ typedef struct sEnemy {
 	u8 height;
 	u8 enemy_type;
 	u8 frame_count;
-	u8 shield;
+	char shield;
 	Shot shot[MAX_ENEMY_SHOTS];
 	Animation anim;
+	Animation expl;
 	
 } Enemy;
 
@@ -62,7 +62,7 @@ typedef struct sPlayer {
 	u8 direction;
 	u8 width;
 	u8 height;
-	u8 shield;
+	char shield;
 	Shot shot[MAX_PLAYER_SHOTS];
 	Animation idle;
 	Animation run;
@@ -78,6 +78,7 @@ typedef struct sGameState {
 	u16 camera_y;
 	u16 score;
 	u16 time;
+	u16 column_count;
 	u8 lives;
 	u8 current_screen;
 	u8 current_level;

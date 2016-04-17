@@ -47,6 +47,8 @@
 #define LEVEL_WIDTH 255
 #define LEVEL_HEIGHT 255
 #define OVERLAP_THRESHOLD 4
+#define KILL_SCORE 10
+#define EXPLOSION_FRAME_COUNT 5
 
 // Player macros
 #define FRAMES_PER_RUN_CYCLE 12
@@ -64,6 +66,7 @@
 #define RUNNING 2
 #define PRONE 4
 #define IDLE 8
+#define EXPLODING 16
 
 // Shot macros
 #define BASIC_SHOT 0
