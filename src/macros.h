@@ -40,7 +40,7 @@
 
 // General macros
 #define FRAME_TIME 0.016666666666666666
-#define MAX_PLAYER_SHOTS 4
+#define MAX_PLAYER_SHOTS 3
 #define TEXT_LINGER 3
 #define CAMERA_WIDTH 28
 #define CAMERA_HEIGHT 26
@@ -56,6 +56,8 @@
 #define MAX_SPEED 120
 #define D_LEFT 0
 #define D_RIGHT 1
+#define LIVES 5
+#define PLAYER_SHIELD 10
 
 // State flags
 #define JUMPING 1
@@ -65,23 +67,29 @@
 
 // Shot macros
 #define BASIC_SHOT 0
-#define ENEMY_SHOT 1
+#define BASIC_ENEMY_SHOT 1
 #define SHOT_SPEED 400
+#define ENEMY_SHOT_SPEED 100
+#define BASIC_ENEMY_SHOT_HITCOUNT 1
+#define BSIC_SHOT_HITCOUNT 1
 
 // Sprite slots
 #define PLAYER_SLOT 0
-#define PLAYER_SHOT_SLOT 6
-#define ENEMY_SLOT 10
+#define ENEMY_SLOT 6
+#define PLAYER_SHOT_SLOT 11
+#define ENEMY_SHOT_SLOT 14
+
 
 // Enemy macros
 #define MAX_ENEMIES 5
-#define MAX_ENEMY_SHOTS 2
+#define MAX_ENEMY_SHOTS 1
 #define ENEMY_SPIDER 0
-#define BASE_SPAWN_RATE 5
+#define BASE_SPAWN_RATE 10
 #define SPIDER_IDLE_FRAMES 128
 #define SPIDER_JUMP_SPEED 100
 #define SPIDER_SIDE_SPEED 60
 #define SPIDER_FRAMES_PER_IDLE 10
+#define ENEMY_SPIDER_SHIELD 2
 
 // Sound Effects
 #define SFX_NAVIGATE TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff)

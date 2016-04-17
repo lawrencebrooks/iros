@@ -48,6 +48,7 @@ typedef struct sEnemy {
 	u8 height;
 	u8 enemy_type;
 	u8 frame_count;
+	u8 shield;
 	Shot shot[MAX_ENEMY_SHOTS];
 	Animation anim;
 	
@@ -61,6 +62,7 @@ typedef struct sPlayer {
 	u8 direction;
 	u8 width;
 	u8 height;
+	u8 shield;
 	Shot shot[MAX_PLAYER_SHOTS];
 	Animation idle;
 	Animation run;
@@ -74,10 +76,14 @@ typedef struct sGameState {
 	u16 scroll_src_y;
 	u16 camera_x;
 	u16 camera_y;
+	u16 score;
+	u16 time;
+	u8 lives;
 	u8 current_screen;
 	u8 current_level;
 	u8 paused;
 	u8 selection;
+	u8 frame_counter;
 	u8 scroll_x;
 	u8 scroll_y;
 	u8 scroll_dest_x;

@@ -237,34 +237,28 @@ void LBMoveSprite(u8 startSprite,u8 x,u8 y,u8 width,u8 height)
 	}	
 }
 
-void LBRotateSprites(u8 mappedSpriteCount)
+void LBRotateSprites()
 {
-	static u8 swapped;
-	u8 counter = 0;
+	static u8 rotate_index = ROTATE_SPRITES_FROM;
+	u8 mappedSpriteCount = MAX_EXTENDED_SPRITES;
 	
-	if (swapped)
+	for (u8 i = 0; i < ROTATE_SPRITES_FROM; i++)
 	{
-		while (counter < MAX_SPRITES && mappedSpriteCount > 0)
-		{
-			sprites[counter].flags = extendedSprites[--mappedSpriteCount].flags;
-			sprites[counter].tileIndex = extendedSprites[--mappedSpriteCount].tileIndex;
-			sprites[counter].x = extendedSprites[--mappedSpriteCount].x;
-			sprites[counter].y = extendedSprites[--mappedSpriteCount].y;
-			counter++;
-		}
+		sprites[i].flags = extendedSprites[i].flags;
+		sprites[i].tileIndex = extendedSprites[i].tileIndex;
+		sprites[i].x = extendedSprites[i].x;
+		sprites[i].y = extendedSprites[i].y;
 	}
-	else
+	
+	for (u8 i = ROTATE_SPRITES_FROM; i < MAX_SPRITES; i++)
 	{
-		while (counter < MAX_SPRITES && counter < mappedSpriteCount)
-		{
-			sprites[counter].flags = extendedSprites[counter].flags;
-			sprites[counter].tileIndex = extendedSprites[counter].tileIndex;
-			sprites[counter].x = extendedSprites[counter].x;
-			sprites[counter].y = extendedSprites[counter].y;
-			counter++;
-		}
+		sprites[i].flags = extendedSprites[rotate_index].flags;
+		sprites[i].tileIndex = extendedSprites[rotate_index].tileIndex;
+		sprites[i].x = extendedSprites[rotate_index].x;
+		sprites[i].y = extendedSprites[rotate_index].y;
+		rotate_index += 1;
+		if (rotate_index >= MAX_EXTENDED_SPRITES) rotate_index = ROTATE_SPRITES_FROM;
 	}
-	swapped = swapped & 1;
 }
 
 /*
