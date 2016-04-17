@@ -407,6 +407,7 @@ void move_camera_y()
 
 void load_level(u8 index)
 {	
+	StartSong(planetsong);
 	Screen.scrollX = 0;
 	Screen.scrollY = 0;
 	Screen.scrollHeight = 30;
@@ -484,6 +485,7 @@ void update_shot()
 	u8 idx;
 	if (game.joypadState.pressed & BTN_A && game.player.active_shots < MAX_PLAYER_SHOTS)
 	{
+		SFX_PLAYER_SHOOT;
 		idx = find_shot_slot();
 		LBMapSprite(PLAYER_SHOT_SLOT+idx, LBGetNextFrame(&game.player.shot[idx].anim), 0);
 		game.player.shot[idx].active = 1;
@@ -535,9 +537,11 @@ void animate_shot()
 						)
 					)
 					{
+						SFX_HIT;
 						game.enemies[j].shield -= game.player.shot[i].hit_count;
 						if (game.enemies[j].shield <= 0)
 						{
+							SFX_ENEMY_EXPLODE;
 							game.enemies[j].flags = EXPLODING;
 							game.enemies[j].active = 0;
 							game.active_enemies--;
@@ -920,6 +924,8 @@ void animate_enemies()
 						)
 			)
 			{
+				StopSong();
+				SFX_PLAYER_EXPLODE;
 				game.player.shield = 0;
 				game.player.flags = EXPLODING;
 				return;
@@ -960,9 +966,11 @@ void animate_enemy_shots()
 						)
 					)
 					{
+						SFX_HIT;
 						game.player.shield -= game.enemies[i].shot[j].hit_count;
 						if (game.player.shield <= 0)
 						{
+							StopSong();
 							game.player.flags = EXPLODING;
 						}
 						game.enemies[i].shot[j].active = 0;
@@ -1065,14 +1073,17 @@ void update_splash()
 	if (game.joypadState.pressed & BTN_DOWN && game.selection == START_SELECTED)
 	{
 		game.selection = HIGH_SCORES_SELECTED;
+		SFX_NAVIGATE;
 	}
 	else if (game.joypadState.pressed & BTN_UP && game.selection == HIGH_SCORES_SELECTED)
 	{
 		game.selection = START_SELECTED;
+		SFX_NAVIGATE;
 	}
 	else if (select_pressed(&game.joypadState) && game.selection == START_SELECTED)
 	{
 		game.current_screen = LEVEL;
+		SFX_NAVIGATE;
 		level_transition(0);
 		return;
 	}

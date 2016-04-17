@@ -95,6 +95,10 @@
 #define ENEMY_SPIDER_SHIELD 2
 
 // Sound Effects
-#define SFX_NAVIGATE TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff)
+#define SFX_NAVIGATE TriggerFx(PATCH_NAVIGATE,0xff,true)
+#define SFX_PLAYER_SHOOT TriggerFx(PATCH_PLAYER_SHOOT,0xff,true)
+#define SFX_HIT TriggerFx(PATCH_HIT,0xff,true)
+#define SFX_PLAYER_EXPLODE TriggerFx(PATCH_PLAYER_EXPLODE,0xff,true)
+#define SFX_ENEMY_EXPLODE TriggerFx(PATCH_ENEMY_EXPLODE,0xff,true)
 
 #endif
