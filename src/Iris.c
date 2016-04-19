@@ -132,6 +132,7 @@ void init_enemy_spider(u8 i, u16 x, u16 y)
 	game.enemies[i].height = 1;
 	game.enemies[i].enemy_type = ENEMY_SPIDER;
 	game.enemies[i].frame_count = 0;
+	game.enemies[i].shot_frame_count = 0;
 	game.enemies[i].shield = ENEMY_SPIDER_SHIELD;
 	
 	game.enemies[i].anim.anim_count = 2;
@@ -326,9 +327,15 @@ void spawn_enemy(u16 x, u16 y)
 	{
 		if (!game.enemies[i].active)
 		{
-			init_enemy_spider(i, x, y);
-			game.active_enemies++;
-			return;
+			for (u8 j = 0; j < MAX_ENEMY_SHOTS; j++)
+			{
+				if (!game.enemies[i].shot[j].active)
+				{
+					init_enemy_spider(i, x, y);
+					game.active_enemies++;
+					return;
+				}
+			}
 		}
 	}
 }
@@ -407,7 +414,6 @@ void move_camera_y()
 
 void load_level(u8 index)
 {	
-	StartSong(planetsong);
 	Screen.scrollX = 0;
 	Screen.scrollY = 0;
 	Screen.scrollHeight = 30;
@@ -446,6 +452,7 @@ void level_transition(u8 index)
 	init_enemy_state();
 	Print(8, 12, (char*) strLevels+index*16);
 	FadeIn(1, true);
+	StartSong(planetsong);
 	LBWaitSeconds(TEXT_LINGER);
 	FadeOut(1, true);
 	ClearVram();
@@ -562,6 +569,8 @@ void animate_shot()
 void handle_player_death()
 {
 	game.lives--;
+	clear_sprites(0, 6);
+	LBRotateSprites();
 	if (game.lives == 0)
 	{
 		exit_game();
@@ -589,9 +598,6 @@ void update_player()
 	}
 	else if (game.player.flags & (IDLE|RUNNING))
 	{
-		game.player.width = 2;
-		game.player.height = 3;
-		
 		if (!on_solid_ground(&game.player.shared, game.player.width, game.player.height))
 		{
 			game.player.shared.gravity = GRAVITY;
@@ -600,21 +606,7 @@ void update_player()
 		}
 		else
 		{
-			if ((game.joypadState.held & BTN_RIGHT) && (game.player.shared.x/8 + 2 < LEVEL_WIDTH))
-			{
-				game.player.shared.vx = RUN_SPEED;
-				game.player.flags = RUNNING;
-				game.player.direction = D_RIGHT;
-				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.run), 0);
-			}
-			else if ((game.joypadState.held & BTN_LEFT) && (game.player.shared.x > game.camera_x))
-			{
-				game.player.shared.vx = -RUN_SPEED;
-				game.player.flags = RUNNING;
-				game.player.direction = D_LEFT;
-				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.run), SPRITE_FLIP_X);
-			}
-			else if (game.joypadState.pressed & BTN_DOWN)
+			if (game.joypadState.held & BTN_DOWN)
 			{
 				game.player.shared.y += 16;
 				if(game.player.direction == D_RIGHT)
@@ -628,17 +620,33 @@ void update_player()
 				clear_sprites(3, 3);
 				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.prone), extendedSprites[PLAYER_SLOT].flags);
 			}
+			else if ((game.joypadState.held & BTN_RIGHT) && (game.player.shared.x/8 + 2 < LEVEL_WIDTH))
+			{
+				game.player.shared.vx = RUN_SPEED;
+				game.player.flags = RUNNING;
+				game.player.direction = D_RIGHT;
+				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.run), 0);
+			}
+			else if ((game.joypadState.held & BTN_LEFT) && (game.player.shared.x > game.camera_x))
+			{
+				game.player.shared.vx = -RUN_SPEED;
+				game.player.flags = RUNNING;
+				game.player.direction = D_LEFT;
+				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.run), SPRITE_FLIP_X);
+			}
 			else
 			{
 				game.player.flags = IDLE;
 				game.player.shared.vx = 0;
 				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.idle), extendedSprites[PLAYER_SLOT].flags);
 			}
-			if (game.joypadState.pressed & BTN_B)
+			if (game.joypadState.pressed & BTN_B && !(game.player.flags & PRONE))
 			{
 				game.player.shared.vy = -JUMP_SPEED;
 				game.player.shared.gravity = GRAVITY;
 				game.player.flags = JUMPING;
+				game.player.width = 2;
+				game.player.height = 3;
 				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.jump), extendedSprites[PLAYER_SLOT].flags);
 			}
 		}
@@ -668,13 +676,42 @@ void update_player()
 			game.player.flags = IDLE;
 		}
 	}
-	else if (game.player.flags & PRONE && game.joypadState.pressed & BTN_UP)
+	else if (game.player.flags & PRONE)
 	{
-		game.player.flags = IDLE;	
-		game.player.shared.y -= 16;
-		if(game.player.direction == D_RIGHT)
+		if (game.joypadState.pressed & BTN_UP)
 		{
-			game.player.shared.x += 8;
+			game.player.flags = IDLE;	
+			game.player.shared.y -= 16;
+			if(game.player.direction == D_RIGHT)
+			{
+				game.player.shared.x += 8;
+			}
+			game.player.width = 2;
+			game.player.height = 3;
+		}
+		else if (game.joypadState.pressed & BTN_B)
+		{
+			game.player.flags = JUMPING;
+			game.player.shared.y -= 16;
+			if(game.player.direction == D_RIGHT)
+			{
+				game.player.shared.x += 8;
+			}
+			game.player.shared.vy = -JUMP_SPEED;
+			game.player.shared.gravity = GRAVITY;
+			game.player.width = 2;
+			game.player.height = 3;
+			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.jump), extendedSprites[PLAYER_SLOT].flags);
+		}
+		else if (game.joypadState.pressed & BTN_LEFT)
+		{
+			game.player.direction = D_LEFT;
+			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.prone), SPRITE_FLIP_X);
+		}
+		else if (game.joypadState.pressed & BTN_RIGHT)
+		{
+			game.player.direction = D_RIGHT;
+			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.prone), 0);
 		}
 	}
 }
@@ -880,8 +917,9 @@ void update_enemy_shots()
 	
 	for (u8 i = 0; i < MAX_ENEMIES; i++)
 	{
-		if (game.enemies[i].active)
+		if (game.enemies[i].active && game.enemies[i].shot_frame_count >= ENEMY_SHOT_DELAY_FRAMES)
 		{
+			game.enemies[i].shot_frame_count = 0;	
 			for (u8 j = 0; j < MAX_ENEMY_SHOTS; j++)
 			{
 				if (game.enemies[i].shot[j].shot_type == BASIC_ENEMY_SHOT)
@@ -902,6 +940,15 @@ void update_enemy_shots()
 				slot += 1;
 			}
 		}
+		else if (game.enemies[i].active)
+		{
+			game.enemies[i].shot_frame_count++;
+			slot += MAX_ENEMY_SHOTS;
+		}
+		else
+		{
+			slot += MAX_ENEMY_SHOTS;
+		}
 	}
 }
 
@@ -921,10 +968,9 @@ void animate_enemies()
 			}
 			else if (LBCollides(game.player.shared.x,game.player.shared.y, game.player.width*8, game.player.height*8,
 							game.enemies[i].shared.x, game.enemies[i].shared.y, 8, 8
-						)
+						) && !(game.player.flags & EXPLODING)
 			)
 			{
-				StopSong();
 				SFX_PLAYER_EXPLODE;
 				game.player.shield = 0;
 				game.player.flags = EXPLODING;
@@ -970,7 +1016,7 @@ void animate_enemy_shots()
 						game.player.shield -= game.enemies[i].shot[j].hit_count;
 						if (game.player.shield <= 0)
 						{
-							StopSong();
+							SFX_PLAYER_EXPLODE;
 							game.player.flags = EXPLODING;
 						}
 						game.enemies[i].shot[j].active = 0;
@@ -1042,6 +1088,7 @@ void exit_game()
 	init_game_state();
 	init_player_state();
 	init_enemy_state();
+	StopSong();
 	load_splash();
 }
 

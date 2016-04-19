@@ -93,10 +93,11 @@
 #define SPIDER_SIDE_SPEED 60
 #define SPIDER_FRAMES_PER_IDLE 10
 #define ENEMY_SPIDER_SHIELD 2
+#define ENEMY_SHOT_DELAY_FRAMES 60
 
 // Sound Effects
 #define SFX_NAVIGATE TriggerFx(PATCH_NAVIGATE,0xff,true)
-#define SFX_PLAYER_SHOOT TriggerFx(PATCH_PLAYER_SHOOT,0xff,true)
+#define SFX_PLAYER_SHOOT TriggerNote(2,PATCH_PLAYER_SHOOT,0x23,0xff)
 #define SFX_HIT TriggerFx(PATCH_HIT,0xff,true)
 #define SFX_PLAYER_EXPLODE TriggerFx(PATCH_PLAYER_EXPLODE,0xff,true)
 #define SFX_ENEMY_EXPLODE TriggerFx(PATCH_ENEMY_EXPLODE,0xff,true)

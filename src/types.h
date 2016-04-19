@@ -47,6 +47,7 @@ typedef struct sEnemy {
 	u8 height;
 	u8 enemy_type;
 	u8 frame_count;
+	u8 shot_frame_count;
 	char shield;
 	Shot shot[MAX_ENEMY_SHOTS];
 	Animation anim;
