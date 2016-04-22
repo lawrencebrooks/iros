@@ -20,6 +20,7 @@
 #include <avr/pgmspace.h>
 #include <string.h>
 #include "data/tiles.h"
+#include "data/levels.h"
 #include "data/sprites.h"
 #include "data/patches.h"
 #include "data/planetmusic.h"

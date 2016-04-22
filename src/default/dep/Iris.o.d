@@ -11,9 +11,9 @@ Iris.o: ../Iris.c ../kernel/uzebox.h \
  ../kernel/videoMode3/videoMode3.def.h ../kernel/kernel.h \
  ../kernel/videoMode3/videoMode3.h /usr/local/avr/include/avr/pgmspace.h \
  /usr/local/lib/gcc/avr/4.9.2/include/stddef.h \
- /usr/local/avr/include/string.h ../data/tiles.h ../data/sprites.h \
- ../data/patches.h ../data/planetmusic.h ../data/spacemusic.h ../types.h \
- ../utils.h ../macros.h ../strings.h
+ /usr/local/avr/include/string.h ../data/tiles.h ../data/levels.h \
+ ../data/sprites.h ../data/patches.h ../data/planetmusic.h \
+ ../data/spacemusic.h ../types.h ../utils.h ../macros.h ../strings.h
 
 ../kernel/uzebox.h:
 
@@ -58,6 +58,8 @@ Iris.o: ../Iris.c ../kernel/uzebox.h \
 /usr/local/avr/include/string.h:
 
 ../data/tiles.h:
+
+../data/levels.h:
 
 ../data/sprites.h:
 

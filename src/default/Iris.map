@@ -544,8 +544,8 @@ END GROUP
                 0x0000000000002a1b                map_down_arrow
                 0x0000000000002a1e                map_right_arrow
                 0x0000000000002a21                map_none
-                0x0000000000002a24                tiles_data
-                0x00000000000042e4                map_level_0
+                0x0000000000002a24                map_level_0
+                0x00000000000030a4                tiles_data
                 0x0000000000004964                map_star
                 0x0000000000004967                map_ice_moon
                 0x0000000000004972                map_ice_cloud
@@ -1247,7 +1247,7 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0x70b6
+.debug_info     0x0000000000000000     0x70b5
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x672 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_info    0x0000000000000672       0x7b uzeboxVideoEngineCore.o
@@ -1255,7 +1255,7 @@ END GROUP
  .debug_info    0x00000000000011a5     0x12ce uzeboxSoundEngine.o
  .debug_info    0x0000000000002473       0x72 uzeboxSoundEngineCore.o
  .debug_info    0x00000000000024e5     0x15cd uzeboxVideoEngine.o
- .debug_info    0x0000000000003ab2     0x3604 Iris.o
+ .debug_info    0x0000000000003ab2     0x3603 Iris.o
 
 .debug_abbrev   0x0000000000000000     0x1620
  *(.debug_abbrev)
@@ -1267,7 +1267,7 @@ END GROUP
  .debug_abbrev  0x0000000000000cc4      0x3da uzeboxVideoEngine.o
  .debug_abbrev  0x000000000000109e      0x582 Iris.o
 
-.debug_line     0x0000000000000000     0x1e15
+.debug_line     0x0000000000000000     0x1e21
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x0000000000000000       0x1d /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_line    0x000000000000001d      0x5bd uzeboxVideoEngineCore.o
@@ -1275,7 +1275,7 @@ END GROUP
  .debug_line    0x0000000000000893      0x3d5 uzeboxSoundEngine.o
  .debug_line    0x0000000000000c68      0x1a9 uzeboxSoundEngineCore.o
  .debug_line    0x0000000000000e11      0x4e5 uzeboxVideoEngine.o
- .debug_line    0x00000000000012f6      0xb1f Iris.o
+ .debug_line    0x00000000000012f6      0xb2b Iris.o
 
 .debug_frame    0x0000000000000000     0x11c8
  *(.debug_frame)
