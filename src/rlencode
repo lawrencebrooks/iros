@@ -47,7 +47,7 @@ if __name__ == "__main__":
     prev_value = values[0]
     for v in values[1:]: 
         if v != prev_value or cumulative_rlength == 128:
-            result += "%d,%d," % (rlength, int(prev_value))
+            result += "%d,%d," % (rlength, int(prev_value, 16))
             pairs_in_block += 1
             rlength = 1
             prev_value = v
@@ -65,7 +65,7 @@ if __name__ == "__main__":
             cumulative_rlength += 1
 
     # Finalize the rest of the LAST block
-    result += "%d,%d," % (rlength, int(prev_value))
+    result += "%d,%d," % (rlength, int(prev_value, 16))
     pairs_in_block += 1
     for i in range(pairs_in_block, 8):
         result += "0,0,"

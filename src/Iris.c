@@ -21,7 +21,6 @@
 #include <string.h>
 #include "data/tiles.h"
 #include "data/sprites.h"
-#include "data/levels.h"
 #include "data/patches.h"
 #include "data/planetmusic.h"
 #include "data/spacemusic.h"
@@ -205,16 +204,7 @@ void fade_through()
 
 void render_level_tile(u8 level_tile, u8 x, u8 y)
 {
-	switch (level_tile)
-	{
-		case L_ICE_SKY : LBDrawTile(x, y, map_ice_sky); break;
-		case L_ICE_MIDDLE : LBDrawTile(x, y, map_ice_middle); break;
-		case L_ICE_LEFT : LBDrawTile(x, y, map_ice_left); break;
-		case L_ICE_RIGHT : LBDrawTile(x, y, map_ice_right); break;
-		case L_ICE_BOTTOM : LBDrawTile(x, y, map_ice_bottom); break;
-		case L_ICE_FAR : LBDrawTile(x, y, map_ice_far); break;
-		case L_ICE_HORIZON : LBDrawTile(x, y, map_ice_horizon); break;
-	}
+	SetTile(x, y, level_tile);
 }
 
 void clear_overlay(u8 overlayHeight)
@@ -229,12 +219,12 @@ void clear_overlay(u8 overlayHeight)
 }
 
 #if RLE == 0
-u8 read_level_byte(u16 index)
+u8 read_level_byte(char* level_data, u16 index)
 {
 	return pgm_read_byte(&level_data[index]);
 }
 #else
-u8 read_level_byte(u16 index)
+u8 read_level_byte(char* level_data, u16 index)
 {
 	// C Code
 	
@@ -258,7 +248,7 @@ u8 read_level_byte(u16 index)
 	
 	// ASM Code
 	index += 1;
-	counter += (u16) &level_data;
+	counter += (u16) level_data;
 	asm volatile ("" "\n\t"
 	"while1:" "\n\t"
 	"lpm  %[rln]   , %a[cntr]+" "\n\t"
@@ -282,27 +272,27 @@ u8 read_level_byte(u16 index)
 
 u8 get_camera_x(u8 level_index)
 {
-	return read_level_byte(level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 0);
+	return 0;
 }
 
 u8 get_camera_y(u8 level_index)
 {
-	return read_level_byte(level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 1);
+	return 0;
 }
 
 u8 get_hero_spawn_x(u8 level_index)
 {
-	return read_level_byte(level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 2);
+	return 3;
 }
 
 u8 get_hero_spawn_y(u8 level_index)
 {
-	return read_level_byte(level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 3);
+	return 21;
 }
 
-u8 get_level_tile(u8 level_index, u16 x, u16 y)
+u8 get_level_tile(char* level_data, u16 x, u16 y)
 {
-	return read_level_byte(level_index*LEVEL_WIDTH*LEVEL_HEIGHT + level_index*4 + 4 + (y*LEVEL_WIDTH+x));
+	return read_level_byte(level_data, 2 + y*LEVEL_WIDTH+x);
 }
 
 void render_camera_view()
@@ -420,7 +410,12 @@ void load_level(u8 index)
 	Screen.overlayTileTable = tiles_data;
 	Screen.overlayHeight = 2;
 	clear_overlay(2);
-	game.current_level = index;
+	game.current_level = (char*) map_level_0;
+	game.current_level_index = index;
+	switch (index)
+	{
+		case 0: game.current_level = (char*) map_level_0; break;
+	}
 	game.column_count = 0;
 	game.camera_x = get_camera_x(index);
 	game.camera_y = get_camera_y(index);
@@ -583,7 +578,7 @@ void handle_player_death()
 	init_player_state();
 	init_enemy_state();
 	FadeIn(FRAMES_PER_FADE, false);
-	load_level(game.current_level);
+	load_level(game.current_level_index);
 }
 
 void update_player()

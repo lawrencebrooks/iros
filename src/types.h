@@ -82,7 +82,7 @@ typedef struct sGameState {
 	u16 column_count;
 	u8 lives;
 	u8 current_screen;
-	u8 current_level;
+	u8 current_level_index;
 	u8 paused;
 	u8 selection;
 	u8 frame_counter;
@@ -95,6 +95,7 @@ typedef struct sGameState {
 	Player player;
 	Enemy enemies[MAX_ENEMIES];
 	JoyPadState joypadState;
+	char* current_level;
 } Game;
 
 #endif

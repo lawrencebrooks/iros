@@ -261,11 +261,4 @@ void LBRotateSprites()
 	}
 }
 
-/*
- * A more efficient map draw for single tile maps 
- */ 
-void LBDrawTile(unsigned char x,unsigned char y,const VRAM_PTR_TYPE *map) {
-	SetTile(x,y,pgm_read_byte(&(map[2])));					
-}
-
 #endif
