@@ -22,6 +22,9 @@
             <!-- Space tiles -->
             <map var-name="map_star" left="3" top="1" width="1" height="1"/>
 
+            <!-- Font -->
+            <map var-name="map_font" left="15" top="8" width="37" height="1"/>
+
             <!-- Level Maps -->
             <map var-name="map_level_0" left="0" top="9" width="255" height="52"/>
 

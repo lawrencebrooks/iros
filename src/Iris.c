@@ -432,10 +432,10 @@ void load_level(u8 index)
 	game.scroll_y = 0;
 	game.spawn_rate = BASE_SPAWN_RATE;
 	render_camera_view();
-	Print(0, VRAM_TILES_V-1, (char*) strLives);
-	Print(17, VRAM_TILES_V-1, (char*) strScore);
-	Print(0, VRAM_TILES_V-2, (char*) strShield);
-	Print(18, VRAM_TILES_V-2, (char*) strTime);
+	LBPrint(0, VRAM_TILES_V-1, (char*) strLives);
+	LBPrint(17, VRAM_TILES_V-1, (char*) strScore);
+	LBPrint(0, VRAM_TILES_V-2, (char*) strShield);
+	LBPrint(18, VRAM_TILES_V-2, (char*) strTime);
 }
 
 void level_transition(u8 index)
@@ -446,7 +446,7 @@ void level_transition(u8 index)
 	LBRotateSprites();
 	init_player_state();
 	init_enemy_state();
-	Print(8, 12, (char*) strLevels+index*16);
+	LBPrint(8, 12, (char*) strLevels+index*16);
 	FadeIn(1, true);
 	StartSong(planetsong);
 	LBWaitSeconds(TEXT_LINGER);
@@ -1054,10 +1054,10 @@ void update_level()
 	}
 	
 	// Score
-	PrintByte(9, VRAM_TILES_V-1, game.lives ,true);
-	PrintInt(27, VRAM_TILES_V-1, game.score ,true);
-	PrintByte(9, VRAM_TILES_V-2, game.player.shield ,true);
-	PrintInt(27, VRAM_TILES_V-2, game.time ,true);
+	LBPrintByte(9, VRAM_TILES_V-1, game.lives ,true);
+	LBPrintInt(27, VRAM_TILES_V-1, game.score ,true);
+	LBPrintByte(9, VRAM_TILES_V-2, game.player.shield ,true);
+	LBPrintInt(27, VRAM_TILES_V-2, game.time ,true);
 	
 }
 
@@ -1098,10 +1098,10 @@ void load_splash()
 	game.selection = START_SELECTED;
 	clear_sprites(0, MAX_EXTENDED_SPRITES);
 	LBRotateSprites();
-	Print(8, 15, (char*) str1Player);
-	Print(8, 16, (char*) strHighscores);
-	Print(6, 21, (char*) strSelectHandle);
-	Print(4, 26, (char*) strCopyright);
+	LBPrint(8, 15, (char*) str1Player);
+	LBPrint(8, 16, (char*) strHighscores);
+	LBPrint(4, 21, (char*) strCopyright);
+	LBPrint(3, 26, (char*) strMusic);
 	DrawMap2(6, 5, (const char*) map_splash);
 	LBMapSprite(0, map_right_arrow, 0);
 }
@@ -1149,7 +1149,7 @@ int main()
 	SetMasterVolume(0x05);
 	SetTileTable(tiles_data);
 	SetSpritesTileTable(sprites_data);
-	SetFontTilesIndex(TILES_DATA_SIZE);
+	LBSetFontTilesMap((char*) map_font);
 	FadeIn(FRAMES_PER_FADE, false);
 	init_game_state();
 	load_splash();

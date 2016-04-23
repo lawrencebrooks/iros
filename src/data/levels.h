@@ -17,6 +17,11 @@
 #ifndef LB_LEVELS_H
 #define LB_LEVELS_H
 
+#define L_ICE_LEFT 1
+#define L_ICE_MIDDLE 2
+#define L_ICE_RIGHT 3
+#define L_ICE_BOTTOM 4
+
 #if RLE == 1
 
 const char map_level_0[] PROGMEM ={

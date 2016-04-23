@@ -1,7 +1,0 @@
-<?xml version="1.0" ?>
-<gfx-xform version="1">
-    <input file="../art/font.png" type="png" tile-width="8" tile-height="8" width="128" height="32" />
-    <output file="../src/data/font.h" remove-duplicate-tiles="false">
-        <tiles var-name="font_data"/>
-    </output>
-</gfx-xform>

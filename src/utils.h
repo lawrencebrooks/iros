@@ -22,6 +22,8 @@ extern ScreenType Screen;
 
 struct SpriteStruct extendedSprites[MAX_EXTENDED_SPRITES];
 
+char* font_tiles_map;
+
 typedef struct sJoyPadState {
 	unsigned int pressed;
 	unsigned int released;
@@ -112,6 +114,57 @@ void LBCopyChars(u8* dst, u8 *src, u8 count)
 	for (u8 i = 0; i < count; i++)
 	{
 		dst[i] = src[i];
+	}
+}
+
+void LBSetFontTilesMap(char* tiles_map)
+{
+	font_tiles_map = tiles_map;
+}
+
+void LBPrintChar(u8 x, u8 y, u8 code)
+{
+	if (code >= 48 && code <= 57)
+	{
+		SetTile(x, y, pgm_read_byte(&font_tiles_map[3+code-48]));
+	}
+	else if (code >= 65 && code <= 90)
+	{
+		SetTile(x, y, pgm_read_byte(&font_tiles_map[13+code-65]));
+	}
+	else
+	{
+		SetTile(x, y, pgm_read_byte(&font_tiles_map[2]));
+	}
+}
+
+void LBPrint(u8 x, u8 y, char* value)
+{
+	u8 i = 0;
+	u8 code = 0;
+	while ((code = pgm_read_byte(&value[i])))
+	{
+		LBPrintChar(x++, y, code);
+		i++;
+	}
+}
+
+void LBPrintByte(u8 x, u8 y, u8 value, char pad)
+{
+	for (u8 i = 0; i < 3; i++)
+	{
+		LBPrintChar(x--, y, value % 10 + 48);
+		value /= 10;
+	}
+}
+
+void LBPrintInt(u8 x, u8 y, u16 value, char pad)
+{
+	for (u8 i = 0; i < 5; i++)
+	{
+		LBPrintChar(x, y, value % 10 + 48);
+		value /= 10;
+		x--;
 	}
 }
 
