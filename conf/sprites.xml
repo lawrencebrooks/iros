@@ -10,7 +10,7 @@
             <map var-name="map_right_arrow" left="7" top="3" width="1" height="1"/>
             <map var-name="map_down_arrow" left="8" top="3" width="1" height="1"/>
             <map var-name="map_up_arrow" left="9" top="3" width="1" height="1"/>
-            <map var-name="map_meteor" left="6" top="3" width="1" height="1"/>
+            <map var-name="map_particle" left="6" top="3" width="1" height="1"/>
             <map var-name="map_explosion_0" left="3" top="3" width="1" height="1"/>
             <map var-name="map_explosion_1" left="4" top="3" width="1" height="1"/>
             <map var-name="map_explosion_2" left="5" top="3" width="1" height="1"/>
@@ -25,7 +25,8 @@
             <map var-name="map_hero_prone" left="9" top="6" width="3" height="1"/>
             <map var-name="map_hero_ship_0" left="0" top="3" width="3" height="1"/>
             <map var-name="map_hero_ship_1" left="0" top="4" width="3" height="1"/>
-            <map var-name="map_hero_ship_large" left="3" top="4" width="4" height="2"/>
+            <map var-name="map_hero_ship_large_0" left="3" top="4" width="4" height="2"/>
+            <map var-name="map_hero_ship_large_1" left="3" top="6" width="4" height="2"/>
             <map var-name="map_hero_shot" left="10" top="0" width="1" height="1"/>
 
             <!-- Enemy Sprites -->
