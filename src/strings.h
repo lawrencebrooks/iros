@@ -51,4 +51,25 @@ const unsigned char default_scores[] PROGMEM = {
     0x44, 0x44, 0x44, 0x00, 0x00,
 };
 
+const unsigned char strIntro [] PROGMEM="IRIS HAS BETRAYED US\0\0"
+"HE HAS STOLEN THE 5 EMERALDS\0"
+"OF POWER AND WILL SURELY\0"
+"BRING RUIN TO US ALL\0\0"
+"DESTROY HIM AND RETURN THE\0"
+"EMERALDS TO BRING PEACE TO\0"
+"THE GALAXY";
+
+const unsigned char strReveal0 [] PROGMEM="I KNEW THEY WOULD SEND YOU";
+const unsigned char strReveal1 [] PROGMEM="YOU ARE PERSISTENT";
+const unsigned char strReveal2 [] PROGMEM="YOU CANT HAVE THEM ALL";
+const unsigned char strReveal3 [] PROGMEM="YOU ARE MAKING A MISTAKE";
+const unsigned char strReveal4 [] PROGMEM="YOU DONT KNOW\0WHAT YOU HAVE DONE";
+
+const unsigned char strTwist [] PROGMEM="IRIS WAS A FOOL\0\0"
+"AND SO ARE YOU\0"
+"WITH THE EMERALDS RETURNED\0"
+"THERE IS NO STOPPING OUR\0"
+"DOMINION OVER THIS GALAXY\0\0"
+"NOW YOU WILL DIE";
+
 #endif
