@@ -28,7 +28,11 @@
 // Screens
 #define SPLASH 0
 #define HIGH_SCORES 1
-#define LEVEL 2
+#define PLANET 2
+#define SPACE 3
+#define INTRO 4
+#define PLANET_TRANSITION 5
+#define SPACE_TRANSITION 6
 
 // Selections
 #define START_SELECTED 0
@@ -49,6 +53,7 @@
 #define OVERLAP_THRESHOLD 4
 #define KILL_SCORE 10
 #define EXPLOSION_FRAME_COUNT 5
+#define CHARACTER_DELAY_US 6000
 
 // Player macros
 #define FRAMES_PER_RUN_CYCLE 12

@@ -199,6 +199,8 @@ void save_eeprom(struct EepromBlockStruct* block)
 void fade_through()
 {
 	FadeOut(FRAMES_PER_FADE, true);
+	clear_sprites(0, MAX_EXTENDED_SPRITES);
+	LBRotateSprites();
 	ClearVram();
 	FadeIn(FRAMES_PER_FADE, false);
 }
@@ -1079,8 +1081,6 @@ void exit_game()
 {
     save_score();
 	fade_through();
-	clear_sprites(0, MAX_EXTENDED_SPRITES);
-	LBRotateSprites();
 	init_game_state();
 	init_player_state();
 	init_enemy_state();
@@ -1125,9 +1125,8 @@ void update_splash()
 	}
 	else if (select_pressed(&game.joypadState) && game.selection == START_SELECTED)
 	{
-		game.current_screen = LEVEL;
+		game.current_screen = INTRO;
 		SFX_NAVIGATE;
-		level_transition(0);
 		return;
 	}
 	
@@ -1139,6 +1138,42 @@ void update_splash()
 	{
 		LBMoveSprite(0, 7*8, 16*8, 1, 1);
 	}
+}
+
+void stream_dialogue(const char* dialogue, u8 y)
+{
+	u8 x, ln, c;
+	
+	while (pgm_read_byte(dialogue) != '#')
+	{
+		ln = strnlen_P(dialogue, 255);
+		x = 14 - ln / 2;
+		while ((c = pgm_read_byte(dialogue++)))
+		{
+			LBPrintChar(x++, y, c);
+			WaitUs(CHARACTER_DELAY_US);
+		}
+		y++;
+	}
+}
+
+void update_intro()
+{
+	fade_through();
+	stream_dialogue((const char*) strIntro, 8);
+	LBWaitSeconds(1);
+	game.current_screen = PLANET;
+	level_transition(0);
+}
+
+void update_planet_transition()
+{
+	
+}
+
+void update_space_transition()
+{
+	
 }
 
 int main()
@@ -1157,26 +1192,35 @@ int main()
 	{
 		WaitVsync(1);
 		LBGetJoyPadState(&game.joypadState, 0);
-		switch (game.current_screen)
+		if (game.current_screen == PLANET || game.current_screen == SPACE)
 		{
-			case SPLASH:
-				update_splash();
-				LBRotateSprites();
-				break;
-			case LEVEL:
-				update_level();
-				update_player();
-				update_shot();
-				update_enemies();
-				update_enemy_shots();
-				animate_player();
-				animate_shot();
-				animate_enemies();
-				animate_enemy_shots();
-				LBRotateSprites();
-				break;
-			default:
-				break;
+			update_level();
+			update_player();
+			update_shot();
+			update_enemies();
+			update_enemy_shots();
+			animate_player();
+			animate_shot();
+			animate_enemies();
+			animate_enemy_shots();
 		}
+		else if (game.current_screen == SPLASH)
+		{
+			update_splash();
+			
+		}
+		else if (game.current_screen == INTRO)
+		{
+			update_intro();
+		}
+		else if (game.current_screen == PLANET_TRANSITION)
+		{
+			update_planet_transition();
+		}
+		else if (game.current_screen == SPACE_TRANSITION)
+		{
+			update_space_transition();
+		}
+		LBRotateSprites();
 	}
 }
