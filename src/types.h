@@ -83,6 +83,8 @@ typedef struct sGameState {
 	u8 lives;
 	u8 current_screen;
 	u8 current_level_index;
+	u8 level_width;
+	u8 level_height;
 	u8 paused;
 	u8 selection;
 	u8 frame_counter;

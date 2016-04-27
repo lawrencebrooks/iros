@@ -35,7 +35,6 @@ void load_eeprom(struct EepromBlockStruct* block);
 void save_eeprom(struct EepromBlockStruct* block);
 void fade_through();
 void clear_sprites(u8 from, u8 count);
-void level_transition(u8 index);
 void load_splash();
 void exit_game();
 void handle_player_death();
@@ -295,7 +294,7 @@ u8 get_hero_spawn_y(u8 level_index)
 
 u8 get_level_tile(char* level_data, u16 x, u16 y)
 {
-	return read_level_byte(level_data, 2 + y*LEVEL_WIDTH+x);
+	return read_level_byte(level_data, 2 + y*game.level_width+x);
 }
 
 void render_camera_view()
@@ -405,19 +404,47 @@ void move_camera_y()
 	}
 }
 
-void load_level(u8 index)
+void map_ship()
+{
+	game.player.run.anim_count = 2;
+	game.player.run.frames_per_anim = EXPLOSION_FRAME_COUNT;
+	game.player.run.anims = run_anim;
+	game.player.run.anims[0] = (char*) map_hero_ship_large_0;
+	game.player.run.anims[1] = (char*) map_hero_ship_large_1;
+}
+
+void map_level_info(char* level)
+{
+	game.current_level = level;
+	game.level_width = read_level_byte(level, 0);
+	game.level_height = read_level_byte(level, 1);
+}
+
+void load_level(u8 index, u8 drop_ship)
 {	
+	u8 ship_x = (get_hero_spawn_x(index) - 2) * 8;
+	u8 ship_y = 0;
+	char ship_increment = 3;
+	
 	Screen.scrollX = 0;
 	Screen.scrollY = 0;
 	Screen.scrollHeight = 30;
 	Screen.overlayTileTable = tiles_data;
 	Screen.overlayHeight = 2;
 	clear_overlay(2);
-	game.current_level = (char*) map_level_0;
 	game.current_level_index = index;
 	switch (index)
 	{
-		case 0: game.current_level = (char*) map_level_0; break;
+		case 0: map_level_info((char*) map_level_0); break;
+		case 1: map_level_info((char*) map_level_space); break;
+		case 2: map_level_info((char*) map_level_1); break;
+		case 3: map_level_info((char*) map_level_space); break;
+		case 4: map_level_info((char*) map_level_2); break;
+		case 5: map_level_info((char*) map_level_space); break;
+		case 6: map_level_info((char*) map_level_3); break;
+		case 7: map_level_info((char*) map_level_space); break;
+		case 8: map_level_info((char*) map_level_4); break;
+		case 9: map_level_info((char*) map_level_space); break;
 	}
 	game.column_count = 0;
 	game.camera_x = get_camera_x(index);
@@ -438,24 +465,35 @@ void load_level(u8 index)
 	LBPrint(17, VRAM_TILES_V-1, (char*) strScore);
 	LBPrint(0, VRAM_TILES_V-2, (char*) strShield);
 	LBPrint(18, VRAM_TILES_V-2, (char*) strTime);
-}
-
-void level_transition(u8 index)
-{
-	FadeOut(FRAMES_PER_FADE, true);
-	ClearVram();
-	clear_sprites(0, MAX_EXTENDED_SPRITES);
-	LBRotateSprites();
-	init_player_state();
-	init_enemy_state();
-	LBPrint(8, 12, (char*) strLevels+index*16);
-	FadeIn(1, true);
-	StartSong(planetsong);
-	LBWaitSeconds(TEXT_LINGER);
-	FadeOut(1, true);
-	ClearVram();
-	FadeIn(FRAMES_PER_FADE, false);
-	load_level(index);
+	LBPrintByte(9, VRAM_TILES_V-1, game.lives ,true);
+	LBPrintInt(27, VRAM_TILES_V-1, game.score ,true);
+	LBPrintByte(9, VRAM_TILES_V-2, game.player.shield ,true);
+	LBPrintInt(27, VRAM_TILES_V-2, game.time ,true);
+	
+	
+	if (index % 2 == 0 && drop_ship)
+	{
+		map_ship();
+		while (1)
+		{
+			WaitVsync(1);
+			if (ship_y >= get_hero_spawn_y(index)*8)
+			{
+				LBMapSprite(0, map_hero_idle, 0);
+				LBMoveSprite(0, get_hero_spawn_x(index)*8, get_hero_spawn_y(index)*8, 2, 3);
+				ship_increment = -3;
+			}
+			LBMapSprite(6, LBGetNextFrame(&game.player.run), 0);
+			LBMoveSprite(6, ship_x, ship_y, 4, 2);
+			ship_y += ship_increment;
+			if (ship_y == 0)
+			{
+				clear_sprites(6, 8);
+				break;
+			}
+			LBRotateSprites();
+		}
+	}
 }
 
 char on_solid_ground(SpriteShared* s, u8 tile_width, u8 tile_height)
@@ -578,10 +616,10 @@ void handle_player_death()
 	ClearVram();
 	clear_sprites(0, MAX_EXTENDED_SPRITES);
 	LBRotateSprites();
+	FadeIn(FRAMES_PER_FADE, false);
 	init_player_state();
 	init_enemy_state();
-	FadeIn(FRAMES_PER_FADE, false);
-	load_level(game.current_level_index);
+	load_level(game.current_level_index, false);
 }
 
 void update_player()
@@ -618,7 +656,7 @@ void update_player()
 				clear_sprites(3, 3);
 				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.prone), extendedSprites[PLAYER_SLOT].flags);
 			}
-			else if ((game.joypadState.held & BTN_RIGHT) && (game.player.shared.x/8 + 2 < LEVEL_WIDTH))
+			else if ((game.joypadState.held & BTN_RIGHT) && (game.player.shared.x/8 + 2 < game.level_width))
 			{
 				game.player.shared.vx = RUN_SPEED;
 				game.player.flags = RUNNING;
@@ -651,7 +689,7 @@ void update_player()
 	}
 	else if (game.player.flags & JUMPING)
 	{
-		if ((game.joypadState.held & BTN_RIGHT) && (game.player.shared.x/8 + 2 < LEVEL_WIDTH))
+		if ((game.joypadState.held & BTN_RIGHT) && (game.player.shared.x/8 + 2 < game.level_width))
 		{
 			game.player.shared.vx = RUN_SPEED;
 			game.player.direction = D_RIGHT;
@@ -1015,6 +1053,7 @@ void animate_enemy_shots()
 						if (game.player.shield <= 0)
 						{
 							SFX_PLAYER_EXPLODE;
+							game.player.shield = 0;
 							game.player.flags = EXPLODING;
 						}
 						game.enemies[i].shot[j].active = 0;
@@ -1043,14 +1082,14 @@ void update_level()
 	
 	if (game.player.shared.vx > 0 &&
 	    (game.player.shared.x - game.camera_x) >= (CAMERA_WIDTH / 2 * 8) &&
-		(game.camera_x/8 + CAMERA_WIDTH < LEVEL_WIDTH))
+		(game.camera_x/8 + CAMERA_WIDTH < game.level_width))
 	{
 		move_camera_x();
 	}
 	
 	if (game.player.shared.vy > 0 &&
 	    (game.player.shared.y - game.camera_y + 24) >= ((CAMERA_HEIGHT - 2) * 8) &&
-		(game.camera_y/8 + CAMERA_HEIGHT < LEVEL_HEIGHT))
+		(game.camera_y/8 + CAMERA_HEIGHT < game.level_height))
 	{
 		move_camera_y();
 	}
@@ -1111,6 +1150,123 @@ char select_pressed(JoyPadState* p)
 	return (p->pressed & BTN_A) || (p->pressed & BTN_START);
 }
 
+
+void stream_dialogue(const char* dialogue, u8 y)
+{
+	u8 x, ln, c;
+	
+	while (pgm_read_byte(dialogue) != '#')
+	{
+		ln = strnlen_P(dialogue, 255);
+		x = 14 - ln / 2;
+		while ((c = pgm_read_byte(dialogue++)))
+		{
+			LBPrintChar(x++, y, c);
+			LBGetJoyPadState(&game.joypadState, 0);
+			if (!(game.joypadState.held & BTN_B)) WaitUs(CHARACTER_DELAY_US);
+		}
+		y++;
+	}
+}
+
+void map_particles()
+{
+	for (u8 i = 9; i < 20; i++)
+	{
+		LBMapSprite(i, map_particle, 0);
+	}
+}
+
+void place_particles()
+{
+	for (u8 i = 9; i < 20; i++)
+	{
+		LBMoveSprite(i, LBRandom(0, 224), LBRandom(0, 200), 1, 1);
+	}
+}
+
+void animate_particles(char dy, u8 oy)
+{
+	for (u8 i = 9; i < 20; i++)
+	{
+		LBMoveSprite(i, extendedSprites[i].x, extendedSprites[i].y+dy, 1, 1);
+		if (extendedSprites[i].y > 200)
+		{
+			LBMoveSprite(i, LBRandom(0, 224), oy, 1, 1);
+		}
+	}
+}
+
+const char* get_emarald_map(u8 index)
+{
+	switch (index)
+	{
+		case 0: return map_emerald_0;
+		case 2: return map_emerald_1;
+		case 4: return map_emerald_2;
+		case 6: return map_emerald_3;
+		case 8: return map_emerald_4;
+		default: return map_emerald_0;
+	}
+}
+
+void planet_transition(u8 index, char scroll, char atmosphere_height, char dy, u8 oy)
+{
+	u8 frame_counter = 0;
+	
+	fade_through();
+	map_particles();
+	map_ship();
+	place_particles();
+	DrawMap2(0, atmosphere_height, map_atmosphere);
+	
+	if (index % 2 == 0)
+	{
+		LBMapSprite(8, get_emarald_map(index), 0);
+		LBMoveSprite(8, 112, 48, 1, 1);
+	}
+	
+	while (frame_counter < 255)
+	{
+		WaitVsync(1);
+		LBMapSprite(0, LBGetNextFrame(&game.player.run), 0);
+		LBMoveSprite(0, 104, 104, 4, 2);
+		frame_counter++;
+		if (frame_counter % 16 == 0) Screen.scrollY += scroll;
+		animate_particles(dy, oy);
+		LBRotateSprites();
+	}
+	game.current_screen = LEVEL;
+	ClearVram();
+	clear_sprites(0, MAX_EXTENDED_SPRITES);
+	LBRotateSprites();
+	fade_through();
+	load_level(index, true);
+	init_player_state();
+	init_enemy_state();
+}
+
+
+void intro()
+{
+	fade_through();
+	StartSong(planetsong);
+	LBMapSprite(0, map_emerald_0, 0);
+	LBMoveSprite(0, 80, 48, 1, 1);
+	LBMapSprite(1, map_emerald_1, 0);
+	LBMoveSprite(1, 96, 48, 1, 1);
+	LBMapSprite(2, map_emerald_2, 0);
+	LBMoveSprite(2, 112, 48, 1, 1);
+	LBMapSprite(3, map_emerald_3, 0);
+	LBMoveSprite(3, 128, 48, 1, 1);
+	LBMapSprite(4, map_emerald_4, 0);
+	LBMoveSprite(4, 144, 48, 1, 1);
+	LBRotateSprites();
+	stream_dialogue((const char*) strIntro, 12);
+	LBWaitSeconds(1);
+	planet_transition(0, 1, 28, -3, 199);
+}
+
 void update_splash()
 {
 	if (game.joypadState.pressed & BTN_DOWN && game.selection == START_SELECTED)
@@ -1125,8 +1281,8 @@ void update_splash()
 	}
 	else if (select_pressed(&game.joypadState) && game.selection == START_SELECTED)
 	{
-		game.current_screen = INTRO;
 		SFX_NAVIGATE;
+		intro();
 		return;
 	}
 	
@@ -1139,43 +1295,6 @@ void update_splash()
 		LBMoveSprite(0, 7*8, 16*8, 1, 1);
 	}
 }
-
-void stream_dialogue(const char* dialogue, u8 y)
-{
-	u8 x, ln, c;
-	
-	while (pgm_read_byte(dialogue) != '#')
-	{
-		ln = strnlen_P(dialogue, 255);
-		x = 14 - ln / 2;
-		while ((c = pgm_read_byte(dialogue++)))
-		{
-			LBPrintChar(x++, y, c);
-			WaitUs(CHARACTER_DELAY_US);
-		}
-		y++;
-	}
-}
-
-void update_intro()
-{
-	fade_through();
-	stream_dialogue((const char*) strIntro, 8);
-	LBWaitSeconds(1);
-	game.current_screen = PLANET;
-	level_transition(0);
-}
-
-void update_planet_transition()
-{
-	
-}
-
-void update_space_transition()
-{
-	
-}
-
 int main()
 {
 	// Initialize
@@ -1192,7 +1311,7 @@ int main()
 	{
 		WaitVsync(1);
 		LBGetJoyPadState(&game.joypadState, 0);
-		if (game.current_screen == PLANET || game.current_screen == SPACE)
+		if (game.current_screen == LEVEL)
 		{
 			update_level();
 			update_player();
@@ -1208,18 +1327,6 @@ int main()
 		{
 			update_splash();
 			
-		}
-		else if (game.current_screen == INTRO)
-		{
-			update_intro();
-		}
-		else if (game.current_screen == PLANET_TRANSITION)
-		{
-			update_planet_transition();
-		}
-		else if (game.current_screen == SPACE_TRANSITION)
-		{
-			update_space_transition();
 		}
 		LBRotateSprites();
 	}

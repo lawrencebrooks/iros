@@ -28,18 +28,15 @@
 // Screens
 #define SPLASH 0
 #define HIGH_SCORES 1
-#define PLANET 2
-#define SPACE 3
+#define LEVEL 2
 #define INTRO 4
-#define PLANET_TRANSITION 5
-#define SPACE_TRANSITION 6
 
 // Selections
 #define START_SELECTED 0
 #define HIGH_SCORES_SELECTED 1
 
 // Frame counts
-#define FRAMES_PER_FADE 3
+#define FRAMES_PER_FADE 1
 #define FRAMES_PER_GRACE 120
 
 // General macros
@@ -102,6 +99,7 @@
 
 // Sound Effects
 #define SFX_NAVIGATE TriggerFx(PATCH_NAVIGATE,0xff,true)
+#define SFX_DIALOGUE TriggerFx(PATCH_NAVIGATE,0xff,true)
 #define SFX_PLAYER_SHOOT TriggerNote(2,PATCH_PLAYER_SHOOT,0x23,0xff)
 #define SFX_HIT TriggerFx(PATCH_HIT,0xff,true)
 #define SFX_PLAYER_EXPLODE TriggerFx(PATCH_PLAYER_EXPLODE,0xff,true)
