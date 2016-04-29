@@ -186,22 +186,13 @@ u8 LBCollides(u16 x1, u16 y1, u8 width1, u8 height1,
 	return 1;
 }
 
-int LBRandom(unsigned int from, unsigned int to)
+u8 LBRandom(u8 from, u8 to)
 /*
  * Return a random number between 'from' and 'to'.
  */
 {
-	static unsigned int random_seed;
-	if (random_seed == 0) random_seed = GetTrueRandomSeed();
-	
-	static u8 shift_count;
-	unsigned int shifted = random_seed >> shift_count;
-	unsigned int delta = to - from;
-
-	shift_count++;
-	if (shift_count >= 16) shift_count = 0;
-
-	return from + ((delta + shifted) % delta);
+	u16 tmp = GetPrngNumber(0) % 255;
+	return (((u8)tmp) % (to - from)) + from;
 }
 
 void LBWaitSeconds(u8 seconds)
@@ -214,8 +205,8 @@ void LBWaitSeconds(u8 seconds)
 
 void LBMapSprite(u8 startSprite,const char *map,u8 spriteFlags)
 {
-	unsigned char mapWidth=pgm_read_byte(&(map[0]));
-	unsigned char mapHeight=pgm_read_byte(&(map[1]));
+	u8 mapWidth=pgm_read_byte(&(map[0]));
+	u8 mapHeight=pgm_read_byte(&(map[1]));
 	s8 x,y,dx,dy,t; 
 
 	if(spriteFlags & SPRITE_FLIP_X)

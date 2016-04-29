@@ -203,6 +203,7 @@ void init_enemy_shark(u8 i, u16 x, u16 y)
 	game.enemies[i].shield = ENEMY_SHARK_SHIELD;
 	
 	game.enemies[i].anim.anim_count = 1;
+	game.enemies[i].anim.frames_per_anim = 1;
 	game.enemies[i].anim.anims = shark_anim;
 	game.enemies[i].anim.anims[0] = (char*) map_enemy_shark;
 	game.enemies[i].shared.gravity = 0;
@@ -341,6 +342,10 @@ u8 get_hero_spawn_y(u8 level_index)
 
 u8 get_level_tile(char* level_data, u16 x, u16 y)
 {
+	if (is_space())
+	{
+		return read_level_byte(level_data, 2 + y*32+x);
+	}
 	return read_level_byte(level_data, 2 + y*game.level_width+x);
 }
 
@@ -402,6 +407,7 @@ void append_tile_column()
 {
 	u8 enemy_spawned = 0;
 	u8 level_tile;
+	u8 rndom = LBRandom(0, CAMERA_HEIGHT-1)*8;
 
 	game.column_count++;
     for (u8 y = 0; y <= CAMERA_HEIGHT; y++)
@@ -412,7 +418,7 @@ void append_tile_column()
 		{
 			if (is_space())
 			{
-				spawn_enemy(game.camera_x+(CAMERA_WIDTH+1)*8, LBRandom(0, CAMERA_HEIGHT-1)*8);
+				spawn_enemy(game.camera_x+(CAMERA_WIDTH+1)*8, rndom);
 				enemy_spawned = 1;
 			}
 			else if (solid_tile(level_tile))
@@ -506,6 +512,9 @@ void load_level(u8 index, u8 drop_ship)
 	clear_overlay(2);
 	game.current_level_index = index;
 	game.level_ended = 0;
+	game.joypadState.held = 0;
+	game.joypadState.pressed = 0;
+	game.joypadState.released = 0;
 	switch (index)
 	{
 		case 0: map_level_info((char*) map_level_0); break;
@@ -718,17 +727,17 @@ void update_player()
 		game.player.shared.vy = 0;
 		game.player.shared.vx = SPACE_SHIP_SPEED;
 		
-		if (game.joypadState.held & BTN_DOWN)
+		if ((game.joypadState.held & BTN_DOWN) && (game.player.shared.y/8 + 1 < game.level_height))
 		{
 			game.player.shared.vy = SPACE_SHIP_SPEED;
 		}
-		if ((game.joypadState.held & BTN_RIGHT) && (game.player.shared.x/8 + 2 < game.level_width))
+		if ((game.joypadState.held & BTN_RIGHT) && (game.player.shared.x + 24 < game.camera_x + CAMERA_WIDTH*8))
 		{
 			game.player.shared.vx = SPACE_SHIP_SPEED*2;
 		}
 		if ((game.joypadState.held & BTN_LEFT) && (game.player.shared.x > game.camera_x))
 		{
-			game.player.shared.vx = -SPACE_SHIP_SPEED*2;
+			game.player.shared.vx = 0;
 		}
 		if ((game.joypadState.held & BTN_UP) && (game.player.shared.y > 0))
 		{
@@ -882,8 +891,8 @@ u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 	u8 lt1, lt2;
 	u8 result = 0;
 	
-	// Only if moving
-	if (s->vx == 0 && s->vy == 0) return result;
+	// Only if moving on planet
+	if (is_space() || (s->vx == 0 && s->vy == 0)) return result;
 	
 	// Top and Bottom
 	if (s->vy != 0)
@@ -1206,12 +1215,12 @@ void update_level()
 	{
 		move_camera_x();
 	}
-	else if (game.camera_x/8 + CAMERA_WIDTH >= 50)//game.level_width)
+	else if (game.camera_x/8 + CAMERA_WIDTH >= game.level_width)
 	{
 		game.level_ended = 1;
 	}
 	
-	if (game.player.shared.vy > 0 &&
+	if (!is_space() && game.player.shared.vy > 0 &&
 	    (game.player.shared.y - game.camera_y + 24) >= ((CAMERA_HEIGHT - 2) * 8) &&
 		(game.camera_y/8 + CAMERA_HEIGHT < game.level_height))
 	{
@@ -1226,6 +1235,10 @@ void update_level()
 	
 	if (game.level_ended && !is_space() && game.player.flags & (IDLE|RUNNING|PRONE))
 	{
+		StopSong();
+		LBMapSprite(PLAYER_SLOT, map_hero_idle, 0);
+		clear_sprites(ENEMY_SHOT_SLOT, MAX_ENEMY_SHOTS);
+		LBRotateSprites();
 		map_ship();
 		while (1)
 		{
@@ -1242,6 +1255,7 @@ void update_level()
 			if (ship_y == 0)
 			{
 				clear_sprites(6, 8);
+				LBRotateSprites();
 				planet_transition(game.current_level_index+1, -1, 26, 3, 0);
 				break;
 			}
@@ -1250,6 +1264,7 @@ void update_level()
 	}
 	else if (game.level_ended && is_space())
 	{
+		StopSong();
 		planet_transition(game.current_level_index+1, 1, 28, -3, 199);
 	}
 	
@@ -1363,16 +1378,35 @@ const char* get_emarald_map(u8 index)
 	}
 }
 
+void music_transition()
+{
+	if (is_space())
+	{
+		StartSong(spacesong);
+	}
+	else if (game.current_level != 0)
+	{
+		StartSong(planetsong);
+	}
+}
+
 void planet_transition(u8 index, char scroll, char atmosphere_height, char dy, u8 oy)
 {
 	u8 frame_counter = 0;
 	
 	fade_through();
+	Screen.scrollX = 0;
+	Screen.scrollY = 0;
+	Screen.scrollHeight = 32;
+	Screen.overlayHeight = 0;
+	game.scroll_x = 0;
+	game.scroll_y = 0;
 	map_particles();
 	map_ship();
 	place_particles();
 	DrawMap2(0, atmosphere_height, map_atmosphere);
 	game.current_level_index = index;
+	music_transition();
 	if (!is_space())
 	{
 		LBMapSprite(8, get_emarald_map(index), 0);
@@ -1451,6 +1485,7 @@ void update_splash()
 int main()
 {
 	// Initialize
+	GetPrngNumber(GetTrueRandomSeed());
 	InitMusicPlayer(my_patches);
 	ClearVram();
 	SetMasterVolume(0x05);
