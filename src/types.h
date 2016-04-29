@@ -94,6 +94,7 @@ typedef struct sGameState {
 	u8 scroll_dest_y;
 	u8 active_enemies;
 	u8 spawn_rate;
+	u8 level_ended;
 	Player player;
 	Enemy enemies[MAX_ENEMIES];
 	JoyPadState joypadState;

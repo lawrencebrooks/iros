@@ -38,6 +38,7 @@ void clear_sprites(u8 from, u8 count);
 void load_splash();
 void exit_game();
 void handle_player_death();
+void planet_transition(u8 index, char scroll, char atmosphere_height, char dy, u8 oy);
 u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height);
 u8 map_explosion(u8* flags, Animation* anim, u8 slot, u8 width, u8 height);
 
@@ -51,8 +52,14 @@ char* prone_anim[1];
 char* run_anim[4];
 char* shot_anim[1];
 char* spider_anim[2];
+char* shark_anim[1];
 char* enemy_shot_anim[1];
 char* expl_anim[3];
+
+u8 is_space()
+{
+	return (game.current_level_index % 2 != 0);
+}
 
 void init_game_state()
 {
@@ -76,10 +83,30 @@ void init_enemy_state()
 
 void init_player_state()
 {
+	if (is_space())
+	{
+		game.player.width = 3;
+		game.player.height = 1;
+		game.player.run.anim_count = 2;
+		game.player.run.frames_per_anim = EXPLOSION_FRAME_COUNT;
+		game.player.run.anims = run_anim;
+		game.player.run.anims[0] = (char*) map_hero_ship_0;
+		game.player.run.anims[1] = (char*) map_hero_ship_1;
+	}
+	else
+	{
+		game.player.width = 2;
+		game.player.height = 3;
+		game.player.run.anim_count = 4;
+		game.player.run.frames_per_anim = FRAMES_PER_RUN_CYCLE;
+		game.player.run.anims = run_anim;
+		game.player.run.anims[0] = (char*) map_hero_step_0;
+		game.player.run.anims[1] = (char*) map_hero_step_1;
+		game.player.run.anims[2] = (char*) map_hero_step_2;
+		game.player.run.anims[3] = (char*) map_hero_step_3;
+	}
 	game.player.direction = D_RIGHT;
 	game.player.flags = IDLE;
-	game.player.width = 2;
-	game.player.height = 3;
 	game.player.shield = PLAYER_SHIELD;
 	game.player.idle.anim_count = 1;
 	game.player.idle.frames_per_anim = 1;
@@ -103,14 +130,6 @@ void init_player_state()
 	game.player.expl.anims[1] = (char*) map_explosion_1;
 	game.player.expl.anims[2] = (char*) map_explosion_2;
 	
-	game.player.run.anim_count = 4;
-	game.player.run.frames_per_anim = FRAMES_PER_RUN_CYCLE;
-	game.player.run.anims = run_anim;
-	game.player.run.anims[0] = (char*) map_hero_step_0;
-	game.player.run.anims[1] = (char*) map_hero_step_1;
-	game.player.run.anims[2] = (char*) map_hero_step_2;
-	game.player.run.anims[3] = (char*) map_hero_step_3;
-	
 	for (u8 i = 0; i < MAX_PLAYER_SHOTS; i++)
 	{
 		game.player.shot[i].hit_count = 1;
@@ -119,6 +138,31 @@ void init_player_state()
 		game.player.shot[i].anim.frames_per_anim = 1;
 		game.player.shot[i].anim.anims = shot_anim;
 		game.player.shot[i].anim.anims[0] = (char*) map_hero_shot;
+	}
+}
+
+void init_enemy_shot(u8 i, u16 x, u16 y)
+{
+	game.enemies[i].expl.anim_count = 3;
+	game.enemies[i].expl.frames_per_anim = EXPLOSION_FRAME_COUNT;
+	game.enemies[i].expl.anims = expl_anim;
+	game.enemies[i].expl.anims[0] = (char*) map_explosion_0;
+	game.enemies[i].expl.anims[1] = (char*) map_explosion_1;
+	game.enemies[i].expl.anims[2] = (char*) map_explosion_2;
+		
+	for (u8 j = 0; j < MAX_ENEMY_SHOTS; j++)
+	{
+		game.enemies[i].shot[j].hit_count = 1;
+		game.enemies[i].shot[j].active = 0;
+		game.enemies[i].shot[j].shot_type = BASIC_ENEMY_SHOT;
+		game.enemies[i].shot[j].anim.anim_count = 1;
+		game.enemies[i].shot[j].anim.frames_per_anim = 1;
+		game.enemies[i].shot[j].anim.anims = enemy_shot_anim;
+		game.enemies[i].shot[j].anim.anims[0] = (char*) map_enemy_shot;
+		game.enemies[i].shot[j].shared.vx = 0;
+		game.enemies[i].shot[j].shared.vy = 0;
+		game.enemies[i].shot[j].shared.x = x;
+		game.enemies[i].shot[j].shared.y = y;
 	}
 }
 
@@ -145,28 +189,31 @@ void init_enemy_spider(u8 i, u16 x, u16 y)
 	game.enemies[i].shared.x = x;
 	game.enemies[i].shared.y = y;
 	
-	game.enemies[i].expl.anim_count = 3;
-	game.enemies[i].expl.frames_per_anim = EXPLOSION_FRAME_COUNT;
-	game.enemies[i].expl.anims = expl_anim;
-	game.enemies[i].expl.anims[0] = (char*) map_explosion_0;
-	game.enemies[i].expl.anims[1] = (char*) map_explosion_1;
-	game.enemies[i].expl.anims[2] = (char*) map_explosion_2;
-		
-	for (u8 j = 0; j < MAX_ENEMY_SHOTS; j++)
-	{
-		game.enemies[i].shot[j].hit_count = 1;
-		game.enemies[i].shot[j].active = 0;
-		game.enemies[i].shot[j].shot_type = BASIC_ENEMY_SHOT;
-		game.enemies[i].shot[j].anim.anim_count = 1;
-		game.enemies[i].shot[j].anim.frames_per_anim = 1;
-		game.enemies[i].shot[j].anim.anims = enemy_shot_anim;
-		game.enemies[i].shot[j].anim.anims[0] = (char*) map_enemy_shot;
-		game.enemies[i].shot[j].shared.vx = 0;
-		game.enemies[i].shot[j].shared.vy = 0;
-		game.enemies[i].shot[j].shared.x = x;
-		game.enemies[i].shot[j].shared.y = y;
-	}
+	init_enemy_shot(i, x, y);
 }
+
+void init_enemy_shark(u8 i, u16 x, u16 y)
+{
+	game.enemies[i].active = 1;
+	game.enemies[i].width = 1;
+	game.enemies[i].height = 1;
+	game.enemies[i].enemy_type = ENEMY_SHARK;
+	game.enemies[i].frame_count = 0;
+	game.enemies[i].shot_frame_count = 0;
+	game.enemies[i].shield = ENEMY_SHARK_SHIELD;
+	
+	game.enemies[i].anim.anim_count = 1;
+	game.enemies[i].anim.anims = shark_anim;
+	game.enemies[i].anim.anims[0] = (char*) map_enemy_shark;
+	game.enemies[i].shared.gravity = 0;
+	game.enemies[i].shared.vx = SHARK_SPEED;
+	game.enemies[i].shared.vy = 0;
+	game.enemies[i].shared.x = x;
+	game.enemies[i].shared.y = y;
+	
+	init_enemy_shot(i, x, y);
+}
+
 
 void load_eeprom(struct EepromBlockStruct* block)
 /*
@@ -323,7 +370,14 @@ void spawn_enemy(u16 x, u16 y)
 			{
 				if (!game.enemies[i].shot[j].active)
 				{
-					init_enemy_spider(i, x, y);
+					if (is_space())
+					{
+						init_enemy_shark(i, x, y);
+					}
+					else
+					{
+						init_enemy_spider(i, x, y);
+					}
 					game.active_enemies++;
 					return;
 				}
@@ -354,16 +408,25 @@ void append_tile_column()
 	{
 		level_tile = get_level_tile(game.current_level, game.scroll_src_x, y + game.camera_y / 8);
 		render_level_tile(level_tile, game.scroll_dest_x, (y + Screen.scrollY / 8) % 30);
-		if (game.column_count % game.spawn_rate == game.spawn_rate - 1 && game.active_enemies < MAX_ENEMIES && !enemy_spawned && solid_tile(level_tile))
+		if (game.column_count % game.spawn_rate == game.spawn_rate - 1 && game.active_enemies < MAX_ENEMIES && !enemy_spawned)
 		{
-			spawn_enemy(game.camera_x+(CAMERA_WIDTH+1)*8, (game.camera_y / 8 + y - 1)*8);
-			enemy_spawned = 1;
+			if (is_space())
+			{
+				spawn_enemy(game.camera_x+(CAMERA_WIDTH+1)*8, LBRandom(0, CAMERA_HEIGHT-1)*8);
+				enemy_spawned = 1;
+			}
+			else if (solid_tile(level_tile))
+			{
+				spawn_enemy(game.camera_x+(CAMERA_WIDTH+1)*8, (game.camera_y / 8 + y - 1)*8);
+				enemy_spawned = 1;
+			}
 		}
     }
 	
     game.scroll_src_x++;
 	game.scroll_dest_x++;
     if(game.scroll_dest_x>=32)game.scroll_dest_x=0;
+	if(is_space() && game.scroll_src_x>=32)game.scroll_src_x=0;
 }
 
 void append_tile_row()
@@ -416,8 +479,17 @@ void map_ship()
 void map_level_info(char* level)
 {
 	game.current_level = level;
-	game.level_width = read_level_byte(level, 0);
-	game.level_height = read_level_byte(level, 1);
+	if (!is_space())
+	{
+		game.level_width = read_level_byte(level, 0);
+		game.level_height = read_level_byte(level, 1);
+		
+	}
+	else
+	{
+		game.level_width = 255;
+		game.level_height = 26;
+	}
 }
 
 void load_level(u8 index, u8 drop_ship)
@@ -433,6 +505,7 @@ void load_level(u8 index, u8 drop_ship)
 	Screen.overlayHeight = 2;
 	clear_overlay(2);
 	game.current_level_index = index;
+	game.level_ended = 0;
 	switch (index)
 	{
 		case 0: map_level_info((char*) map_level_0); break;
@@ -471,7 +544,7 @@ void load_level(u8 index, u8 drop_ship)
 	LBPrintInt(27, VRAM_TILES_V-2, game.time ,true);
 	
 	
-	if (index % 2 == 0 && drop_ship)
+	if (!is_space() && drop_ship)
 	{
 		map_ship();
 		while (1)
@@ -533,19 +606,27 @@ void update_shot()
 		LBMapSprite(PLAYER_SHOT_SLOT+idx, LBGetNextFrame(&game.player.shot[idx].anim), 0);
 		game.player.shot[idx].active = 1;
 		game.player.shot[idx].shared.y = (u16) game.player.shared.y / 8 * 8;
-		if (!(game.player.flags & PRONE))
+		if (is_space())
 		{
-			game.player.shot[idx].shared.y += 8;
-		}
-		if (game.player.direction == D_RIGHT)
-		{
-			game.player.shot[idx].shared.x = game.player.shared.x+2*8;
+			game.player.shot[idx].shared.x = game.player.shared.x+game.player.width*8;
 			game.player.shot[idx].shared.vx = SHOT_SPEED;
 		}
 		else
 		{
-			game.player.shot[idx].shared.vx = -SHOT_SPEED;
-			game.player.shot[idx].shared.x = game.player.shared.x-1*8;
+			if (!(game.player.flags & PRONE))
+			{
+				game.player.shot[idx].shared.y += 8;
+			}
+			if (game.player.direction == D_RIGHT)
+			{
+				game.player.shot[idx].shared.x = game.player.shared.x+2*8;
+				game.player.shot[idx].shared.vx = SHOT_SPEED;
+			}
+			else
+			{
+				game.player.shot[idx].shared.vx = -SHOT_SPEED;
+				game.player.shot[idx].shared.x = game.player.shared.x-1*8;
+			}
 		}
 		game.player.active_shots++;
 	}
@@ -631,6 +712,29 @@ void update_player()
 		{
 			handle_player_death();
 		}
+	}
+	else if (is_space())
+	{
+		game.player.shared.vy = 0;
+		game.player.shared.vx = SPACE_SHIP_SPEED;
+		
+		if (game.joypadState.held & BTN_DOWN)
+		{
+			game.player.shared.vy = SPACE_SHIP_SPEED;
+		}
+		if ((game.joypadState.held & BTN_RIGHT) && (game.player.shared.x/8 + 2 < game.level_width))
+		{
+			game.player.shared.vx = SPACE_SHIP_SPEED*2;
+		}
+		if ((game.joypadState.held & BTN_LEFT) && (game.player.shared.x > game.camera_x))
+		{
+			game.player.shared.vx = -SPACE_SHIP_SPEED*2;
+		}
+		if ((game.joypadState.held & BTN_UP) && (game.player.shared.y > 0))
+		{
+			game.player.shared.vy = -SPACE_SHIP_SPEED;
+		}
+		LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.run), 0);
 	}
 	else if (game.player.flags & (IDLE|RUNNING))
 	{
@@ -921,6 +1025,13 @@ void update_spider_enemy(Enemy* e, u8 slot)
 	e->frame_count++;
 }
 
+void update_shark_enemy(Enemy* e, u8 slot)
+{
+	e->shared.vx = SHARK_SPEED;
+	e->shared.vy = 0;
+	LBMapSprite(slot, LBGetNextFrame(&e->anim), 0);
+}
+
 void update_basic_shot(Shot* s, u8 slot)
 {
 	LBMapSprite(slot, LBGetNextFrame(&s->anim), 0);
@@ -941,6 +1052,7 @@ void update_enemies()
 			switch (game.enemies[i].enemy_type)
 			{
 				case ENEMY_SPIDER: update_spider_enemy(&game.enemies[i], slot); break;
+				case ENEMY_SHARK: update_shark_enemy(&game.enemies[i], slot); break;
 			}
 		}
 		slot += game.enemies[i].width * game.enemies[i].height;
@@ -1073,6 +1185,10 @@ void animate_enemy_shots()
 
 void update_level()
 {
+	u8 ship_x = game.player.shared.x - game.camera_x;
+	u8 ship_y = 0;
+	char ship_increment = 3;
+	
 	game.frame_counter++;
 	if (game.frame_counter == 60)
 	{
@@ -1080,11 +1196,19 @@ void update_level()
 		if (game.time != 65535) game.time++;
 	}
 	
-	if (game.player.shared.vx > 0 &&
+	if (is_space() && game.camera_x/8 + CAMERA_WIDTH < game.level_width)
+	{
+		move_camera_x();
+	}
+	else if (game.player.shared.vx > 0 &&
 	    (game.player.shared.x - game.camera_x) >= (CAMERA_WIDTH / 2 * 8) &&
 		(game.camera_x/8 + CAMERA_WIDTH < game.level_width))
 	{
 		move_camera_x();
+	}
+	else if (game.camera_x/8 + CAMERA_WIDTH >= 50)//game.level_width)
+	{
+		game.level_ended = 1;
 	}
 	
 	if (game.player.shared.vy > 0 &&
@@ -1099,6 +1223,35 @@ void update_level()
 	LBPrintInt(27, VRAM_TILES_V-1, game.score ,true);
 	LBPrintByte(9, VRAM_TILES_V-2, game.player.shield ,true);
 	LBPrintInt(27, VRAM_TILES_V-2, game.time ,true);
+	
+	if (game.level_ended && !is_space() && game.player.flags & (IDLE|RUNNING|PRONE))
+	{
+		map_ship();
+		while (1)
+		{
+			WaitVsync(1);
+			if (ship_y >= get_hero_spawn_y(game.current_level_index)*8)
+			{
+				clear_sprites(0, game.player.width*game.player.height);
+				LBRotateSprites();
+				ship_increment = -3;
+			}
+			LBMapSprite(6, LBGetNextFrame(&game.player.run), 0);
+			LBMoveSprite(6, ship_x, ship_y, 4, 2);
+			ship_y += ship_increment;
+			if (ship_y == 0)
+			{
+				clear_sprites(6, 8);
+				planet_transition(game.current_level_index+1, -1, 26, 3, 0);
+				break;
+			}
+			LBRotateSprites();
+		}
+	}
+	else if (game.level_ended && is_space())
+	{
+		planet_transition(game.current_level_index+1, 1, 28, -3, 199);
+	}
 	
 }
 
@@ -1219,8 +1372,8 @@ void planet_transition(u8 index, char scroll, char atmosphere_height, char dy, u
 	map_ship();
 	place_particles();
 	DrawMap2(0, atmosphere_height, map_atmosphere);
-	
-	if (index % 2 == 0)
+	game.current_level_index = index;
+	if (!is_space())
 	{
 		LBMapSprite(8, get_emarald_map(index), 0);
 		LBMoveSprite(8, 112, 48, 1, 1);
