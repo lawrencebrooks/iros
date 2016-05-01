@@ -1377,7 +1377,7 @@ void music_transition()
 	{
 		StartSong(spacesong);
 	}
-	else if (game.current_level != 0)
+	else if (game.current_level_index != 0)
 	{
 		StartSong(planetsong);
 	}
