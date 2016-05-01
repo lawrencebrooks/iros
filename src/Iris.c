@@ -30,12 +30,13 @@
 #include "utils.h"
 #include "macros.h"
 
-/* Prototypes */
+// Function Prototypes
 void load_eeprom(struct EepromBlockStruct* block);
 void save_eeprom(struct EepromBlockStruct* block);
 void fade_through();
 void clear_sprites(u8 from, u8 count);
 void load_splash();
+void load_high_scores();
 void exit_game();
 void handle_player_death();
 void planet_transition(u8 index, char scroll, char atmosphere_height, char dy, u8 oy);
@@ -66,6 +67,15 @@ void init_game_state()
 	game.lives = LIVES;
 	game.score = 0;
 	game.time = 0;
+}
+
+void init_default_high_scores()
+{
+	scores.id = EEPROM_SCORES_ID;
+	for (u8 i = 0; i < 30; i++)
+	{
+		scores.data[i] = pgm_read_byte(&default_scores[i]);
+	}
 }
 
 void init_enemy_state()
@@ -360,7 +370,7 @@ void render_camera_view()
 		for (u16 y = camera_y_tile; y <= camera_y_tile + CAMERA_HEIGHT; y++)
 		{
 			level_tile = get_level_tile(game.current_level, x, y);
-			render_level_tile(level_tile, x - camara_x_tile, y - camera_y_tile);
+			render_level_tile(level_tile, (Screen.scrollX / 8 + x - camara_x_tile) % 32, (Screen.scrollY / 8 + y - camera_y_tile) % 30);
 		}
 	}
 }
@@ -1286,31 +1296,14 @@ void save_score()
 
 void exit_game()
 {
+	clear_sprites(0, MAX_EXTENDED_SPRITES);
+	LBRotateSprites();
     save_score();
-	fade_through();
 	init_game_state();
 	init_player_state();
 	init_enemy_state();
 	StopSong();
-	load_splash();
-}
-
-void load_splash()
-{
-	Screen.scrollX = 0;
-	Screen.scrollY = 0;
-	Screen.scrollHeight = 32;
-	Screen.overlayHeight = 0;
-	game.current_screen = SPLASH;
-	game.selection = START_SELECTED;
-	clear_sprites(0, MAX_EXTENDED_SPRITES);
-	LBRotateSprites();
-	LBPrint(8, 15, (char*) str1Player);
-	LBPrint(8, 16, (char*) strHighscores);
-	LBPrint(4, 21, (char*) strCopyright);
-	LBPrint(3, 26, (char*) strMusic);
-	DrawMap2(6, 5, (const char*) map_splash);
-	LBMapSprite(0, map_right_arrow, 0);
+	load_high_scores();
 }
 
 char select_pressed(JoyPadState* p)
@@ -1454,6 +1447,25 @@ void intro()
 	planet_transition(0, 1, 28, -3, 199);
 }
 
+void load_splash()
+{
+	fade_through();
+	Screen.scrollX = 0;
+	Screen.scrollY = 0;
+	Screen.scrollHeight = 32;
+	Screen.overlayHeight = 0;
+	game.current_screen = SPLASH;
+	game.selection = START_SELECTED;
+	clear_sprites(0, MAX_EXTENDED_SPRITES);
+	LBRotateSprites();
+	LBPrint(8, 15, (char*) str1Player);
+	LBPrint(8, 16, (char*) strHighScores);
+	LBPrint(4, 21, (char*) strCopyright);
+	LBPrint(3, 26, (char*) strMusic);
+	DrawMap2(6, 5, map_splash);
+	LBMapSprite(0, map_right_arrow, 0);
+}
+
 void update_splash()
 {
 	if (game.joypadState.pressed & BTN_DOWN && game.selection == START_SELECTED)
@@ -1472,6 +1484,12 @@ void update_splash()
 		intro();
 		return;
 	}
+	else if (select_pressed(&game.joypadState) && game.selection == HIGH_SCORES_SELECTED)
+	{
+		SFX_NAVIGATE;
+		load_high_scores();
+		return;
+	}
 	
 	if (game.selection == START_SELECTED)
 	{
@@ -1482,6 +1500,81 @@ void update_splash()
 		LBMoveSprite(0, 7*8, 16*8, 1, 1);
 	}
 }
+
+void load_high_scores()
+{
+	u16 score = 0;
+	u8 ypos = 7;
+	
+	game.current_screen = HIGH_SCORES;
+	fade_through();
+	Screen.scrollX = 0;
+	Screen.scrollY = 0;
+	Screen.scrollHeight = 32;
+	Screen.overlayHeight = 0;
+	load_eeprom(&scores);
+	
+	LBPrint(9, 3, (char*) strHighScores);
+	
+	LBMapSprite(0, map_emerald_0, 0);
+	LBMapSprite(1, map_emerald_1, 0);
+	LBMoveSprite(0, 7*8, 3*8, 1, 1);
+	LBMoveSprite(1, 21*8, 3*8, 1, 1);
+	
+	for (u8 i = 0; i < 30; i += 5)
+	{
+		LBPrintByte(9, ypos, i/5+1, false);
+		LBPrintChar(10, ypos, ' ');
+		LBPrintChar(11, ypos, scores.data[i]);
+		LBPrintChar(12, ypos, scores.data[i+1]);
+		LBPrintChar(13, ypos, scores.data[i+2]);
+		LBPrintChar(14, ypos, ' ');
+		(&score)[0] = scores.data[i+3];
+		(&score)[1] = scores.data[i+4];
+		LBPrintInt(19, ypos, score, true);
+		ypos += 2;
+	}
+	
+	LBPrint(9, 22, (char*) strMainMenu);
+}
+
+void update_high_scores()
+{
+	if (game.joypadState.pressed & BTN_X)
+	{
+		load_splash();
+	}
+}
+
+void update_pause()
+{
+	u8 x = Screen.scrollX / 8;
+	u8 y = Screen.scrollY / 8;
+	
+	if (game.joypadState.pressed & BTN_START)
+	{
+		DrawMap2((x+8)%32, (y+6)%30, map_canvas);
+		LBPrint((x+13)%32, (y+9)%30, (char*) strPaused);
+		LBPrint((x+10)%32, (y+12)%30, (char*) strExitGame);
+		while (1)
+		{
+			WaitVsync(1);
+			LBGetJoyPadState(&game.joypadState, 0);
+			if (game.joypadState.pressed & BTN_START)
+			{
+				// Reset tiles
+				render_camera_view();
+				break;
+			}
+			else if (game.joypadState.pressed & BTN_X)
+			{
+				exit_game();
+				break;
+			}
+		}
+	}
+}
+
 int main()
 {
 	// Initialize
@@ -1492,8 +1585,8 @@ int main()
 	SetTileTable(tiles_data);
 	SetSpritesTileTable(sprites_data);
 	LBSetFontTilesMap((char*) map_font);
-	FadeIn(FRAMES_PER_FADE, false);
 	init_game_state();
+	init_default_high_scores();
 	load_splash();
 	while (1)
 	{
@@ -1510,10 +1603,16 @@ int main()
 			animate_shot();
 			animate_enemies();
 			animate_enemy_shots();
+			update_pause();
 		}
 		else if (game.current_screen == SPLASH)
 		{
 			update_splash();
+			
+		}
+		else if (game.current_screen == HIGH_SCORES)
+		{
+			update_high_scores();
 			
 		}
 		LBRotateSprites();

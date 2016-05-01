@@ -155,6 +155,7 @@ void LBPrintByte(u8 x, u8 y, u8 value, char pad)
 	{
 		LBPrintChar(x--, y, value % 10 + 48);
 		value /= 10;
+		if (!pad && value == 0) break;
 	}
 }
 
@@ -162,9 +163,9 @@ void LBPrintInt(u8 x, u8 y, u16 value, char pad)
 {
 	for (u8 i = 0; i < 5; i++)
 	{
-		LBPrintChar(x, y, value % 10 + 48);
+		LBPrintChar(x--, y, value % 10 + 48);
 		value /= 10;
-		x--;
+		if (!pad && value == 0) break;
 	}
 }
 

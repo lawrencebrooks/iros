@@ -24,15 +24,19 @@
 const unsigned char strCopyright [] PROGMEM="2016 LAWRENCE BROOKS";
 const unsigned char strMusic [] PROGMEM="MUSIC BY TANNER HELLAND";
 const unsigned char str1Player [] PROGMEM="START";
-const unsigned char strHighscores [] PROGMEM="HIGH SCORES";
+const unsigned char strHighScores [] PROGMEM="HIGH SCORES";
 const unsigned char strSelectHandle [] PROGMEM="";
 const unsigned char strScore [] PROGMEM="SCORE ";
 const unsigned char strShield [] PROGMEM="SHIELD ";
 const unsigned char strLives [] PROGMEM="LIVES ";
 const unsigned char strTime [] PROGMEM="TIME ";
-const unsigned char strExit [] PROGMEM="EXIT GAME X";
-const unsigned char strPaused [] PROGMEM="PAUSED";
-const unsigned char strLevels [] PROGMEM="   GLACIES   ";
+const unsigned char strMainMenu [] PROGMEM="X MAIN MENU";
+const unsigned char strExitGame [] PROGMEM="X EXIT GAME";
+const unsigned char strPaused [] PROGMEM="PAUSE";
+const unsigned char strLevelClear [] PROGMEM="LEVEL CLEAR";
+const unsigned char strLevelBonus [] PROGMEM="BONUS";
+const unsigned char strGameOver [] PROGMEM="GAME OVER";
+const unsigned char strTally [] PROGMEM="TALLY";
 
 // Default scores
 const unsigned char default_scores[] PROGMEM = {
