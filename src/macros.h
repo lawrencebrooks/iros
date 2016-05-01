@@ -51,6 +51,7 @@
 #define KILL_SCORE 10
 #define EXPLOSION_FRAME_COUNT 5
 #define CHARACTER_DELAY_US 6000
+#define TALLY_DELAY 1500
 
 // Player macros
 #define FRAMES_PER_RUN_CYCLE 12

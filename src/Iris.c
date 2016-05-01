@@ -38,6 +38,7 @@ void clear_sprites(u8 from, u8 count);
 void load_splash();
 void load_high_scores();
 void exit_game();
+void tally_score(char* title, u16 bonus);
 void handle_player_death();
 void planet_transition(u8 index, char scroll, char atmosphere_height, char dy, u8 oy);
 u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height);
@@ -709,6 +710,7 @@ void handle_player_death()
 	LBRotateSprites();
 	if (game.lives == 0)
 	{
+		tally_score((char*) strGameOver, 0);
 		exit_game();
 		return;
 	}
@@ -1245,7 +1247,6 @@ void update_level()
 	
 	if (game.level_ended && !is_space() && game.player.flags & (IDLE|RUNNING|PRONE))
 	{
-		StopSong();
 		LBMapSprite(PLAYER_SLOT, map_hero_idle, 0);
 		clear_sprites(ENEMY_SHOT_SLOT, MAX_ENEMY_SHOTS);
 		LBRotateSprites();
@@ -1266,6 +1267,7 @@ void update_level()
 			{
 				clear_sprites(6, 8);
 				LBRotateSprites();
+				tally_score((char*) strLevelClear, 100);
 				planet_transition(game.current_level_index+1, -1, 26, 3, 0);
 				break;
 			}
@@ -1274,7 +1276,7 @@ void update_level()
 	}
 	else if (game.level_ended && is_space())
 	{
-		StopSong();
+		tally_score((char*) strLevelClear, 100);
 		planet_transition(game.current_level_index+1, 1, 28, -3, 199);
 	}
 	
@@ -1573,6 +1575,73 @@ void update_pause()
 			}
 		}
 	}
+}
+
+void tally_score(char* title, u16 bonus)
+{
+	u8 x = Screen.scrollX / 8;
+	u8 y = Screen.scrollY / 8;
+	u16 tally = 0;
+	u16 counter = 0;
+	
+	StopSong();
+	DrawMap2((x+8)%32, (y+6)%30, map_canvas);
+	LBPrint((x+10)%32, (y+7)%30, title);
+	LBPrint((x+9)%32, (y+9)%30, (char*) strTally);
+	LBPrint((x+9)%32, (y+11)%30, (char*) strScore);
+	LBPrint((x+9)%32, (y+12)%30, (char*) strTime);
+	LBPrint((x+9)%32, (y+13)%30, (char*) strLevelBonus);
+	
+	LBPrintInt((x+20)%32, (y+9)%30, 0, true);
+	LBPrintInt((x+20)%32, (y+11)%30, game.score, true);
+	LBPrintInt((x+20)%32, (y+12)%30, game.time, true);
+	LBPrintInt((x+20)%32, (y+13)%30, bonus, true);
+	
+	LBWaitSeconds(2);
+	
+	// Tally Score
+	counter = game.score;
+	while (counter > 0)
+	{
+		WaitVsync(1);
+		SFX_HIT;
+		tally += 1;
+		counter -= 1;
+		LBPrintInt((x+20)%32, (y+9)%30, tally, true);
+		LBPrintInt((x+20)%32, (y+11)%30, counter, true);
+		WaitUs(TALLY_DELAY);
+	}
+	
+	// Tally Time
+	counter = game.time;
+	while (counter > 0)
+	{
+		WaitVsync(1);
+		SFX_HIT;
+		tally -= 1;
+		if (tally == 0 || tally == 65535) tally = 0;
+		counter -= 1;
+		LBPrintInt((x+20)%32, (y+9)%30, tally, true);
+		LBPrintInt((x+20)%32, (y+12)%30, counter, true);
+		WaitUs(TALLY_DELAY);
+	}
+	
+	// Tally Level Bonus
+	counter = bonus;
+	while (counter > 0)
+	{
+		WaitVsync(1);
+		SFX_HIT;
+		tally += 1;
+		counter -= 1;
+		LBPrintInt((x+20)%32, (y+9)%30, tally, true);
+		LBPrintInt((x+20)%32, (y+13)%30, counter, true);
+		WaitUs(TALLY_DELAY);
+	}
+	
+	game.score = tally;
+	LBWaitSeconds(2);
+	render_camera_view();
 }
 
 int main()
