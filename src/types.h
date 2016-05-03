@@ -80,6 +80,7 @@ typedef struct sGameState {
 	u16 score;
 	u16 time;
 	u16 column_count;
+	s8 high_score_index;
 	u8 lives;
 	u8 current_screen;
 	u8 current_level_index;

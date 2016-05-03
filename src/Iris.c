@@ -63,13 +63,6 @@ u8 is_space()
 	return (game.current_level_index % 2 != 0);
 }
 
-void init_game_state()
-{
-	game.lives = LIVES;
-	game.score = 0;
-	game.time = 0;
-}
-
 void init_default_high_scores()
 {
 	scores.id = EEPROM_SCORES_ID;
@@ -1291,17 +1284,10 @@ void clear_sprites(u8 from, u8 count)
 	}
 }
 
-void save_score()
-{
-	save_eeprom(&scores);
-}
-
 void exit_game()
 {
 	clear_sprites(0, MAX_EXTENDED_SPRITES);
 	LBRotateSprites();
-    save_score();
-	init_game_state();
 	init_player_state();
 	init_enemy_state();
 	StopSong();
@@ -1432,6 +1418,9 @@ void planet_transition(u8 index, char scroll, char atmosphere_height, char dy, u
 void intro()
 {
 	fade_through();
+	game.lives = LIVES;
+	game.score = 0;
+	game.time = 0;
 	StartSong(planetsong);
 	LBMapSprite(0, map_emerald_0, 0);
 	LBMoveSprite(0, 80, 48, 1, 1);
@@ -1509,6 +1498,7 @@ void load_high_scores()
 	u8 ypos = 7;
 	
 	game.current_screen = HIGH_SCORES;
+	game.high_score_index = -1;
 	fade_through();
 	Screen.scrollX = 0;
 	Screen.scrollY = 0;
@@ -1534,6 +1524,19 @@ void load_high_scores()
 		(&score)[0] = scores.data[i+3];
 		(&score)[1] = scores.data[i+4];
 		LBPrintInt(19, ypos, score, true);
+		
+		if (game.score > score && game.high_score_index == -1)
+		{
+			LBPrintInt(19, ypos, game.score, true);
+			scores.data[i+3] = (&game.score)[0];
+			scores.data[i+4] = (&game.score)[1];
+			game.high_score_index = i;
+			LBMapSprite(2, map_down_arrow, 0);
+			LBMapSprite(3, map_up_arrow, 0);
+			LBMoveSprite(2, 11*8, (ypos-1)*8, 1, 1);
+			LBMoveSprite(3, 11*8, (ypos+1)*8, 1, 1);
+		}
+		
 		ypos += 2;
 	}
 	
@@ -1544,7 +1547,49 @@ void update_high_scores()
 {
 	if (game.joypadState.pressed & BTN_X)
 	{
+		SFX_NAVIGATE;
 		load_splash();
+	}
+	
+	if (game.high_score_index != -1)
+	{
+		if (game.joypadState.pressed & BTN_RIGHT && game.high_score_index % 5 != 2)
+		{
+			SFX_NAVIGATE;
+			game.high_score_index++;
+			LBMoveSprite(2, extendedSprites[2].x+8, extendedSprites[2].y, 1, 1);
+			LBMoveSprite(3, extendedSprites[3].x+8, extendedSprites[3].y, 1, 1);
+		}
+		else if (game.joypadState.pressed & BTN_LEFT && game.high_score_index % 5 != 0)
+		{
+			SFX_NAVIGATE;
+			game.high_score_index--;
+			LBMoveSprite(2, extendedSprites[2].x-8, extendedSprites[2].y, 1, 1);
+			LBMoveSprite(3, extendedSprites[3].x-8, extendedSprites[3].y, 1, 1);
+		}
+		else if (game.joypadState.pressed & BTN_UP)
+		{
+			SFX_NAVIGATE;
+			scores.data[game.high_score_index] = scores.data[game.high_score_index]-1;
+			if (scores.data[game.high_score_index] < 'A') scores.data[game.high_score_index] = 'A';
+			LBPrintChar(11+(game.high_score_index % 5), 7+(game.high_score_index/5)*2, scores.data[game.high_score_index]);
+		}
+		else if (game.joypadState.pressed & BTN_DOWN)
+		{
+			SFX_NAVIGATE;
+			scores.data[game.high_score_index] = scores.data[game.high_score_index]+1;
+			if (scores.data[game.high_score_index] > 'Z') scores.data[game.high_score_index] = 'Z';
+			LBPrintChar(11+(game.high_score_index % 5), 7+(game.high_score_index/5)*2, scores.data[game.high_score_index]);
+		}
+		else if (select_pressed(&game.joypadState))
+		{
+			SFX_NAVIGATE;
+			LBMoveSprite(2, OFF_SCREEN, 0, 1, 1);
+			LBMoveSprite(3, OFF_SCREEN, 0, 1, 1);
+			game.high_score_index = -1;
+			game.score = 0;
+			save_eeprom(&scores);
+		}
 	}
 }
 
@@ -1570,6 +1615,7 @@ void update_pause()
 			}
 			else if (game.joypadState.pressed & BTN_X)
 			{
+				tally_score((char*)strGameOver, 0);
 				exit_game();
 				break;
 			}
@@ -1654,7 +1700,6 @@ int main()
 	SetTileTable(tiles_data);
 	SetSpritesTileTable(sprites_data);
 	LBSetFontTilesMap((char*) map_font);
-	init_game_state();
 	init_default_high_scores();
 	load_splash();
 	while (1)
