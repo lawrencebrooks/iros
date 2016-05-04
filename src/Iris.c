@@ -422,12 +422,12 @@ void append_tile_column()
 		{
 			if (is_space())
 			{
-				spawn_enemy(game.camera_x+(CAMERA_WIDTH+1)*8, rndom);
+				spawn_enemy(game.camera_x+CAMERA_WIDTH*8, rndom);
 				enemy_spawned = 1;
 			}
 			else if (solid_tile(level_tile))
 			{
-				spawn_enemy(game.camera_x+(CAMERA_WIDTH+1)*8, (game.camera_y / 8 + y - 1)*8);
+				spawn_enemy(game.camera_x+CAMERA_WIDTH*8, (game.camera_y / 8 + y - 1)*8);
 				enemy_spawned = 1;
 			}
 		}
@@ -1284,6 +1284,14 @@ void clear_sprites(u8 from, u8 count)
 	}
 }
 
+void hide_sprites(u8 from, u8 count)
+{
+	for(u8 i = from; i < from+count; i++)
+	{
+		LBMoveSprite(i, OFF_SCREEN, 0, 1, 1);
+	}
+}
+
 void exit_game()
 {
 	clear_sprites(0, MAX_EXTENDED_SPRITES);
@@ -1527,6 +1535,11 @@ void load_high_scores()
 		
 		if (game.score > score && game.high_score_index == -1)
 		{
+			// Shift scores down
+			for (u8 j = 25; j > i; j -= 5)
+			{
+				memcpy(&(scores.data[j]), &(scores.data[j-5]), 5);
+			}
 			LBPrintInt(19, ypos, game.score, true);
 			scores.data[i+3] = (&game.score)[0];
 			scores.data[i+4] = (&game.score)[1];
@@ -1603,13 +1616,14 @@ void update_pause()
 		DrawMap2((x+8)%32, (y+6)%30, map_canvas);
 		LBPrint((x+13)%32, (y+9)%30, (char*) strPaused);
 		LBPrint((x+10)%32, (y+12)%30, (char*) strExitGame);
+		//hide_sprites(0, MAX_EXTENDED_SPRITES);
+		//LBRotateSprites();
 		while (1)
 		{
 			WaitVsync(1);
 			LBGetJoyPadState(&game.joypadState, 0);
 			if (game.joypadState.pressed & BTN_START)
 			{
-				// Reset tiles
 				render_camera_view();
 				break;
 			}
@@ -1629,6 +1643,9 @@ void tally_score(char* title, u16 bonus)
 	u8 y = Screen.scrollY / 8;
 	u16 tally = 0;
 	u16 counter = 0;
+	
+	//hide_sprites(0, MAX_EXTENDED_SPRITES);
+	//LBRotateSprites();
 	
 	StopSong();
 	DrawMap2((x+8)%32, (y+6)%30, map_canvas);
@@ -1686,6 +1703,7 @@ void tally_score(char* title, u16 bonus)
 	}
 	
 	game.score = tally;
+	game.time = 0;
 	LBWaitSeconds(2);
 	render_camera_view();
 }
