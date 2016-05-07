@@ -14,10 +14,6 @@
             <map var-name="map_ice_middle" left="2" top="0" width="1" height="1"/>
             <map var-name="map_ice_right" left="3" top="0" width="1" height="1"/>
             <map var-name="map_ice_bottom" left="4" top="0" width="1" height="1"/>
-            <map var-name="map_ice_horizon" left="5" top="0" width="1" height="1"/>
-            <map var-name="map_ice_sky" left="6" top="0" width="1" height="1"/>
-            <map var-name="map_ice_far" left="7" top="0" width="1" height="1"/>
-            <map var-name="map_ice_cloud" left="8" top="0" width="1" height="1"/>   
             
             <!-- Space tiles -->
             <map var-name="map_star" left="3" top="1" width="1" height="1"/>
@@ -28,8 +24,8 @@
             <map var-name="map_font" left="15" top="8" width="37" height="1"/>
 
             <!-- Level Maps -->
-            <map var-name="map_level_0" left="0" top="9" width="255" height="52"/>
-            <map var-name="map_level_space" left="0" top="61" width="32" height="26"/>
+            <map var-name="map_level_0" left="0" top="9" width="255" height="26"/>
+            <map var-name="map_level_space" left="0" top="35" width="32" height="26"/>
 
             
         </maps>

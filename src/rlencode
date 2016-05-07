@@ -15,16 +15,16 @@ and applies a run length encoding. The output is a comma
 seperated list of 1 byte values. Every run in the input is represented
 by 2 bytes in the output comprising an 8 bit run length and an 8 bit value.
 
-The output is grouped into 16 byte blocks for every  128 bytes of input. A block
-is padded out with 0s to complete the 16 bytes where necessary. It is assumed that every
+The output is grouped into 32 byte blocks for every  128 bytes of input. A block
+is padded out with 0s to complete the 32 bytes where necessary. It is assumed that every
 128 bytes of input comprise at most 8 run length pairs.
 
-This is a decoding optimization at the cost of less effecient compression. A compressed output is 1/8 of the original
+This is a decoding optimization at the cost of less effecient compression. A compressed output is 1/4 of the original
 input size.
 
 Example:
 
-5, 5, 5, 5, 5, 5,...  ----> 128, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+5, 5, 5, 5, 5, 5,...  ----> 128, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 """
 
 if __name__ == "__main__":
@@ -53,7 +53,7 @@ if __name__ == "__main__":
             prev_value = v
             if cumulative_rlength == 128:
                 # Pad the rest of the block with 0
-                for i in range(pairs_in_block, 8):
+                for i in range(pairs_in_block, 16):
                     result += "0,0,"
                 pairs_in_block = 0
                 cumulative_rlength = 1
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     # Finalize the rest of the LAST block
     result += "%d,%d," % (rlength, int(prev_value, 16))
     pairs_in_block += 1
-    for i in range(pairs_in_block, 8):
+    for i in range(pairs_in_block, 16):
         result += "0,0,"
            
     fo.write(result)  

@@ -282,12 +282,12 @@ u8 read_level_byte(char* level_data, u16 index)
 {
 	// C Code
 	
-	u16 counter = index / 128 * 16;
-	u16 cumulative_rlength = counter * 8;
+	u16 counter = index / 128 * 32;
+	u16 cumulative_rlength = index / 128 * 128;
 	u8 rlength = 0;
 	u8 value = 0;
 	
-	/*while (1)
+	while (1)
 	{
 		rlength = pgm_read_byte(&level_data[counter]);
 		value = pgm_read_byte(&level_data[counter+1]);
@@ -298,10 +298,10 @@ u8 read_level_byte(char* level_data, u16 index)
 		}
 		counter += 2;
 	}
-	return 0;*/
+	return 0;
 	
 	// ASM Code
-	index += 1;
+	/*index += 1;
 	counter += (u16) level_data;
 	asm volatile ("" "\n\t"
 	"while1:" "\n\t"
@@ -319,7 +319,7 @@ u8 read_level_byte(char* level_data, u16 index)
 	  [crln] "+r" (cumulative_rlength),
 	  [rln]  "+r" (rlength),
 	  [vl]   "=&r" (value));
-	return value;
+	return value;*/
 }
 
 #endif
