@@ -14,6 +14,8 @@
             <map var-name="map_ice_middle" left="2" top="0" width="1" height="1"/>
             <map var-name="map_ice_right" left="3" top="0" width="1" height="1"/>
             <map var-name="map_ice_bottom" left="4" top="0" width="1" height="1"/>
+            <map var-name="map_icicle_down" left="9" top="0" width="1" height="1"/>
+            <map var-name="map_icicle_up" left="10" top="0" width="1" height="1"/>
             
             <!-- Space tiles -->
             <map var-name="map_star" left="3" top="1" width="1" height="1"/>

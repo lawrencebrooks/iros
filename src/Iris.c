@@ -395,7 +395,7 @@ void spawn_enemy(u16 x, u16 y)
 	}
 }
 
-char solid_tile(u8 level_tile)
+u8 solid_tile(u8 level_tile)
 {
 	switch (level_tile)
 	{
@@ -403,6 +403,18 @@ char solid_tile(u8 level_tile)
 		case L_ICE_LEFT : return 1;
 		case L_ICE_RIGHT : return 1;
 		case L_ICE_BOTTOM : return 1;
+		case L_ICICLE_DOWN : return 1;
+		case L_ICICLE_UP : return 1;
+	}
+	return 0;
+}
+
+u8 level_hazard(u8 level_tile)
+{
+	switch (level_tile)
+	{
+		case L_ICICLE_DOWN : return 1;
+		case L_ICICLE_UP : return 1;
 	}
 	return 0;
 }
