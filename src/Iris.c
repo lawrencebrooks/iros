@@ -405,6 +405,9 @@ u8 solid_tile(u8 level_tile)
 		case L_ICE_BOTTOM : return 1;
 		case L_ICICLE_DOWN : return 1;
 		case L_ICICLE_UP : return 1;
+		case L_FIRE_BOTTOM : return 1;
+		case L_FIRE_TOP : return 1;
+		case L_FIRE_LAVA : return 1;
 	}
 	return 0;
 }
@@ -415,6 +418,7 @@ u8 level_hazard(u8 level_tile)
 	{
 		case L_ICICLE_DOWN : return 1;
 		case L_ICICLE_UP : return 1;
+		case L_FIRE_LAVA : return 1;
 	}
 	return 0;
 }
@@ -533,15 +537,15 @@ void load_level(u8 index, u8 drop_ship)
 	game.joypadState.released = 0;
 	switch (index)
 	{
-		case 0: map_level_info((char*) map_level_0); break;
+		case 0: map_level_info((char*) map_level_ice); break;
 		case 1: map_level_info((char*) map_level_space); break;
-		case 2: map_level_info((char*) map_level_1); break;
+		case 2: map_level_info((char*) map_level_fire); break;
 		case 3: map_level_info((char*) map_level_space); break;
-		case 4: map_level_info((char*) map_level_2); break;
+		case 4: map_level_info((char*) map_level_forest); break;
 		case 5: map_level_info((char*) map_level_space); break;
-		case 6: map_level_info((char*) map_level_3); break;
+		case 6: map_level_info((char*) map_level_city); break;
 		case 7: map_level_info((char*) map_level_space); break;
-		case 8: map_level_info((char*) map_level_4); break;
+		case 8: map_level_info((char*) map_level_desert); break;
 		case 9: map_level_info((char*) map_level_space); break;
 	}
 	game.column_count = 0;

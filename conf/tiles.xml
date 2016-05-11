@@ -16,6 +16,11 @@
             <map var-name="map_ice_bottom" left="4" top="0" width="1" height="1"/>
             <map var-name="map_icicle_down" left="9" top="0" width="1" height="1"/>
             <map var-name="map_icicle_up" left="10" top="0" width="1" height="1"/>
+
+            <!-- Fire planet tiles -->
+            <map var-name="map_fire_bottom" left="12" top="0" width="1" height="1"/>
+            <map var-name="map_fire_top" left="13" top="0" width="1" height="1"/>
+            <map var-name="map_fire_lava" left="14" top="0" width="1" height="1"/>
             
             <!-- Space tiles -->
             <map var-name="map_star" left="3" top="1" width="1" height="1"/>
@@ -26,8 +31,9 @@
             <map var-name="map_font" left="15" top="8" width="37" height="1"/>
 
             <!-- Level Maps -->
-            <map var-name="map_level_0" left="0" top="9" width="255" height="26"/>
+            <map var-name="map_level_ice" left="0" top="9" width="255" height="26"/>
             <map var-name="map_level_space" left="0" top="35" width="32" height="26"/>
+            <map var-name="map_level_fire" left="0" top="61" width="255" height="26"/>
 
             
         </maps>
