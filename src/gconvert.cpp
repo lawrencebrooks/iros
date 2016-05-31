@@ -218,6 +218,39 @@ bool tilesEqual(unsigned char* tile1,unsigned char* tile2,int lenght){
 	}
 }
 
+int findMegaMapIndex(MegaMapContainer* megaMapContainer, vector<int>* megaTileCandidate) {
+    /**
+    * Find the index in the mega map where the mega tile candidate is located. Return -1 if not found.
+    **/
+    int index = 0;
+    bool match_found = true;
+
+    while (index < megaMapContainer->data.size()){
+        match_found = true;
+        for (int i = 0; i < megaTileCandidate->size(); i++) {
+            if (megaTileCandidate->at(i) != megaMapContainer->data.at(index)){
+                index += megaTileCandidate->size() - i;    
+                match_found = false;
+                break;
+            }
+            index++;
+        }
+        if (match_found) return index - megaTileCandidate->size();
+    }
+    return -1;
+}
+
+int addMegaMapBlock(MegaMapContainer* megaMapContainer, vector<int>* megaTileCandidate) {
+    /**
+    * Add the mega tile at the end of the mega map. Return the index of the newly added block
+    **/
+    for (int i = 0; i < megaTileCandidate->size(); i++) {
+        megaMapContainer->data.push_back(megaTileCandidate->at(i));
+    }
+    megaMapContainer->size++;
+    return megaMapContainer->data.size()-1;
+}
+
 bool processMegaMap(FILE* tf, MegaMapContainer* megaMapContainer, vector<MapContainer>* mapsVector){
     /**
     *   Compress maps in mapsVector using mega-tile compression.
@@ -233,9 +266,21 @@ bool processMegaMap(FILE* tf, MegaMapContainer* megaMapContainer, vector<MapCont
     //    fprintf(tf,"const int %s[] PROGMEM ={\n",map.varName);
    // }
     vector<int> megaTileCandidate;
+    int candidateSize = megaMapContainer->blockWidth*megaMapContainer->blockHeight;
+    int counter = 0;
+    int index = -1;
 
     for (int i = 0; i < mapsVector->size(); i++){
         for (int j = 0; j < mapsVector->at(i).width*mapsVector->at(i).height; j++){
+            megaTileCandidate.push_back(mapsVector->at(i).data.at(j));
+            if (++counter == candidateSize){
+                index = findMegaMapIndex(megaMapContainer, &megaTileCandidate); 
+                if (index == -1){
+                    index = addMegaMapBlock(megaMapContainer, &megaTileCandidate);
+                }  
+                megaTileCandidate.clear();
+                counter = 0;
+            }
         }
     }
     return false;
