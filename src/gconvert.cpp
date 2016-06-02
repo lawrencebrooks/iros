@@ -256,34 +256,64 @@ bool processMegaMap(FILE* tf, MegaMapContainer* megaMapContainer, vector<MapCont
     *   Compress maps in mapsVector using mega-tile compression.
     *   Indexed Mega tiles are stored in the megaMapContainer
     **/
-
-    //fprintf(tf,"#define %s_WIDTH %i\n",toUpperCase(map.varName),map.width);
-    //fprintf(tf,"#define %s_HEIGHT %i\n",toUpperCase(map.varName),map.height);
-
-    //if(xform.mapsPointersSize==8){
-    //    printf(tf,"const char %s[] PROGMEM ={\n",map.varName);
-    //}else{
-    //    fprintf(tf,"const int %s[] PROGMEM ={\n",map.varName);
-   // }
     vector<int> megaTileCandidate;
     int candidateSize = megaMapContainer->blockWidth*megaMapContainer->blockHeight;
     int counter = 0;
     int index = -1;
 
     for (int i = 0; i < mapsVector->size(); i++){
-        for (int j = 0; j < mapsVector->at(i).width*mapsVector->at(i).height; j++){
+        fprintf(tf,"#define %s_WIDTH %i\n",toUpperCase(megaMapContainer->varName),mapsVector->at(i).width);
+        fprintf(tf,"#define %s_HEIGHT %i\n",toUpperCase(megaMapContainer->varName),mapsVector->at(i).height);
+        if(xform.mapsPointersSize==8){
+            fprintf(tf,"const char %s[] PROGMEM ={",mapsVector->at(i).varName);
+        }else{
+            fprintf(tf,"const int %s[] PROGMEM ={",mapsVector->at(i).varName);
+        }
+        fprintf(tf,"%i,%i", mapsVector->at(i).width, mapsVector->at(i).height);
+
+        int c = 0;
+        for (int j = 0; j < mapsVector->at(i).data.size(); j++){
             megaTileCandidate.push_back(mapsVector->at(i).data.at(j));
             if (++counter == candidateSize){
+                if(c % 20 == 0) fprintf(tf,"\n"); //wrap line
+                fprintf(tf,",");
+
                 index = findMegaMapIndex(megaMapContainer, &megaTileCandidate); 
                 if (index == -1){
                     index = addMegaMapBlock(megaMapContainer, &megaTileCandidate);
                 }  
                 megaTileCandidate.clear();
                 counter = 0;
+                fprintf(tf, "0x%x", index);
+                c++;
             }
         }
+        fprintf(tf,"};\n\n");
     }
-    return false;
+
+    // Write mega map to file
+    fprintf(tf,"#define %s_BLOCK_WIDTH %i\n",toUpperCase(megaMapContainer->varName),megaMapContainer->blockWidth);
+    fprintf(tf,"#define %s_BLOCK_HEIGHT %i\n",toUpperCase(megaMapContainer->varName),megaMapContainer->blockHeight);
+    fprintf(tf,"#define %s_BLOCK_COUNT %i\n",toUpperCase(megaMapContainer->varName),megaMapContainer->size);
+    if(xform.mapsPointersSize==8){
+        fprintf(tf,"const char %s[] PROGMEM ={",megaMapContainer->varName);
+    }else{
+        fprintf(tf,"const int %s[] PROGMEM ={",megaMapContainer->varName);
+    }
+    int c = 0;
+    for (int i = 0; i < megaMapContainer->data.size(); i++){
+        if (c % megaMapContainer->blockWidth*megaMapContainer->blockHeight == 0){
+            fprintf(tf, "\n");
+        }
+        fprintf(tf, "0x%x", megaMapContainer->data.at(i));
+        if (i != megaMapContainer->data.size()-1){
+            fprintf(tf, ",");
+        }
+        c++;
+    }
+    fprintf(tf,"};\n\n");
+
+    return true;
 }
 
 bool process(){
@@ -466,6 +496,7 @@ bool process(){
             megaMapContainer.varName = megaMap.varName;
             megaMapContainer.blockWidth = megaMap.blockWidth;
             megaMapContainer.blockHeight = megaMap.blockHeight;
+            megaMapContainer.data.clear();
 
             vector<MapContainer> mapsVector;
 
@@ -475,6 +506,7 @@ bool process(){
                 mapContainer.varName = map.varName;
                 mapContainer.width = map.width;
                 mapContainer.height = map.height;
+                mapContainer.data.clear();
                 mapsVector.push_back(mapContainer);
 
                 //validate map
@@ -503,7 +535,6 @@ bool process(){
                             return false;
                         }
 
-                        //fprintf(tf,"0x%x",index);
                        mapContainer.data.push_back(index); 
 
                     }
@@ -1116,7 +1147,6 @@ void parseXml(TiXmlDocument* doc){
 
             node->ToElement()->QueryIntAttribute("block-width",&megaMaps[megaMapCount].blockWidth);
             node->ToElement()->QueryIntAttribute("block-height",&megaMaps[megaMapCount].blockHeight);
-            megaMapCount++;
 
             // ########## mega-map child maps ############
 
@@ -1141,6 +1171,7 @@ void parseXml(TiXmlDocument* doc){
                 subNode->ToElement()->QueryIntAttribute("height",&megaMaps[megaMapCount].maps[mapCount].height);
                 mapCount++;
             }
+            megaMapCount++;
             // #####################
         }
         if(megaMapCount>0){

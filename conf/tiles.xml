@@ -48,14 +48,14 @@
             <map var-name="map_font" left="15" top="8" width="37" height="1"/>
 
             <!-- Level Maps -->
-            <mega-maps var-name="map_level_mega_tiles" block-width="5" block-height="5">
-                <map var-name="map_level_ice" left="0" top="9" width="255" height="26"/>
-                <map var-name="map_level_space" left="0" top="35" width="32" height="26"/>
-                <map var-name="map_level_fire" left="0" top="61" width="255" height="26"/>
-                <map var-name="map_level_jungle" left="0" top="87" width="255" height="26"/>
-                <map var-name="map_level_city" left="0" top="113" width="255" height="26"/>
-                <map var-name="map_level_dessert" left="0" top="139" width="255" height="26"/>
-            </mega-maps>
+            <mega-map var-name="map_level_mega_tiles" block-width="5" block-height="5">
+                <map var-name="map_level_ice" left="0" top="10" width="255" height="25"/>
+                <map var-name="map_level_space" left="0" top="36" width="32" height="25"/>
+                <map var-name="map_level_fire" left="0" top="62" width="255" height="25"/>
+                <map var-name="map_level_jungle" left="0" top="88" width="255" height="25"/>
+                <map var-name="map_level_city" left="0" top="114" width="255" height="25"/>
+                <map var-name="map_level_dessert" left="0" top="140" width="255" height="25"/>
+            </mega-map>
         </maps>
         <defines>
             <define def-name="L_ICE_LEFT" left="1" top="0"/>
