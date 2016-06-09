@@ -251,7 +251,7 @@ int addMegaMapBlock(MegaMapContainer* megaMapContainer, vector<int>* megaTileCan
     return megaMapContainer->data.size()-1;
 }
 
-bool processMegaMap(FILE* tf, MegaMapContainer* megaMapContainer, vector<MapContainer>* mapsVector){
+bool processMegaMap(FILE* tf, MegaMapContainer* megaMapContainer, vector<MapContainer*>* mapsVector){
     /**
     *   Compress maps in mapsVector using mega-tile compression.
     *   Indexed Mega tiles are stored in the megaMapContainer
@@ -262,18 +262,18 @@ bool processMegaMap(FILE* tf, MegaMapContainer* megaMapContainer, vector<MapCont
     int index = -1;
 
     for (int i = 0; i < mapsVector->size(); i++){
-        fprintf(tf,"#define %s_WIDTH %i\n",toUpperCase(megaMapContainer->varName),mapsVector->at(i).width);
-        fprintf(tf,"#define %s_HEIGHT %i\n",toUpperCase(megaMapContainer->varName),mapsVector->at(i).height);
+        fprintf(tf,"#define %s_WIDTH %i\n",toUpperCase(megaMapContainer->varName),mapsVector->at(i)->width);
+        fprintf(tf,"#define %s_HEIGHT %i\n",toUpperCase(megaMapContainer->varName),mapsVector->at(i)->height);
         if(xform.mapsPointersSize==8){
-            fprintf(tf,"const char %s[] PROGMEM ={",mapsVector->at(i).varName);
+            fprintf(tf,"const char %s[] PROGMEM ={",mapsVector->at(i)->varName);
         }else{
-            fprintf(tf,"const int %s[] PROGMEM ={",mapsVector->at(i).varName);
+            fprintf(tf,"const int %s[] PROGMEM ={",mapsVector->at(i)->varName);
         }
-        fprintf(tf,"%i,%i", mapsVector->at(i).width, mapsVector->at(i).height);
+        fprintf(tf,"%i,%i", mapsVector->at(i)->width, mapsVector->at(i)->height);
 
         int c = 0;
-        for (int j = 0; j < mapsVector->at(i).data.size(); j++){
-            megaTileCandidate.push_back(mapsVector->at(i).data.at(j));
+        for (int j = 0; j < mapsVector->at(i)->data.size(); j++){
+            megaTileCandidate.push_back(mapsVector->at(i)->data.at(j));
             if (++counter == candidateSize){
                 if(c % 20 == 0) fprintf(tf,"\n"); //wrap line
                 fprintf(tf,",");
@@ -302,7 +302,7 @@ bool processMegaMap(FILE* tf, MegaMapContainer* megaMapContainer, vector<MapCont
     }
     int c = 0;
     for (int i = 0; i < megaMapContainer->data.size(); i++){
-        if (c % megaMapContainer->blockWidth*megaMapContainer->blockHeight == 0){
+        if (c % (megaMapContainer->blockWidth*megaMapContainer->blockHeight) == 0){
             fprintf(tf, "\n");
         }
         fprintf(tf, "0x%x", megaMapContainer->data.at(i));
@@ -485,28 +485,30 @@ bool process(){
 	}
 
     //Export mega maps second
+    MegaMapContainer megaMapContainer;
+    vector<MapContainer*> mapsVector;
+    MapContainer* mapContainer;
+    MegaTileMap megaMap;
+    TileMap map;
     if (xform.megaMaps!=NULL){
         int index = 0;
 
         for(int mm=0; mm<xform.megaMapsCount; mm++){
-            MegaTileMap megaMap=xform.megaMaps[mm]; 
-            
-            MegaMapContainer megaMapContainer;
+            megaMap=xform.megaMaps[mm]; 
             megaMapContainer.size = 0;
             megaMapContainer.varName = megaMap.varName;
             megaMapContainer.blockWidth = megaMap.blockWidth;
             megaMapContainer.blockHeight = megaMap.blockHeight;
             megaMapContainer.data.clear();
-
-            vector<MapContainer> mapsVector;
+            mapsVector.clear();
 
             for(int m=0; m<megaMap.mapsCount; m++){
-                TileMap map=megaMap.maps[m];
-                MapContainer mapContainer;
-                mapContainer.varName = map.varName;
-                mapContainer.width = map.width;
-                mapContainer.height = map.height;
-                mapContainer.data.clear();
+                map=megaMap.maps[m];
+                mapContainer = new MapContainer();
+                mapContainer->varName = map.varName;
+                mapContainer->width = map.width;
+                mapContainer->height = map.height;
+                mapContainer->data.clear();
                 mapsVector.push_back(mapContainer);
 
                 //validate map
@@ -534,8 +536,7 @@ bool process(){
                             printf("Map tile not found in tilset!\n");
                             return false;
                         }
-
-                       mapContainer.data.push_back(index); 
+                       mapContainer->data.push_back(index); 
 
                     }
                 }
