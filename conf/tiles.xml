@@ -48,7 +48,7 @@
             <map var-name="map_font" left="15" top="8" width="37" height="1"/>
 
             <!-- Level Maps -->
-            <mega-map var-name="map_level_mega_tiles" block-width="5" block-height="5">
+            <mega-map var-name="map_level_mega_tiles" mega-tile-width="5" mega-tile-height="5">
                 <map var-name="map_level_ice" left="0" top="10" width="255" height="25"/>
                 <map var-name="map_level_space" left="0" top="36" width="32" height="25"/>
                 <map var-name="map_level_fire" left="0" top="62" width="255" height="25"/>

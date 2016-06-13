@@ -59,16 +59,16 @@ struct MegaTileMap {
    struct TileMap* maps;
    int mapsCount;
    const char* varName;
-   int blockWidth;
-   int blockHeight; 
+   int megaTileWidth;
+   int megaTileHeight; 
 };
 
 struct MegaMapContainer {
     vector<int> data;
     int size;
     const char* varName;
-    int blockWidth;
-    int blockHeight;
+    int megaTileWidth;
+    int megaTileHeight;
 };
 
 struct MapContainer {
@@ -235,7 +235,7 @@ int findMegaMapIndex(MegaMapContainer* megaMapContainer, vector<int>* megaTileCa
             }
             index++;
         }
-        if (match_found) return index - megaTileCandidate->size();
+        if (match_found) return (index - megaTileCandidate->size()) / (megaMapContainer->megaTileWidth*megaMapContainer->megaTileHeight);
     }
     return -1;
 }
@@ -248,7 +248,7 @@ int addMegaMapBlock(MegaMapContainer* megaMapContainer, vector<int>* megaTileCan
         megaMapContainer->data.push_back(megaTileCandidate->at(i));
     }
     megaMapContainer->size++;
-    return megaMapContainer->data.size()-1;
+    return megaMapContainer->size-1;
 }
 
 bool processMegaMap(FILE* tf, MegaMapContainer* megaMapContainer, vector<MapContainer*>* mapsVector){
@@ -257,7 +257,7 @@ bool processMegaMap(FILE* tf, MegaMapContainer* megaMapContainer, vector<MapCont
     *   Indexed Mega tiles are stored in the megaMapContainer
     **/
     vector<int> megaTileCandidate;
-    int candidateSize = megaMapContainer->blockWidth*megaMapContainer->blockHeight;
+    int candidateSize = megaMapContainer->megaTileWidth*megaMapContainer->megaTileHeight;
     int counter = 0;
     int index = -1;
 
@@ -282,8 +282,12 @@ bool processMegaMap(FILE* tf, MegaMapContainer* megaMapContainer, vector<MapCont
                 if (index == -1){
                     index = addMegaMapBlock(megaMapContainer, &megaTileCandidate);
                 }  
+                if(xform.mapsPointersSize==8 && index>0xff){
+                    printf("Mega map can't contain more than 256 blocks.\n");
+		    return false;
+		}
                 megaTileCandidate.clear();
-                counter = 0;
+               counter = 0;
                 fprintf(tf, "0x%x", index);
                 c++;
             }
@@ -292,8 +296,8 @@ bool processMegaMap(FILE* tf, MegaMapContainer* megaMapContainer, vector<MapCont
     }
 
     // Write mega map to file
-    fprintf(tf,"#define %s_BLOCK_WIDTH %i\n",toUpperCase(megaMapContainer->varName),megaMapContainer->blockWidth);
-    fprintf(tf,"#define %s_BLOCK_HEIGHT %i\n",toUpperCase(megaMapContainer->varName),megaMapContainer->blockHeight);
+    fprintf(tf,"#define %s_BLOCK_WIDTH %i\n",toUpperCase(megaMapContainer->varName),megaMapContainer->megaTileWidth);
+    fprintf(tf,"#define %s_BLOCK_HEIGHT %i\n",toUpperCase(megaMapContainer->varName),megaMapContainer->megaTileHeight);
     fprintf(tf,"#define %s_BLOCK_COUNT %i\n",toUpperCase(megaMapContainer->varName),megaMapContainer->size);
     if(xform.mapsPointersSize==8){
         fprintf(tf,"const char %s[] PROGMEM ={",megaMapContainer->varName);
@@ -302,7 +306,7 @@ bool processMegaMap(FILE* tf, MegaMapContainer* megaMapContainer, vector<MapCont
     }
     int c = 0;
     for (int i = 0; i < megaMapContainer->data.size(); i++){
-        if (c % (megaMapContainer->blockWidth*megaMapContainer->blockHeight) == 0){
+        if (c % (megaMapContainer->megaTileWidth*megaMapContainer->megaTileHeight) == 0){
             fprintf(tf, "\n");
         }
         fprintf(tf, "0x%x", megaMapContainer->data.at(i));
@@ -497,8 +501,8 @@ bool process(){
             megaMap=xform.megaMaps[mm]; 
             megaMapContainer.size = 0;
             megaMapContainer.varName = megaMap.varName;
-            megaMapContainer.blockWidth = megaMap.blockWidth;
-            megaMapContainer.blockHeight = megaMap.blockHeight;
+            megaMapContainer.megaTileWidth = megaMap.megaTileWidth;
+            megaMapContainer.megaTileHeight = megaMap.megaTileHeight;
             megaMapContainer.data.clear();
             mapsVector.clear();
 
@@ -1146,8 +1150,8 @@ void parseXml(TiXmlDocument* doc){
         for(node=mapsElem->FirstChild("mega-map");node;node=node->NextSibling("mega-map")){
             megaMaps[megaMapCount].varName=node->ToElement()->Attribute("var-name");
 
-            node->ToElement()->QueryIntAttribute("block-width",&megaMaps[megaMapCount].blockWidth);
-            node->ToElement()->QueryIntAttribute("block-height",&megaMaps[megaMapCount].blockHeight);
+            node->ToElement()->QueryIntAttribute("mega-tile-width",&megaMaps[megaMapCount].megaTileWidth);
+            node->ToElement()->QueryIntAttribute("mega-tile-height",&megaMaps[megaMapCount].megaTileHeight);
 
             // ########## mega-map child maps ############
 
