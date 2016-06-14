@@ -546,7 +546,7 @@ bool process(){
                 }
             }
             if (!processMegaMap(tf, &megaMapContainer, &mapsVector)){
-                printf("Error processing mega maps");
+                printf("Error processing mega maps\n");
                 return false;
             }
         }

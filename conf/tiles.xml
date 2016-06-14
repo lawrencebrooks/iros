@@ -34,10 +34,10 @@
             <map var-name="map_city_spark" left="21" top="0" width="1" height="1"/>
 
             <!-- Dessert planet tiles -->
-            <map var-name="map_dessert_bottom" left="23" top="0" width="1" height="1"/>
-            <map var-name="map_dessert_top" left="22" top="0" width="1" height="1"/>
-            <map var-name="map_dessert_spike_up" left="25" top="0" width="1" height="1"/>
-            <map var-name="map_dessert_spike_down" left="24" top="0" width="1" height="1"/>
+            <map var-name="map_desert_bottom" left="23" top="0" width="1" height="1"/>
+            <map var-name="map_desert_top" left="22" top="0" width="1" height="1"/>
+            <map var-name="map_desert_spike_up" left="25" top="0" width="1" height="1"/>
+            <map var-name="map_desert_spike_down" left="24" top="0" width="1" height="1"/>
             
             <!-- Space tiles -->
             <map var-name="map_star" left="3" top="1" width="1" height="1"/>
@@ -52,9 +52,9 @@
                 <map var-name="map_level_ice" left="0" top="10" width="255" height="25"/>
                 <map var-name="map_level_space" left="0" top="36" width="32" height="25"/>
                 <map var-name="map_level_fire" left="0" top="62" width="255" height="25"/>
-                <map var-name="map_level_jungle" left="0" top="88" width="255" height="25"/>
+                <map var-name="map_level_forest" left="0" top="88" width="255" height="25"/>
                 <map var-name="map_level_city" left="0" top="114" width="255" height="25"/>
-                <map var-name="map_level_dessert" left="0" top="140" width="255" height="25"/>
+                <map var-name="map_level_desert" left="0" top="140" width="255" height="25"/>
             </mega-map>
         </maps>
         <defines>
@@ -74,10 +74,10 @@
             <define def-name="L_CITY_BOTTOM" left="19" top="0"/>
             <define def-name="L_CITY_TOP" left="20" top="0"/>
             <define def-name="L_CITY_SPARK" left="21" top="0"/>
-            <define def-name="L_DESSERT_BOTTOM" left="23" top="0"/>
-            <define def-name="L_DESSERT_TOP" left="22" top="0"/>
-            <define def-name="L_DESSERT_SPIKE_UP" left="25" top="0"/>
-            <define def-name="L_DESSERT_SPIKE_DOWN" left="24" top="0"/>
+            <define def-name="L_DESERT_BOTTOM" left="23" top="0"/>
+            <define def-name="L_DESERT_TOP" left="22" top="0"/>
+            <define def-name="L_DESERT_SPIKE_UP" left="25" top="0"/>
+            <define def-name="L_DESERT_SPIKE_DOWN" left="24" top="0"/>
         </defines>
     </output>
 </gfx-xform>
