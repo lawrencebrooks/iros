@@ -262,8 +262,8 @@ bool processMegaMap(FILE* tf, MegaMapContainer* megaMapContainer, vector<MapCont
     int index = -1;
 
     for (int i = 0; i < mapsVector->size(); i++){
-        fprintf(tf,"#define %s_WIDTH %i\n",toUpperCase(megaMapContainer->varName),mapsVector->at(i)->width);
-        fprintf(tf,"#define %s_HEIGHT %i\n",toUpperCase(megaMapContainer->varName),mapsVector->at(i)->height);
+        fprintf(tf,"#define %s_WIDTH %i\n",toUpperCase(mapsVector->at(i)->varName),mapsVector->at(i)->width);
+        fprintf(tf,"#define %s_HEIGHT %i\n",toUpperCase(mapsVector->at(i)->varName),mapsVector->at(i)->height);
         if(xform.mapsPointersSize==8){
             fprintf(tf,"const char %s[] PROGMEM ={",mapsVector->at(i)->varName);
         }else{
@@ -296,9 +296,9 @@ bool processMegaMap(FILE* tf, MegaMapContainer* megaMapContainer, vector<MapCont
     }
 
     // Write mega map to file
-    fprintf(tf,"#define %s_BLOCK_WIDTH %i\n",toUpperCase(megaMapContainer->varName),megaMapContainer->megaTileWidth);
-    fprintf(tf,"#define %s_BLOCK_HEIGHT %i\n",toUpperCase(megaMapContainer->varName),megaMapContainer->megaTileHeight);
-    fprintf(tf,"#define %s_BLOCK_COUNT %i\n",toUpperCase(megaMapContainer->varName),megaMapContainer->size);
+    fprintf(tf,"#define %s_MEGA_TILE_WIDTH %i\n",toUpperCase(megaMapContainer->varName),megaMapContainer->megaTileWidth);
+    fprintf(tf,"#define %s_MEGA_TILE_HEIGHT %i\n",toUpperCase(megaMapContainer->varName),megaMapContainer->megaTileHeight);
+    fprintf(tf,"#define %s_MEGA_TILE_COUNT %i\n",toUpperCase(megaMapContainer->varName),megaMapContainer->size);
     if(xform.mapsPointersSize==8){
         fprintf(tf,"const char %s[] PROGMEM ={",megaMapContainer->varName);
     }else{
