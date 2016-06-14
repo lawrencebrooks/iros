@@ -262,6 +262,14 @@ bool processMegaMap(FILE* tf, MegaMapContainer* megaMapContainer, vector<MapCont
     int index = -1;
 
     for (int i = 0; i < mapsVector->size(); i++){
+        if (mapsVector->at(i)->width % megaMapContainer->megaTileWidth != 0){
+            printf("Map of width %d cannot be divided into mega tiles of width %d\n", mapsVector->at(i)->width, megaMapContainer->megaTileWidth);
+            return false;
+        }
+        if (mapsVector->at(i)->height % megaMapContainer->megaTileHeight != 0){
+            printf("Map of height %d cannot be divided into mega tiles of height %d\n", mapsVector->at(i)->height, megaMapContainer->megaTileHeight);
+            return false;
+        }
         fprintf(tf,"#define %s_WIDTH %i\n",toUpperCase(mapsVector->at(i)->varName),mapsVector->at(i)->width);
         fprintf(tf,"#define %s_HEIGHT %i\n",toUpperCase(mapsVector->at(i)->varName),mapsVector->at(i)->height);
         if(xform.mapsPointersSize==8){
