@@ -271,57 +271,53 @@ void clear_overlay(u8 overlayHeight)
 	}
 }
 
-#if RLE == 0
 u8 read_level_byte(char* level_data, u16 index)
 {
-	return pgm_read_byte(&level_data[index]);
-}
-#else
-u8 read_level_byte(char* level_data, u16 index)
-{
-	// C Code
-	
-	u16 counter = index / 128 * 32;
-	u16 cumulative_rlength = index / 128 * 128;
-	u8 rlength = 0;
-	u8 value = 0;
-	
-	while (1)
-	{
-		rlength = pgm_read_byte(&level_data[counter]);
-		value = pgm_read_byte(&level_data[counter+1]);
-		cumulative_rlength += rlength;
-		if (cumulative_rlength > index)
-		{
-			return value;
-		}
-		counter += 2;
-	}
-	return 0;
-	
-	// ASM Code
-	/*index += 1;
-	counter += (u16) level_data;
-	asm volatile ("" "\n\t"
-	"while1:" "\n\t"
-	"lpm  %[rln]   , %a[cntr]+" "\n\t"
-	"lpm  %[vl]    , %a[cntr]+" "\n\t"
-	"add  %A[crln], %[rln]" "\n\t"
-	"adc  %B[crln], __zero_reg__" "\n\t"
-	"cp   %A[crln], %A[idx]" "\n\t"
-	"cpc  %B[crln], %B[idx]" "\n\t"
-	"brsh while1done" "\n\t"
-	"rjmp while1" "\n\t"
-	"while1done:" "\n\t"
-	: [idx]  "+r" (index),
-	  [cntr] "+z" (counter),
-	  [crln] "+r" (cumulative_rlength),
-	  [rln]  "+r" (rlength),
-	  [vl]   "=&r" (value));
-	return value;*/
-}
+	u16 mega_tile_index = 0;
+	u8 x = 0;
+	u8 y = 0;
+	u8 mega_tile_x = 0;
+	u8 mega_tile_y = 0;
+	u8 mega_tile_x_offset = 0;
+	u8 mega_tile_y_offset = 0;
 
-#endif
+	if (is_space())
+	{
+		if (index == 0) return pgm_read_byte(&level_data[index])*MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH;
+		if (index == 1) return pgm_read_byte(&level_data[index])*MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT;
+		index -= 2;
+		
+		x = index % 32;
+		y = index / 32;
+		mega_tile_x = x / MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH;
+		mega_tile_y = y / MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT;
+		mega_tile_x_offset = x % MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH;
+		mega_tile_y_offset = y % MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT;
+		
+		mega_tile_index = pgm_read_byte(2+(&level_data[mega_tile_y*(32/MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH) + mega_tile_x]));
+		mega_tile_index *= MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH*MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT;
+		
+		return pgm_read_byte(&map_space_mega_tiles[mega_tile_index+(mega_tile_y_offset*MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH+mega_tile_x_offset)]);
+	}
+	else
+	{
+		if (index == 0) return pgm_read_byte(&level_data[index])*MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH;
+		if (index == 1) return pgm_read_byte(&level_data[index])*MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
+		index -=2;
+		
+		x = index % game.level_width;
+		y = index / game.level_width;
+		mega_tile_x = x / MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH;
+		mega_tile_y = y / MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
+		mega_tile_x_offset = x % MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH;
+		mega_tile_y_offset = y % MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
+		
+		mega_tile_index = pgm_read_byte(2+(&level_data[mega_tile_y*(game.level_width/MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH) + mega_tile_x]));
+		mega_tile_index *= MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH*MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
+		
+		return pgm_read_byte(&map_level_mega_tiles[mega_tile_index+(mega_tile_y_offset*MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH+mega_tile_x_offset)]);
+	}
+}
 
 u8 get_camera_x(u8 level_index)
 {
@@ -340,7 +336,7 @@ u8 get_hero_spawn_x(u8 level_index)
 
 u8 get_hero_spawn_y(u8 level_index)
 {
-	return 21;
+	return 20;
 }
 
 u8 get_level_tile(char* level_data, u16 x, u16 y)
@@ -513,7 +509,7 @@ void map_level_info(char* level)
 	else
 	{
 		game.level_width = 255;
-		game.level_height = 26;
+		game.level_height = 25;
 	}
 }
 
@@ -525,9 +521,9 @@ void load_level(u8 index, u8 drop_ship)
 	
 	Screen.scrollX = 0;
 	Screen.scrollY = 0;
-	Screen.scrollHeight = 30;
+	Screen.scrollHeight = 29;
 	Screen.overlayTileTable = tiles_data;
-	Screen.overlayHeight = 2;
+	Screen.overlayHeight = 3;
 	clear_overlay(2);
 	game.current_level_index = index;
 	game.level_ended = 0;
