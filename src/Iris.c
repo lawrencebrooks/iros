@@ -1581,7 +1581,7 @@ void load_high_scores()
 
 void update_high_scores()
 {
-	if (game.joypadState.pressed & BTN_X || select_pressed(&game.joypadState))
+	if (game.joypadState.pressed & BTN_X)
 	{
 		SFX_NAVIGATE;
 		game.high_score_index = -1;
