@@ -36,7 +36,7 @@ const unsigned char strPaused [] PROGMEM="PAUSE";
 const unsigned char strLevelClear [] PROGMEM="LEVEL CLEAR";
 const unsigned char strLevelBonus [] PROGMEM="BONUS";
 const unsigned char strGameOver [] PROGMEM="GAME OVER";
-const unsigned char strTally [] PROGMEM="TALLY";
+const unsigned char strTally [] PROGMEM="TALLY ";
 
 // Default scores
 const unsigned char default_scores[] PROGMEM = {

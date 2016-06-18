@@ -558,14 +558,17 @@ void load_level(u8 index, u8 drop_ship)
 	game.scroll_y = 0;
 	game.spawn_rate = BASE_SPAWN_RATE;
 	render_camera_view();
-	LBPrint(0, VRAM_TILES_V-1, (char*) strLives);
-	LBPrint(17, VRAM_TILES_V-1, (char*) strScore);
-	LBPrint(0, VRAM_TILES_V-2, (char*) strShield);
-	LBPrint(18, VRAM_TILES_V-2, (char*) strTime);
-	LBPrintByte(9, VRAM_TILES_V-1, game.lives ,true);
+	LBPrint(0, VRAM_TILES_V-3, (char*) strShield);
+	LBPrint(18, VRAM_TILES_V-3, (char*) strTime);
+	LBPrint(0, VRAM_TILES_V-2, (char*) strLives);
+	LBPrint(17, VRAM_TILES_V-2, (char*) strScore);
+	LBPrint(17, VRAM_TILES_V-1, (char*) strTally);
+	
+	LBPrintByte(9, VRAM_TILES_V-3, game.player.shield ,true);
+	LBPrintInt(27, VRAM_TILES_V-3, game.time ,true);
+	LBPrintByte(9, VRAM_TILES_V-2, game.lives ,true);
+	LBPrintInt(27, VRAM_TILES_V-2, game.level_score ,true);
 	LBPrintInt(27, VRAM_TILES_V-1, game.score ,true);
-	LBPrintByte(9, VRAM_TILES_V-2, game.player.shield ,true);
-	LBPrintInt(27, VRAM_TILES_V-2, game.time ,true);
 	
 	
 	if (!is_space() && drop_ship)
@@ -693,7 +696,7 @@ void animate_shot()
 							game.enemies[j].flags = EXPLODING;
 							game.enemies[j].active = 0;
 							game.active_enemies--;
-							game.score += KILL_SCORE;
+							game.level_score += KILL_SCORE;
 							break;
 						}
 						game.player.shot[i].active = 0;
@@ -728,7 +731,7 @@ void handle_player_death()
 	load_level(game.current_level_index, false);
 }
 
-void update_player()
+u8 update_player()
 {
 	
 	if (game.player.flags & EXPLODING)
@@ -736,6 +739,7 @@ void update_player()
 		if (map_explosion(&game.player.flags, &game.player.expl, PLAYER_SLOT, game.player.width, game.player.height))
 		{
 			handle_player_death();
+			return 0;
 		}
 	}
 	else if (is_space())
@@ -879,6 +883,7 @@ void update_player()
 			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.prone), 0);
 		}
 	}
+	return 1;
 }
 
 u8 pixel_overlap(u16 s1, u16 s2, u8 w1, u8 w2)
@@ -1141,7 +1146,7 @@ void animate_enemies()
 			}
 			else if (LBCollides(game.player.shared.x,game.player.shared.y, game.player.width*8, game.player.height*8,
 							game.enemies[i].shared.x, game.enemies[i].shared.y, 8, 8
-						) && !(game.player.flags & EXPLODING)
+						) && !(game.player.flags & EXPLODING) && !GODMODE
 			)
 			{
 				SFX_PLAYER_EXPLODE;
@@ -1186,7 +1191,7 @@ void animate_enemy_shots()
 					)
 					{
 						SFX_HIT;
-						game.player.shield -= game.enemies[i].shot[j].hit_count;
+						if(!GODMODE) game.player.shield -= game.enemies[i].shot[j].hit_count;
 						if (game.player.shield <= 0)
 						{
 							SFX_PLAYER_EXPLODE;
@@ -1244,10 +1249,11 @@ void update_level()
 	}
 	
 	// Score
-	LBPrintByte(9, VRAM_TILES_V-1, game.lives ,true);
+	LBPrintByte(9, VRAM_TILES_V-3, game.player.shield ,true);
+	LBPrintInt(27, VRAM_TILES_V-3, game.time ,true);
+	LBPrintByte(9, VRAM_TILES_V-2, game.lives ,true);
+	LBPrintInt(27, VRAM_TILES_V-2, game.level_score ,true);
 	LBPrintInt(27, VRAM_TILES_V-1, game.score ,true);
-	LBPrintByte(9, VRAM_TILES_V-2, game.player.shield ,true);
-	LBPrintInt(27, VRAM_TILES_V-2, game.time ,true);
 	
 	if (game.level_ended && !is_space() && game.player.flags & (IDLE|RUNNING|PRONE))
 	{
@@ -1428,6 +1434,7 @@ void planet_transition(u8 index, char scroll, char atmosphere_height, char dy, u
 	clear_sprites(0, MAX_EXTENDED_SPRITES);
 	LBRotateSprites();
 	fade_through();
+	game.level_score = 0;
 	load_level(index, true);
 	init_player_state();
 	init_enemy_state();
@@ -1438,7 +1445,8 @@ void intro()
 {
 	fade_through();
 	game.lives = LIVES;
-	game.score = 0;
+	game.score = 538;
+	game.level_score = 0;
 	game.time = 0;
 	StartSong(planetsong);
 	LBMapSprite(0, map_emerald_0, 0);
@@ -1540,8 +1548,7 @@ void load_high_scores()
 		LBPrintChar(12, ypos, scores.data[i+1]);
 		LBPrintChar(13, ypos, scores.data[i+2]);
 		LBPrintChar(14, ypos, ' ');
-		(&score)[0] = scores.data[i+3];
-		(&score)[1] = scores.data[i+4];
+		memcpy(&score, &(scores.data[i+3]), 2);
 		LBPrintInt(19, ypos, score, true);
 		
 		if (game.score > score && game.high_score_index == -1)
@@ -1551,9 +1558,14 @@ void load_high_scores()
 			{
 				memcpy(&(scores.data[j]), &(scores.data[j-5]), 5);
 			}
+			scores.data[i] = 'A';
+			scores.data[i+1] = 'A';
+			scores.data[i+2] = 'A';
+			memcpy(&(scores.data[i+3]), &game.score, 2);
+			LBPrintChar(11, ypos, scores.data[i]);
+			LBPrintChar(12, ypos, scores.data[i+1]);
+			LBPrintChar(13, ypos, scores.data[i+2]);
 			LBPrintInt(19, ypos, game.score, true);
-			scores.data[i+3] = (&game.score)[0];
-			scores.data[i+4] = (&game.score)[1];
 			game.high_score_index = i;
 			LBMapSprite(2, map_down_arrow, 0);
 			LBMapSprite(3, map_up_arrow, 0);
@@ -1569,9 +1581,12 @@ void load_high_scores()
 
 void update_high_scores()
 {
-	if (game.joypadState.pressed & BTN_X)
+	if (game.joypadState.pressed & BTN_X || select_pressed(&game.joypadState))
 	{
 		SFX_NAVIGATE;
+		game.high_score_index = -1;
+		game.score = 0;
+		save_eeprom(&scores);
 		load_splash();
 	}
 	
@@ -1605,15 +1620,6 @@ void update_high_scores()
 			if (scores.data[game.high_score_index] > 'Z') scores.data[game.high_score_index] = 'Z';
 			LBPrintChar(11+(game.high_score_index % 5), 7+(game.high_score_index/5)*2, scores.data[game.high_score_index]);
 		}
-		else if (select_pressed(&game.joypadState))
-		{
-			SFX_NAVIGATE;
-			LBMoveSprite(2, OFF_SCREEN, 0, 1, 1);
-			LBMoveSprite(3, OFF_SCREEN, 0, 1, 1);
-			game.high_score_index = -1;
-			game.score = 0;
-			save_eeprom(&scores);
-		}
 	}
 }
 
@@ -1627,8 +1633,8 @@ void update_pause()
 		DrawMap2((x+8)%32, (y+6)%30, map_canvas);
 		LBPrint((x+13)%32, (y+9)%30, (char*) strPaused);
 		LBPrint((x+10)%32, (y+12)%30, (char*) strExitGame);
-		//hide_sprites(0, MAX_EXTENDED_SPRITES);
-		//LBRotateSprites();
+		hide_sprites(0, MAX_EXTENDED_SPRITES);
+		LBRotateSprites();
 		while (1)
 		{
 			WaitVsync(1);
@@ -1652,11 +1658,11 @@ void tally_score(char* title, u16 bonus)
 {
 	u8 x = Screen.scrollX / 8;
 	u8 y = Screen.scrollY / 8;
-	u16 tally = 0;
+	u16 tally = game.score;
 	u16 counter = 0;
 	
-	//hide_sprites(0, MAX_EXTENDED_SPRITES);
-	//LBRotateSprites();
+	hide_sprites(0, MAX_EXTENDED_SPRITES);
+	LBRotateSprites();
 	
 	StopSong();
 	DrawMap2((x+8)%32, (y+6)%30, map_canvas);
@@ -1666,15 +1672,15 @@ void tally_score(char* title, u16 bonus)
 	LBPrint((x+9)%32, (y+12)%30, (char*) strTime);
 	LBPrint((x+9)%32, (y+13)%30, (char*) strLevelBonus);
 	
-	LBPrintInt((x+20)%32, (y+9)%30, 0, true);
-	LBPrintInt((x+20)%32, (y+11)%30, game.score, true);
+	LBPrintInt((x+20)%32, (y+9)%30, tally, true);
+	LBPrintInt((x+20)%32, (y+11)%30, game.level_score, true);
 	LBPrintInt((x+20)%32, (y+12)%30, game.time, true);
 	LBPrintInt((x+20)%32, (y+13)%30, bonus, true);
 	
 	LBWaitSeconds(2);
 	
 	// Tally Score
-	counter = game.score;
+	counter = game.level_score;
 	while (counter > 0)
 	{
 		WaitVsync(1);
@@ -1738,15 +1744,17 @@ int main()
 		if (game.current_screen == LEVEL)
 		{
 			update_level();
-			update_player();
-			update_shot();
-			update_enemies();
-			update_enemy_shots();
-			animate_player();
-			animate_shot();
-			animate_enemies();
-			animate_enemy_shots();
-			update_pause();
+			if (update_player())
+			{
+				update_shot();
+				update_enemies();
+				update_enemy_shots();
+				animate_player();
+				animate_shot();
+				animate_enemies();
+				animate_enemy_shots();
+				update_pause();
+			}
 		}
 		else if (game.current_screen == SPLASH)
 		{

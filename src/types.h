@@ -78,6 +78,7 @@ typedef struct sGameState {
 	u16 camera_x;
 	u16 camera_y;
 	u16 score;
+	u16 level_score;
 	u16 time;
 	u16 column_count;
 	s8 high_score_index;

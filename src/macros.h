@@ -40,6 +40,7 @@
 #define FRAMES_PER_GRACE 120
 
 // General macros
+#define GODMODE 0
 #define FRAME_TIME 0.016666666666666666
 #define MAX_PLAYER_SHOTS 3
 #define TEXT_LINGER 3
@@ -62,7 +63,7 @@
 #define MAX_SPEED 120
 #define D_LEFT 0
 #define D_RIGHT 1
-#define LIVES 5
+#define LIVES 1
 #define PLAYER_SHIELD 10
 
 // State flags
