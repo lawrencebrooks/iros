@@ -271,54 +271,6 @@ void clear_overlay(u8 overlayHeight)
 	}
 }
 
-u8 read_level_byte(char* level_data, u16 index)
-{
-	u16 mega_tile_index = 0;
-	u8 x = 0;
-	u8 y = 0;
-	u8 mega_tile_x = 0;
-	u8 mega_tile_y = 0;
-	u8 mega_tile_x_offset = 0;
-	u8 mega_tile_y_offset = 0;
-
-	if (is_space())
-	{
-		if (index == 0) return pgm_read_byte(&level_data[index])*MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH;
-		if (index == 1) return pgm_read_byte(&level_data[index])*MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT;
-		index -= 2;
-		
-		x = index % 32;
-		y = index / 32;
-		mega_tile_x = x / MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH;
-		mega_tile_y = y / MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT;
-		mega_tile_x_offset = x % MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH;
-		mega_tile_y_offset = y % MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT;
-		
-		mega_tile_index = pgm_read_byte(2+(&level_data[mega_tile_y*(32/MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH) + mega_tile_x]));
-		mega_tile_index *= MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH*MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT;
-		
-		return pgm_read_byte(&map_space_mega_tiles[mega_tile_index+(mega_tile_y_offset*MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH+mega_tile_x_offset)]);
-	}
-	else
-	{
-		if (index == 0) return pgm_read_byte(&level_data[index])*MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH;
-		if (index == 1) return pgm_read_byte(&level_data[index])*MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
-		index -=2;
-		
-		x = index % game.level_width;
-		y = index / game.level_width;
-		mega_tile_x = x / MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH;
-		mega_tile_y = y / MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
-		mega_tile_x_offset = x % MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH;
-		mega_tile_y_offset = y % MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
-		
-		mega_tile_index = pgm_read_byte(2+(&level_data[mega_tile_y*(game.level_width/MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH) + mega_tile_x]));
-		mega_tile_index *= MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH*MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
-		
-		return pgm_read_byte(&map_level_mega_tiles[mega_tile_index+(mega_tile_y_offset*MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH+mega_tile_x_offset)]);
-	}
-}
-
 u8 get_camera_x(u8 level_index)
 {
 	return 0;
@@ -341,11 +293,29 @@ u8 get_hero_spawn_y(u8 level_index)
 
 u8 get_level_tile(char* level_data, u16 x, u16 y)
 {
+	u16 mega_tile_index = 0;
+	u16 mega_tile_offset = 0;
+	u8 map_x = 0;
+	u8 map_y = 0;
+
 	if (is_space())
 	{
-		return read_level_byte(level_data, 2 + y*32+x);
+		map_x = x / MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH;
+		map_y = y / MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT;
+		mega_tile_offset = (y % MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT)*MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH + (x % MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH);
+		mega_tile_index = pgm_read_byte(2+(&level_data[map_y*game.raw_level_width + map_x]));
+		mega_tile_index *= MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH*MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT;
+		return pgm_read_byte(&map_space_mega_tiles[mega_tile_index+mega_tile_offset]);
 	}
-	return read_level_byte(level_data, 2 + y*game.level_width+x);
+	else
+	{
+		map_x = x / MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH;
+		map_y = y / MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
+		mega_tile_offset = (y % MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT)*MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH + (x % MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH);
+		mega_tile_index = pgm_read_byte(2+(&level_data[map_y*game.raw_level_width + map_x]));
+		mega_tile_index *= MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH*MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
+		return pgm_read_byte(&map_level_mega_tiles[mega_tile_index+mega_tile_offset]);
+	}
 }
 
 void render_camera_view()
@@ -500,10 +470,13 @@ void map_ship()
 void map_level_info(char* level)
 {
 	game.current_level = level;
+	
+	game.raw_level_width = pgm_read_byte(&level[0]);
+	game.raw_level_height = pgm_read_byte(&level[1]);
 	if (!is_space())
 	{
-		game.level_width = read_level_byte(level, 0);
-		game.level_height = read_level_byte(level, 1);
+		game.level_width = pgm_read_byte(&level[0])*MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH;
+		game.level_height = pgm_read_byte(&level[1])*MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
 		
 	}
 	else
