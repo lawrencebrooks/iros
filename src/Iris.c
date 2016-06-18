@@ -1445,7 +1445,7 @@ void intro()
 {
 	fade_through();
 	game.lives = LIVES;
-	game.score = 538;
+	game.score = 0;
 	game.level_score = 0;
 	game.time = 0;
 	StartSong(planetsong);

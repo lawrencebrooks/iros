@@ -63,7 +63,7 @@
 #define MAX_SPEED 120
 #define D_LEFT 0
 #define D_RIGHT 1
-#define LIVES 1
+#define LIVES 5
 #define PLAYER_SHIELD 10
 
 // State flags
