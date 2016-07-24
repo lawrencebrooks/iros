@@ -50,13 +50,13 @@
             <!-- Level Maps -->
             <mega-map var-name="map_level_mega_tiles" mega-tile-width="5" mega-tile-height="5">
                 <map var-name="map_level_ice" left="0" top="10" width="255" height="25"/>
-                <map var-name="map_level_fire" left="0" top="62" width="255" height="25"/>
-                <map var-name="map_level_forest" left="0" top="88" width="255" height="25"/>
-                <map var-name="map_level_city" left="0" top="114" width="255" height="25"/>
-                <map var-name="map_level_desert" left="0" top="140" width="255" height="25"/>
+                <map var-name="map_level_fire" left="0" top="60" width="255" height="25"/>
+                <map var-name="map_level_forest" left="0" top="85" width="255" height="25"/>
+                <map var-name="map_level_city" left="0" top="110" width="255" height="25"/>
+                <map var-name="map_level_desert" left="0" top="135" width="255" height="25"/>
             </mega-map>
             <mega-map var-name="map_space_mega_tiles" mega-tile-width="4" mega-tile-height="5">
-                <map var-name="map_level_space" left="0" top="36" width="32" height="25"/>
+                <map var-name="map_level_space" left="0" top="35" width="32" height="25"/>
             </mega-map>
         </maps>
         <defines>

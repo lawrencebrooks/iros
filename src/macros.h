@@ -40,7 +40,7 @@
 #define FRAMES_PER_GRACE 120
 
 // General macros
-#define GODMODE 0
+#define GODMODE 1
 #define FRAME_TIME 0.016666666666666666
 #define MAX_PLAYER_SHOTS 3
 #define TEXT_LINGER 3
