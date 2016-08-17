@@ -34,6 +34,14 @@
             <map var-name="map_hero_ship_large_1" left="3" top="6" width="4" height="2"/>
             <map var-name="map_hero_shot" left="10" top="0" width="1" height="1"/>
 
+            <!-- Anti-Hero Sprites -->
+            <map var-name="map_ahero_idle" left="0" top="8" width="2" height="3"/>
+            <map var-name="map_ahero_step_0" left="2" top="8" width="2" height="3"/>
+            <map var-name="map_ahero_step_1" left="4" top="8" width="2" height="3"/>
+            <map var-name="map_ahero_step_2" left="6" top="8" width="2" height="3"/>
+            <map var-name="map_ahero_step_3" left="10" top="8" width="2" height="3"/>
+            <map var-name="map_ahero_jump" left="8" top="8" width="2" height="3"/>
+
             <!-- Enemy Sprites -->
             <map var-name="map_enemy_shot" left="10" top="1" width="1" height="1"/>
             <map var-name="map_enemy_shark" left="11" top="0" width="1" height="1"/>
