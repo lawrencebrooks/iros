@@ -490,7 +490,7 @@ void map_level_info(char* level)
 	}
 	else
 	{
-		game.level_width = 255;
+		game.level_width = 512;
 		game.level_height = 25;
 	}
 }

@@ -47,6 +47,23 @@
             <map var-name="map_enemy_shark" left="11" top="0" width="1" height="1"/>
             <map var-name="map_enemy_spider_0" left="10" top="2" width="1" height="1"/>
             <map var-name="map_enemy_spider_1" left="10" top="3" width="1" height="1"/>
+            <map var-name="map_enemy_ball" left="11" top="1" width="1" height="1"/>
+            <map var-name="map_enemy_tank" left="11" top="2" width="1" height="1"/>
+            <map var-name="map_enemy_drone" left="11" top="3" width="1" height="1"/>
+
+            <!-- Special Shots -->
+            <map var-name="map_special_ice" left="12" top="1" width="1" height="1"/>
+            <map var-name="map_special_fire" left="13" top="1" width="1" height="1"/>
+            <map var-name="map_special_jungle" left="14" top="1" width="1" height="1"/>
+            <map var-name="map_special_city" left="15" top="1" width="1" height="1"/>
+            <map var-name="map_special_desert" left="16" top="1" width="1" height="1"/>
+
+            <!-- Level Hazards -->
+            <map var-name="map_hazard_ice" left="12" top="2" width="1" height="1"/>
+            <map var-name="map_hazard_fire" left="13" top="2" width="1" height="1"/>
+            <map var-name="map_hazard_jungle" left="14" top="2" width="1" height="1"/>
+            <map var-name="map_hazard_city" left="15" top="2" width="1" height="1"/>
+            <map var-name="map_hazard_desert" left="16" top="2" width="1" height="1"/>
             
         </maps>
 
