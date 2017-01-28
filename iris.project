@@ -274,7 +274,6 @@
     <File Name="src/utils.h"/>
     <VirtualDirectory Name="data">
       <File Name="src/data/font.h"/>
-      <File Name="src/data/levels.h"/>
       <File Name="src/data/patches.h"/>
       <File Name="src/data/sprites.h"/>
       <File Name="src/data/tiles.h"/>

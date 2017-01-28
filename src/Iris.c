@@ -288,7 +288,7 @@ u8 get_hero_spawn_x(u8 level_index)
 
 u8 get_hero_spawn_y(u8 level_index)
 {
-	return 20;
+	return 21;
 }
 
 u8 get_level_tile(char* level_data, u16 x, u16 y)
@@ -373,6 +373,15 @@ u8 solid_tile(u8 level_tile)
 		case L_FIRE_BOTTOM : return 1;
 		case L_FIRE_TOP : return 1;
 		case L_FIRE_LAVA : return 1;
+		case L_JUNGLE_BOTTOM : return 1;
+		case L_JUNGLE_TOP : return 1;
+		case L_JUNGLE_BRANCH : return 1;
+		case L_CITY_BOTTOM : return 1;
+		case L_CITY_TOP : return 1;
+		case L_DESERT_BOTTOM : return 1;
+		case L_DESERT_TOP : return 1;
+		case L_DESERT_SPIKE_UP : return 1;
+		case L_DESERT_SPIKE_DOWN : return 1;
 	}
 	return 0;
 }
