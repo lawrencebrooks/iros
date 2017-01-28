@@ -14,8 +14,8 @@
             <map var-name="map_explosion_0" left="3" top="3" width="1" height="1"/>
             <map var-name="map_explosion_1" left="4" top="3" width="1" height="1"/>
             <map var-name="map_explosion_2" left="5" top="3" width="1" height="1"/>
-            <map var-name="map_emerald_1" left="12" top="0" width="1" height="1"/>
-            <map var-name="map_emerald_0" left="13" top="0" width="1" height="1"/>
+            <map var-name="map_emerald_0" left="12" top="0" width="1" height="1"/>
+            <map var-name="map_emerald_1" left="13" top="0" width="1" height="1"/>
             <map var-name="map_emerald_2" left="14" top="0" width="1" height="1"/>
             <map var-name="map_emerald_3" left="15" top="0" width="1" height="1"/>
             <map var-name="map_emerald_4" left="16" top="0" width="1" height="1"/>
