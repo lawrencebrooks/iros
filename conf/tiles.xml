@@ -10,39 +10,6 @@
             <map var-name="map_canvas" left="52" top="0" width="15" height="9"/>
             <map var-name="map_dialog" left="68" top="0" width="15" height="4"/>
 
-            <!-- Ice planet tiles -->
-            <map var-name="map_ice_left" left="1" top="0" width="1" height="1"/>
-            <map var-name="map_ice_middle" left="2" top="0" width="1" height="1"/>
-            <map var-name="map_ice_right" left="3" top="0" width="1" height="1"/>
-            <map var-name="map_ice_bottom" left="4" top="0" width="1" height="1"/>
-            <map var-name="map_icicle_down" left="9" top="0" width="1" height="1"/>
-            <map var-name="map_icicle_up" left="10" top="0" width="1" height="1"/>
-
-            <!-- Fire planet tiles -->
-            <map var-name="map_fire_bottom" left="12" top="0" width="1" height="1"/>
-            <map var-name="map_fire_top" left="13" top="0" width="1" height="1"/>
-            <map var-name="map_fire_lava" left="14" top="0" width="1" height="1"/>
-
-            <!-- Jungle planet tiles -->
-            <map var-name="map_jungle_bottom" left="15" top="0" width="1" height="1"/>
-            <map var-name="map_jungle_top" left="16" top="0" width="1" height="1"/>
-            <map var-name="map_jungle_flower" left="17" top="0" width="1" height="1"/>
-            <map var-name="map_jungle_branch" left="18" top="0" width="1" height="1"/>
-
-            <!-- City planet tiles -->
-            <map var-name="map_city_bottom" left="19" top="0" width="1" height="1"/>
-            <map var-name="map_city_top" left="20" top="0" width="1" height="1"/>
-            <map var-name="map_city_spark" left="21" top="0" width="1" height="1"/>
-
-            <!-- Dessert planet tiles -->
-            <map var-name="map_desert_bottom" left="23" top="0" width="1" height="1"/>
-            <map var-name="map_desert_top" left="22" top="0" width="1" height="1"/>
-            <map var-name="map_desert_spike_up" left="25" top="0" width="1" height="1"/>
-            <map var-name="map_desert_spike_down" left="24" top="0" width="1" height="1"/>
-            
-            <!-- Space tiles -->
-            <map var-name="map_star" left="3" top="1" width="1" height="1"/>
-            <map var-name="map_star_dark" left="4" top="1" width="1" height="1"/>
             <map var-name="map_atmosphere" left="15" top="6" width="28" height="2"/>
 
             <!-- Font -->
@@ -57,7 +24,7 @@
                 <map var-name="map_level_desert" left="0" top="135" width="255" height="25"/>
             </mega-map>
             <mega-map var-name="map_space_mega_tiles" mega-tile-width="4" mega-tile-height="5">
-                <map var-name="map_level_space" left="0" top="35" width="32" height="25"/>
+                <map var-name="map_level_space" left="0" top="35" width="124" height="25"/>
             </mega-map>
         </maps>
         <defines>
@@ -81,6 +48,18 @@
             <define def-name="L_DESERT_TOP" left="22" top="0"/>
             <define def-name="L_DESERT_SPIKE_UP" left="25" top="0"/>
             <define def-name="L_DESERT_SPIKE_DOWN" left="24" top="0"/>
+            <define def-name="L_AST_1" left="26" top="0"/>
+            <define def-name="L_AST_2" left="27" top="0"/>
+            <define def-name="L_AST_3" left="28" top="0"/>
+            <define def-name="L_AST_4" left="29" top="0"/>
+            <define def-name="L_LAZER" left="30" top="0"/>
+            <define def-name="L_METAL_1" left="31" top="0"/>
+            <define def-name="L_METAL_2" left="32" top="0"/>
+            <define def-name="L_METAL_3" left="33" top="0"/>
+            <define def-name="L_METAL_4" left="34" top="0"/>
+            <define def-name="L_EYE_1" left="35" top="0"/>
+            <define def-name="L_EYE_2" left="36" top="0"/>
+            <define def-name="L_BEAM" left="37" top="0"/>
         </defines>
     </output>
 </gfx-xform>

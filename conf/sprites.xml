@@ -19,6 +19,7 @@
             <map var-name="map_emerald_2" left="14" top="0" width="1" height="1"/>
             <map var-name="map_emerald_3" left="15" top="0" width="1" height="1"/>
             <map var-name="map_emerald_4" left="16" top="0" width="1" height="1"/>
+            <map var-name="map_glowing_eye" left="13" top="3" width="1" height="1"/>
 
             <!-- Hero Sprites -->
             <map var-name="map_hero_idle" left="0" top="0" width="2" height="3"/>
@@ -41,6 +42,7 @@
             <map var-name="map_ahero_step_2" left="6" top="8" width="2" height="3"/>
             <map var-name="map_ahero_step_3" left="10" top="8" width="2" height="3"/>
             <map var-name="map_ahero_jump" left="8" top="8" width="2" height="3"/>
+            <map var-name="map_ahero_shot" left="14" top="3" width="1" height="1"/>
 
             <!-- Enemy Sprites -->
             <map var-name="map_enemy_shot" left="10" top="1" width="1" height="1"/>
@@ -50,6 +52,7 @@
             <map var-name="map_enemy_ball" left="11" top="1" width="1" height="1"/>
             <map var-name="map_enemy_tank" left="11" top="2" width="1" height="1"/>
             <map var-name="map_enemy_drone" left="11" top="3" width="1" height="1"/>
+            <map var-name="map_enemy_elevator" left="12" top="3" width="1" height="1"/>
 
             <!-- Special Shots -->
             <map var-name="map_special_ice" left="12" top="1" width="1" height="1"/>

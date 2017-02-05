@@ -426,7 +426,7 @@ void append_tile_column()
     game.scroll_src_x++;
 	game.scroll_dest_x++;
     if(game.scroll_dest_x>=32)game.scroll_dest_x=0;
-	if(is_space() && game.scroll_src_x>=32)game.scroll_src_x=0;
+	if(is_space() && game.scroll_src_x>=128)game.scroll_src_x=0;
 }
 
 void append_tile_row()
