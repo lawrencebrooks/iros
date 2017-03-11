@@ -56,6 +56,10 @@ char* spider_anim[2];
 char* shark_anim[1];
 char* enemy_shot_anim[1];
 char* expl_anim[3];
+char* boss_idle_anim[1];
+char* boss_jump_anim[1];
+char* boss_run_anim[4];
+char* boss_shot_anim[1];
 
 u8 is_space()
 {
@@ -82,6 +86,61 @@ void init_enemy_state()
 		}
 	}
 	game.active_enemies = 0;
+}
+
+void init_boss_state()
+{
+	if (is_space())
+	{
+		game.boss.width = 3;
+		game.boss.height = 1;
+		game.boss.run.anim_count = 2;
+		game.boss.run.frames_per_anim = EXPLOSION_FRAME_COUNT;
+		game.boss.run.anims = boss_run_anim;
+		game.boss.run.anims[0] = (char*) map_hero_ship_0;
+		game.boss.run.anims[1] = (char*) map_hero_ship_1;
+	}
+	else
+	{
+		game.boss.width = 2;
+		game.boss.height = 3;
+		game.boss.run.anim_count = 4;
+		game.boss.run.frames_per_anim = FRAMES_PER_RUN_CYCLE;
+		game.boss.run.anims = boss_run_anim;
+		game.boss.run.anims[0] = (char*) map_ahero_step_0;
+		game.boss.run.anims[1] = (char*) map_ahero_step_1;
+		game.boss.run.anims[2] = (char*) map_ahero_step_2;
+		game.boss.run.anims[3] = (char*) map_ahero_step_3;
+	}
+	game.boss.direction = D_LEFT;
+	game.boss.flags = IDLE;
+	game.boss.shield = BOSS_SHIELD;
+	game.boss.idle.anim_count = 1;
+	game.boss.idle.frames_per_anim = 1;
+	game.boss.idle.anims = boss_idle_anim;
+	game.boss.idle.anims[0] = (char*) map_ahero_idle;
+	
+	game.boss.jump.anim_count = 1;
+	game.boss.jump.frames_per_anim = 1;
+	game.boss.jump.anims = boss_jump_anim;
+	game.boss.jump.anims[0] = (char*) map_ahero_jump;
+	
+	game.boss.expl.anim_count = 3;
+	game.boss.expl.frames_per_anim = EXPLOSION_FRAME_COUNT;
+	game.boss.expl.anims = expl_anim;
+	game.boss.expl.anims[0] = (char*) map_explosion_0;
+	game.boss.expl.anims[1] = (char*) map_explosion_1;
+	game.boss.expl.anims[2] = (char*) map_explosion_2;
+	
+	for (u8 i = 0; i < MAX_PLAYER_SHOTS; i++)
+	{
+		game.boss.shot[i].hit_count = 1;
+		game.boss.shot[i].shot_type = BASIC_SHOT;
+		game.boss.shot[i].anim.anim_count = 1;
+		game.boss.shot[i].anim.frames_per_anim = 1;
+		game.boss.shot[i].anim.anims = boss_shot_anim;
+		game.boss.shot[i].anim.anims[0] = (char*) map_ahero_shot;
+	}
 }
 
 void init_player_state()
@@ -321,8 +380,8 @@ u8 get_level_tile(char* level_data, u16 x, u16 y)
 void render_camera_view()
 {
 	u8 level_tile;
-	u16 camara_x_tile = game.camera_x/8;
-	u16 camera_y_tile = game.camera_y/8;
+	u8 camara_x_tile = game.camera_x/8;
+	u8 camera_y_tile = game.camera_y/8;
 	
 	for (u16 x = camara_x_tile; x <= camara_x_tile + CAMERA_WIDTH; x++)
 	{
@@ -362,26 +421,9 @@ void spawn_enemy(u16 x, u16 y)
 
 u8 solid_tile(u8 level_tile)
 {
-	switch (level_tile)
+	if (level_tile >= L_ICE_LEFT && level_tile <= L_BEAM)
 	{
-		case L_ICE_MIDDLE : return 1;
-		case L_ICE_LEFT : return 1;
-		case L_ICE_RIGHT : return 1;
-		case L_ICE_BOTTOM : return 1;
-		case L_ICICLE_DOWN : return 1;
-		case L_ICICLE_UP : return 1;
-		case L_FIRE_BOTTOM : return 1;
-		case L_FIRE_TOP : return 1;
-		case L_FIRE_LAVA : return 1;
-		case L_JUNGLE_BOTTOM : return 1;
-		case L_JUNGLE_TOP : return 1;
-		case L_JUNGLE_BRANCH : return 1;
-		case L_CITY_BOTTOM : return 1;
-		case L_CITY_TOP : return 1;
-		case L_DESERT_BOTTOM : return 1;
-		case L_DESERT_TOP : return 1;
-		case L_DESERT_SPIKE_UP : return 1;
-		case L_DESERT_SPIKE_DOWN : return 1;
+		return 1;
 	}
 	return 0;
 }
@@ -426,7 +468,7 @@ void append_tile_column()
     game.scroll_src_x++;
 	game.scroll_dest_x++;
     if(game.scroll_dest_x>=32)game.scroll_dest_x=0;
-	if(is_space() && game.scroll_src_x>=128)game.scroll_src_x=0;
+	if(is_space() && game.scroll_src_x>=32)game.scroll_src_x=0;
 }
 
 void append_tile_row()
@@ -490,8 +532,8 @@ void map_level_info(char* level)
 	}
 	else
 	{
-		game.level_width = 512;
-		game.level_height = 25;
+		game.level_width = 255;
+		game.level_height = pgm_read_byte(&map_level_space[1])*MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT;
 	}
 }
 
@@ -509,9 +551,7 @@ void load_level(u8 index, u8 drop_ship)
 	clear_overlay(2);
 	game.current_level_index = index;
 	game.level_ended = 0;
-	game.joypadState.held = 0;
-	game.joypadState.pressed = 0;
-	game.joypadState.released = 0;
+	LBResetJoyPadState(&game.player.controls);
 	switch (index)
 	{
 		case 0: map_level_info((char*) map_level_ice); break;
@@ -595,68 +635,68 @@ char on_solid_ground(SpriteShared* s, u8 tile_width, u8 tile_height)
 	return 0;
 }
 
-u8 find_shot_slot()
+u8 find_shot_slot(Player* player)
 {
 	for (u8 i = 0; i < MAX_PLAYER_SHOTS; i++)
 	{
-		if (!game.player.shot[i].active) return i;
+		if (!player->shot[i].active) return i;
 	}
 	return 0;
 }
 
-void update_shot()
+void update_shot(Player* player)
 {
 	// Shot updates
 	u8 idx;
-	if (game.joypadState.pressed & BTN_A && game.player.active_shots < MAX_PLAYER_SHOTS)
+	if (player->controls.pressed & BTN_A && player->active_shots < MAX_PLAYER_SHOTS)
 	{
 		SFX_PLAYER_SHOOT;
-		idx = find_shot_slot();
-		LBMapSprite(PLAYER_SHOT_SLOT+idx, LBGetNextFrame(&game.player.shot[idx].anim), 0);
-		game.player.shot[idx].active = 1;
-		game.player.shot[idx].shared.y = (u16) game.player.shared.y / 8 * 8;
+		idx = find_shot_slot(player);
+		LBMapSprite(PLAYER_SHOT_SLOT+idx, LBGetNextFrame(&player->shot[idx].anim), 0);
+		player->shot[idx].active = 1;
+		player->shot[idx].shared.y = (u16) player->shared.y / 8 * 8;
 		if (is_space())
 		{
-			game.player.shot[idx].shared.x = game.player.shared.x+game.player.width*8;
-			game.player.shot[idx].shared.vx = SHOT_SPEED;
+			player->shot[idx].shared.x = player->shared.x+player->width*8;
+			player->shot[idx].shared.vx = SHOT_SPEED;
 		}
 		else
 		{
-			if (!(game.player.flags & PRONE))
+			if (!(player->flags & PRONE))
 			{
-				game.player.shot[idx].shared.y += 8;
+				player->shot[idx].shared.y += 8;
 			}
-			if (game.player.direction == D_RIGHT)
+			if (player->direction == D_RIGHT)
 			{
-				game.player.shot[idx].shared.x = game.player.shared.x+2*8;
-				game.player.shot[idx].shared.vx = SHOT_SPEED;
+				player->shot[idx].shared.x = player->shared.x+2*8;
+				player->shot[idx].shared.vx = SHOT_SPEED;
 			}
 			else
 			{
-				game.player.shot[idx].shared.vx = -SHOT_SPEED;
-				game.player.shot[idx].shared.x = game.player.shared.x-1*8;
+				player->shot[idx].shared.vx = -SHOT_SPEED;
+				player->shot[idx].shared.x = player->shared.x-1*8;
 			}
 		}
-		game.player.active_shots++;
+		player->active_shots++;
 	}
 }
 
-void animate_shot()
+void animate_shot(Player* player)
 {
 	// Animate shots
 	u8 slot = ENEMY_SLOT;
 	for (u8 i = 0; i < MAX_PLAYER_SHOTS; i++)
 	{
-		if (game.player.shot[i].active)
+		if (player->shot[i].active)
 		{
-			game.player.shot[i].shared.x += game.player.shot[i].shared.vx*FRAME_TIME;
-			game.player.shot[i].shared.y += game.player.shot[i].shared.vy*FRAME_TIME;
-			LBMoveSprite(PLAYER_SHOT_SLOT+i, game.player.shot[i].shared.x - game.camera_x, game.player.shot[i].shared.y - game.camera_y, 1, 1);
-			if (game.player.shot[i].shared.x < game.camera_x || game.player.shot[i].shared.x+8 > game.camera_x + CAMERA_WIDTH*8 ||
-			    collision_detect_level(&game.player.shot[i].shared, 1, 1))
+			player->shot[i].shared.x += player->shot[i].shared.vx*FRAME_TIME*2;
+			player->shot[i].shared.y += player->shot[i].shared.vy*FRAME_TIME;
+			LBMoveSprite(PLAYER_SHOT_SLOT+i, player->shot[i].shared.x - game.camera_x, player->shot[i].shared.y - game.camera_y, 1, 1);
+			if (player->shot[i].shared.x < game.camera_x || player->shot[i].shared.x+8 > game.camera_x + CAMERA_WIDTH*8 ||
+			    collision_detect_level(&player->shot[i].shared, 1, 1))
 			{
-				game.player.shot[i].active = 0;
-				game.player.active_shots--;
+				player->shot[i].active = 0;
+				player->active_shots--;
 				LBMoveSprite(PLAYER_SHOT_SLOT+i, OFF_SCREEN, 0, 1, 1);
 			}
 			else
@@ -665,13 +705,13 @@ void animate_shot()
 				for (u8 j = 0; j < MAX_ENEMIES; j++)
 				{
 					if (game.enemies[j].active &&
-					    LBCollides(game.player.shot[i].shared.x,game.player.shot[i].shared.y, 8, 8,
-							game.enemies[j].shared.x, game.enemies[j].shared.y, game.enemies[j].width*8, game.enemies[j].height*8
+					    LBCollides(player->shot[i].shared.x-game.camera_x,player->shot[i].shared.y, 8, 8,
+							game.enemies[j].shared.x-game.camera_x, game.enemies[j].shared.y, game.enemies[j].width*8, game.enemies[j].height*8
 						)
 					)
 					{
 						SFX_HIT;
-						game.enemies[j].shield -= game.player.shot[i].hit_count;
+						game.enemies[j].shield -= player->shot[i].hit_count;
 						if (game.enemies[j].shield <= 0)
 						{
 							SFX_ENEMY_EXPLODE;
@@ -681,8 +721,8 @@ void animate_shot()
 							game.level_score += KILL_SCORE;
 							break;
 						}
-						game.player.shot[i].active = 0;
-						game.player.active_shots--;
+						player->shot[i].active = 0;
+						player->active_shots--;
 						LBMoveSprite(PLAYER_SHOT_SLOT+i, OFF_SCREEN, 0, 1, 1);
 					}
 					slot += game.enemies[j].width*game.enemies[j].height;
@@ -709,16 +749,17 @@ void handle_player_death()
 	LBRotateSprites();
 	FadeIn(FRAMES_PER_FADE, false);
 	init_player_state();
+	init_boss_state();
 	init_enemy_state();
 	load_level(game.current_level_index, false);
 }
 
-u8 update_player()
+u8 update_player(Player* player)
 {
 	
-	if (game.player.flags & EXPLODING)
+	if (player->flags & EXPLODING)
 	{
-		if (map_explosion(&game.player.flags, &game.player.expl, PLAYER_SLOT, game.player.width, game.player.height))
+		if (map_explosion(&player->flags, &player->expl, PLAYER_SLOT, player->width, player->height))
 		{
 			handle_player_death();
 			return 0;
@@ -726,149 +767,149 @@ u8 update_player()
 	}
 	else if (is_space())
 	{
-		game.player.shared.vy = 0;
-		game.player.shared.vx = SPACE_SHIP_SPEED;
+		player->shared.vy = 0;
+		player->shared.vx = SPACE_SHIP_SPEED;
 		
-		if ((game.joypadState.held & BTN_DOWN) && (game.player.shared.y/8 + 1 < game.level_height))
+		if ((player->controls.held & BTN_DOWN) && (player->shared.y/8 + 1 < game.level_height))
 		{
-			game.player.shared.vy = SPACE_SHIP_SPEED;
+			player->shared.vy = SPACE_SHIP_SPEED;
 		}
-		if ((game.joypadState.held & BTN_RIGHT) && (game.player.shared.x + 24 < game.camera_x + CAMERA_WIDTH*8))
+		if ((player->controls.held & BTN_RIGHT) && (player->shared.x + 24 < game.camera_x + CAMERA_WIDTH*8))
 		{
-			game.player.shared.vx = SPACE_SHIP_SPEED*2;
+			player->shared.vx = SPACE_SHIP_SPEED*2;
 		}
-		if ((game.joypadState.held & BTN_LEFT) && (game.player.shared.x > game.camera_x))
+		if ((player->controls.held & BTN_LEFT) && (player->shared.x > game.camera_x))
 		{
-			game.player.shared.vx = 0;
+			player->shared.vx = 0;
 		}
-		if ((game.joypadState.held & BTN_UP) && (game.player.shared.y > 0))
+		if ((player->controls.held & BTN_UP) && (player->shared.y > 0))
 		{
-			game.player.shared.vy = -SPACE_SHIP_SPEED;
+			player->shared.vy = -SPACE_SHIP_SPEED;
 		}
-		LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.run), 0);
+		LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->run), 0);
 	}
-	else if (game.player.flags & (IDLE|RUNNING))
+	else if (player->flags & (IDLE|RUNNING))
 	{
-		if (!on_solid_ground(&game.player.shared, game.player.width, game.player.height))
+		if (!on_solid_ground(&player->shared, player->width, player->height))
 		{
-			game.player.shared.gravity = GRAVITY;
-			game.player.flags = JUMPING;
-			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.jump), extendedSprites[PLAYER_SLOT].flags);
+			player->shared.gravity = GRAVITY;
+			player->flags = JUMPING;
+			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->jump), extendedSprites[PLAYER_SLOT].flags);
 		}
 		else
 		{
-			if (game.joypadState.held & BTN_DOWN)
+			if (player->controls.held & BTN_DOWN)
 			{
-				game.player.shared.y += 16;
-				if(game.player.direction == D_RIGHT)
+				player->shared.y += 16;
+				if(player->direction == D_RIGHT)
 				{
-					game.player.shared.x -= 8;
+					player->shared.x -= 8;
 				}
-				game.player.shared.vx = 0;
-				game.player.flags = PRONE;
-				game.player.width = 3;
-				game.player.height = 1;
+				player->shared.vx = 0;
+				player->flags = PRONE;
+				player->width = 3;
+				player->height = 1;
 				clear_sprites(3, 3);
-				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.prone), extendedSprites[PLAYER_SLOT].flags);
+				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->prone), extendedSprites[PLAYER_SLOT].flags);
 			}
-			else if ((game.joypadState.held & BTN_RIGHT) && (game.player.shared.x/8 + 2 < game.level_width))
+			else if ((player->controls.held & BTN_RIGHT) && (player->shared.x/8 + 2 < game.level_width))
 			{
-				game.player.shared.vx = RUN_SPEED;
-				game.player.flags = RUNNING;
-				game.player.direction = D_RIGHT;
-				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.run), 0);
+				player->shared.vx = RUN_SPEED;
+				player->flags = RUNNING;
+				player->direction = D_RIGHT;
+				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->run), 0);
 			}
-			else if ((game.joypadState.held & BTN_LEFT) && (game.player.shared.x > game.camera_x))
+			else if ((player->controls.held & BTN_LEFT) && (player->shared.x > game.camera_x))
 			{
-				game.player.shared.vx = -RUN_SPEED;
-				game.player.flags = RUNNING;
-				game.player.direction = D_LEFT;
-				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.run), SPRITE_FLIP_X);
+				player->shared.vx = -RUN_SPEED;
+				player->flags = RUNNING;
+				player->direction = D_LEFT;
+				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->run), SPRITE_FLIP_X);
 			}
 			else
 			{
-				game.player.flags = IDLE;
-				game.player.shared.vx = 0;
-				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.idle), extendedSprites[PLAYER_SLOT].flags);
+				player->flags = IDLE;
+				player->shared.vx = 0;
+				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->idle), extendedSprites[PLAYER_SLOT].flags);
 			}
-			if (game.joypadState.pressed & BTN_B && !(game.player.flags & PRONE))
+			if (player->controls.pressed & BTN_B && !(player->flags & PRONE))
 			{
-				game.player.shared.vy = -JUMP_SPEED;
-				game.player.shared.gravity = GRAVITY;
-				game.player.flags = JUMPING;
-				game.player.width = 2;
-				game.player.height = 3;
-				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.jump), extendedSprites[PLAYER_SLOT].flags);
+				player->shared.vy = -JUMP_SPEED;
+				player->shared.gravity = GRAVITY;
+				player->flags = JUMPING;
+				player->width = 2;
+				player->height = 3;
+				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->jump), extendedSprites[PLAYER_SLOT].flags);
 			}
 		}
 	}
-	else if (game.player.flags & JUMPING)
+	else if (player->flags & JUMPING)
 	{
-		if ((game.joypadState.held & BTN_RIGHT) && (game.player.shared.x/8 + 2 < game.level_width))
+		if ((player->controls.held & BTN_RIGHT) && (player->shared.x/8 + 2 < game.level_width))
 		{
-			game.player.shared.vx = RUN_SPEED;
-			game.player.direction = D_RIGHT;
-			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.jump), 0);
+			player->shared.vx = RUN_SPEED;
+			player->direction = D_RIGHT;
+			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->jump), 0);
 		}
-		else if ((game.joypadState.held & BTN_LEFT) && (game.player.shared.x > game.camera_x))
+		else if ((player->controls.held & BTN_LEFT) && (player->shared.x > game.camera_x))
 		{
-			game.player.shared.vx = -RUN_SPEED;
-			game.player.direction = D_LEFT;
-			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.jump), SPRITE_FLIP_X);
+			player->shared.vx = -RUN_SPEED;
+			player->direction = D_LEFT;
+			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->jump), SPRITE_FLIP_X);
 		}
 		else
 		{
-			game.player.shared.vx = 0;
-			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.jump), extendedSprites[PLAYER_SLOT].flags);
+			player->shared.vx = 0;
+			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->jump), extendedSprites[PLAYER_SLOT].flags);
 		}
 		
-		if (game.player.shared.gravity == 0)
+		if (player->shared.gravity == 0)
 		{
-			game.player.flags = IDLE;
+			player->flags = IDLE;
 		}
 	}
-	else if (game.player.flags & PRONE)
+	else if (player->flags & PRONE)
 	{
-		if (game.joypadState.pressed & BTN_UP)
+		if (player->controls.pressed & BTN_UP)
 		{
-			game.player.flags = IDLE;	
-			game.player.shared.y -= 16;
-			if(game.player.direction == D_RIGHT)
+			player->flags = IDLE;	
+			player->shared.y -= 16;
+			if(player->direction == D_RIGHT)
 			{
-				game.player.shared.x += 8;
+				player->shared.x += 8;
 			}
-			game.player.width = 2;
-			game.player.height = 3;
+			player->width = 2;
+			player->height = 3;
 		}
-		else if (game.joypadState.pressed & BTN_B)
+		else if (player->controls.pressed & BTN_B)
 		{
-			game.player.flags = JUMPING;
-			game.player.shared.y -= 16;
-			if(game.player.direction == D_RIGHT)
+			player->flags = JUMPING;
+			player->shared.y -= 16;
+			if(player->direction == D_RIGHT)
 			{
-				game.player.shared.x += 8;
+				player->shared.x += 8;
 			}
-			game.player.shared.vy = -JUMP_SPEED;
-			game.player.shared.gravity = GRAVITY;
-			game.player.width = 2;
-			game.player.height = 3;
-			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.jump), extendedSprites[PLAYER_SLOT].flags);
+			player->shared.vy = -JUMP_SPEED;
+			player->shared.gravity = GRAVITY;
+			player->width = 2;
+			player->height = 3;
+			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->jump), extendedSprites[PLAYER_SLOT].flags);
 		}
-		else if (game.joypadState.pressed & BTN_LEFT)
+		else if (player->controls.pressed & BTN_LEFT)
 		{
-			game.player.direction = D_LEFT;
-			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.prone), SPRITE_FLIP_X);
+			player->direction = D_LEFT;
+			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->prone), SPRITE_FLIP_X);
 		}
-		else if (game.joypadState.pressed & BTN_RIGHT)
+		else if (player->controls.pressed & BTN_RIGHT)
 		{
-			game.player.direction = D_RIGHT;
-			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&game.player.prone), 0);
+			player->direction = D_RIGHT;
+			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->prone), 0);
 		}
 	}
 	return 1;
 }
 
-u8 pixel_overlap(u16 s1, u16 s2, u8 w1, u8 w2)
+u8 pixel_overlap(u8 s1, u8 s2, u8 w1, u8 w2)
 {
 	u8 result = w1;
 	
@@ -887,10 +928,10 @@ u8 pixel_overlap(u16 s1, u16 s2, u8 w1, u8 w2)
 
 u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 {
-	u16 x0_tile = s->x / 8;
-	u16 y0_tile = s->y / 8;
-	u16 x1_tile = (s->x+7) / 8;
-	u16 y1_tile = (s->y+7) / 8;
+	u8 x0_tile = s->x / 8;
+	u8 y0_tile = s->y / 8;
+	u8 x1_tile = (s->x+7) / 8;
+	u8 y1_tile = (s->y+7) / 8;
 	u8 lt1, lt2;
 	u8 result = 0;
 	
@@ -906,8 +947,8 @@ u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 			{
 				lt1 = get_level_tile(game.current_level, x0_tile + x, y0_tile);
 				lt2 = get_level_tile(game.current_level, x1_tile + x, y0_tile);
-				if ((solid_tile(lt1) && pixel_overlap(s->x, x0_tile * 8, 8, 8) >= OVERLAP_THRESHOLD) ||
-					(solid_tile(lt2) && pixel_overlap(s->x, x1_tile * 8, 8, 8) >= OVERLAP_THRESHOLD))
+				if ((solid_tile(lt1) && pixel_overlap(s->x-game.camera_x, x0_tile * 8, 8, 8) >= OVERLAP_THRESHOLD) ||
+					(solid_tile(lt2) && pixel_overlap(s->x-game.camera_x, x1_tile * 8, 8, 8) >= OVERLAP_THRESHOLD))
 				{
 					s->vy =  0;
 					s->y = (y0_tile + 1) * 8;
@@ -918,8 +959,8 @@ u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 			{
 				lt1 = get_level_tile(game.current_level, x0_tile + x, (s->y + tile_height*8 - 1) / 8);
 				lt2 = get_level_tile(game.current_level, x1_tile + x, (s->y + tile_height*8 - 1) / 8);
-				if ((solid_tile(lt1) && pixel_overlap(s->x, x0_tile * 8, 8, 8) >= OVERLAP_THRESHOLD) || 
-					(solid_tile(lt2) && pixel_overlap(s->x, x1_tile * 8, 8, 8) >= OVERLAP_THRESHOLD))
+				if ((solid_tile(lt1) && pixel_overlap(s->x-game.camera_x, x0_tile * 8, 8, 8) >= OVERLAP_THRESHOLD) || 
+					(solid_tile(lt2) && pixel_overlap(s->x-game.camera_x, x1_tile * 8, 8, 8) >= OVERLAP_THRESHOLD))
 				{
 					s->vy =  0;
 					s->gravity = 0;
@@ -993,13 +1034,13 @@ void animate_sprite(SpriteShared* s, u8 slot, u8 width, u8 height)
 	LBMoveSprite(slot, s->x - game.camera_x, s->y - game.camera_y, width, height);
 }
 
-void animate_player()
+void animate_player(Player* player)
 {
-	if (game.player.flags & EXPLODING)
+	if (player->flags & EXPLODING)
 	{
-		LBMoveSprite(PLAYER_SLOT, game.player.shared.x - game.camera_x, game.player.shared.y - game.camera_y, game.player.width, game.player.height);
+		LBMoveSprite(PLAYER_SLOT, player->shared.x - game.camera_x, player->shared.y - game.camera_y, player->width, player->height);
 	}
-	else animate_sprite(&game.player.shared, PLAYER_SLOT, game.player.width, game.player.height);
+	else animate_sprite(&player->shared, PLAYER_SLOT, player->width, player->height);
 }
 
 void update_spider_enemy(Enemy* e, u8 slot)
@@ -1126,8 +1167,8 @@ void animate_enemies()
 				game.active_enemies--;
 				LBMoveSprite(slot, OFF_SCREEN, 0, game.enemies[i].width, game.enemies[i].height);
 			}
-			else if (LBCollides(game.player.shared.x,game.player.shared.y, game.player.width*8, game.player.height*8,
-							game.enemies[i].shared.x, game.enemies[i].shared.y, 8, 8
+			else if (LBCollides(game.player.shared.x-game.camera_x,game.player.shared.y, game.player.width*8, game.player.height*8,
+							game.enemies[i].shared.x-game.camera_x, game.enemies[i].shared.y, 8, 8
 						) && !(game.player.flags & EXPLODING) && !GODMODE
 			)
 			{
@@ -1167,8 +1208,8 @@ void animate_enemy_shots()
 						game.enemies[i].shot[j].active = 0;
 						LBMoveSprite(slot, OFF_SCREEN, 0, 1, 1);
 					}
-					else if (LBCollides(game.player.shared.x,game.player.shared.y, game.player.width*8, game.player.height*8,
-							game.enemies[i].shot[j].shared.x, game.enemies[i].shot[j].shared.y, 8, 8
+					else if (LBCollides(game.player.shared.x-game.camera_x,game.player.shared.y, game.player.width*8, game.player.height*8,
+							game.enemies[i].shot[j].shared.x-game.camera_x, game.enemies[i].shot[j].shared.y, 8, 8
 						)
 					)
 					{
@@ -1296,6 +1337,7 @@ void exit_game()
 	clear_sprites(0, MAX_EXTENDED_SPRITES);
 	LBRotateSprites();
 	init_player_state();
+	init_boss_state();
 	init_enemy_state();
 	StopSong();
 	load_high_scores();
@@ -1318,8 +1360,8 @@ void stream_dialogue(const char* dialogue, u8 y)
 		while ((c = pgm_read_byte(dialogue++)))
 		{
 			LBPrintChar(x++, y, c);
-			LBGetJoyPadState(&game.joypadState, 0);
-			if (!(game.joypadState.held & BTN_B)) WaitUs(CHARACTER_DELAY_US);
+			LBGetJoyPadState(&game.player.controls, 0);
+			if (!(game.player.controls.held & BTN_B)) WaitUs(CHARACTER_DELAY_US);
 		}
 		y++;
 	}
@@ -1419,6 +1461,7 @@ void planet_transition(u8 index, char scroll, char atmosphere_height, char dy, u
 	game.level_score = 0;
 	load_level(index, true);
 	init_player_state();
+	init_boss_state();
 	init_enemy_state();
 }
 
@@ -1468,23 +1511,23 @@ void load_splash()
 
 void update_splash()
 {
-	if (game.joypadState.pressed & BTN_DOWN && game.selection == START_SELECTED)
+	if (game.player.controls.pressed & BTN_DOWN && game.selection == START_SELECTED)
 	{
 		game.selection = HIGH_SCORES_SELECTED;
 		SFX_NAVIGATE;
 	}
-	else if (game.joypadState.pressed & BTN_UP && game.selection == HIGH_SCORES_SELECTED)
+	else if (game.player.controls.pressed & BTN_UP && game.selection == HIGH_SCORES_SELECTED)
 	{
 		game.selection = START_SELECTED;
 		SFX_NAVIGATE;
 	}
-	else if (select_pressed(&game.joypadState) && game.selection == START_SELECTED)
+	else if (select_pressed(&game.player.controls) && game.selection == START_SELECTED)
 	{
 		SFX_NAVIGATE;
 		intro();
 		return;
 	}
-	else if (select_pressed(&game.joypadState) && game.selection == HIGH_SCORES_SELECTED)
+	else if (select_pressed(&game.player.controls) && game.selection == HIGH_SCORES_SELECTED)
 	{
 		SFX_NAVIGATE;
 		load_high_scores();
@@ -1563,7 +1606,7 @@ void load_high_scores()
 
 void update_high_scores()
 {
-	if (game.joypadState.pressed & BTN_X)
+	if (game.player.controls.pressed & BTN_X)
 	{
 		SFX_NAVIGATE;
 		game.high_score_index = -1;
@@ -1574,28 +1617,28 @@ void update_high_scores()
 	
 	if (game.high_score_index != -1)
 	{
-		if (game.joypadState.pressed & BTN_RIGHT && game.high_score_index % 5 != 2)
+		if (game.player.controls.pressed & BTN_RIGHT && game.high_score_index % 5 != 2)
 		{
 			SFX_NAVIGATE;
 			game.high_score_index++;
 			LBMoveSprite(2, extendedSprites[2].x+8, extendedSprites[2].y, 1, 1);
 			LBMoveSprite(3, extendedSprites[3].x+8, extendedSprites[3].y, 1, 1);
 		}
-		else if (game.joypadState.pressed & BTN_LEFT && game.high_score_index % 5 != 0)
+		else if (game.player.controls.pressed & BTN_LEFT && game.high_score_index % 5 != 0)
 		{
 			SFX_NAVIGATE;
 			game.high_score_index--;
 			LBMoveSprite(2, extendedSprites[2].x-8, extendedSprites[2].y, 1, 1);
 			LBMoveSprite(3, extendedSprites[3].x-8, extendedSprites[3].y, 1, 1);
 		}
-		else if (game.joypadState.pressed & BTN_UP)
+		else if (game.player.controls.pressed & BTN_UP)
 		{
 			SFX_NAVIGATE;
 			scores.data[game.high_score_index] = scores.data[game.high_score_index]-1;
 			if (scores.data[game.high_score_index] < 'A') scores.data[game.high_score_index] = 'A';
 			LBPrintChar(11+(game.high_score_index % 5), 7+(game.high_score_index/5)*2, scores.data[game.high_score_index]);
 		}
-		else if (game.joypadState.pressed & BTN_DOWN)
+		else if (game.player.controls.pressed & BTN_DOWN)
 		{
 			SFX_NAVIGATE;
 			scores.data[game.high_score_index] = scores.data[game.high_score_index]+1;
@@ -1610,7 +1653,7 @@ void update_pause()
 	u8 x = Screen.scrollX / 8;
 	u8 y = Screen.scrollY / 8;
 	
-	if (game.joypadState.pressed & BTN_START)
+	if (game.player.controls.pressed & BTN_START)
 	{
 		DrawMap2((x+8)%32, (y+6)%30, map_canvas);
 		LBPrint((x+13)%32, (y+9)%30, (char*) strPaused);
@@ -1620,13 +1663,13 @@ void update_pause()
 		while (1)
 		{
 			WaitVsync(1);
-			LBGetJoyPadState(&game.joypadState, 0);
-			if (game.joypadState.pressed & BTN_START)
+			LBGetJoyPadState(&game.player.controls, 0);
+			if (game.player.controls.pressed & BTN_START)
 			{
 				render_camera_view();
 				break;
 			}
-			else if (game.joypadState.pressed & BTN_X)
+			else if (game.player.controls.pressed & BTN_X)
 			{
 				tally_score((char*)strGameOver, 0);
 				exit_game();
@@ -1722,17 +1765,17 @@ int main()
 	while (1)
 	{
 		WaitVsync(1);
-		LBGetJoyPadState(&game.joypadState, 0);
+		LBGetJoyPadState(&game.player.controls, 0);
 		if (game.current_screen == LEVEL)
 		{
 			update_level();
-			if (update_player())
+			if (update_player(&game.player))
 			{
-				update_shot();
+				update_shot(&game.player);
 				update_enemies();
 				update_enemy_shots();
-				animate_player();
-				animate_shot();
+				animate_player(&game.player);
+				animate_shot(&game.player);
 				animate_enemies();
 				animate_enemy_shots();
 				update_pause();

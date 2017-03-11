@@ -58,13 +58,14 @@
 #define FRAMES_PER_RUN_CYCLE 12
 #define RUN_SPEED 60
 #define SPACE_SHIP_SPEED 60
-#define JUMP_SPEED 150
-#define GRAVITY 255
+#define JUMP_SPEED 127
+#define GRAVITY 200
 #define MAX_SPEED 120
 #define D_LEFT 0
 #define D_RIGHT 1
 #define LIVES 5
 #define PLAYER_SHIELD 10
+#define BOSS_SHIELD 30
 
 // State flags
 #define JUMPING 1
@@ -76,7 +77,7 @@
 // Shot macros
 #define BASIC_SHOT 0
 #define BASIC_ENEMY_SHOT 1
-#define SHOT_SPEED 400
+#define SHOT_SPEED 127
 #define ENEMY_SHOT_SPEED 100
 #define BASIC_ENEMY_SHOT_HITCOUNT 1
 #define BSIC_SHOT_HITCOUNT 1

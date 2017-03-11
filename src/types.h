@@ -22,10 +22,10 @@
 #include "macros.h"
 
 typedef struct sSpriteShared {
-	float vy;
 	float x;
 	float y;
-	s16 vx;
+	s8 vy;
+	s8 vx;
 	u8 gravity;
 } SpriteShared;
 
@@ -48,7 +48,7 @@ typedef struct sEnemy {
 	u8 enemy_type;
 	u8 frame_count;
 	u8 shot_frame_count;
-	char shield;
+	s8 shield;
 	Shot shot[MAX_ENEMY_SHOTS];
 	Animation anim;
 	Animation expl;
@@ -59,49 +59,49 @@ typedef struct sPlayer {
 	SpriteShared shared;
 	u8 active_shots;
 	u8 flags;
-	u8 grace_frame;
 	u8 direction;
 	u8 width;
 	u8 height;
-	char shield;
+	s8 shield;
 	Shot shot[MAX_PLAYER_SHOTS];
 	Animation idle;
 	Animation run;
 	Animation jump;
 	Animation prone;
 	Animation expl;
+	JoyPadState controls;
 } Player;
 
 typedef struct sGameState {
-	u16 scroll_src_x;
-	u16 scroll_src_y;
 	u16 camera_x;
-	u16 camera_y;
 	u16 score;
 	u16 level_score;
 	u16 time;
-	u16 column_count;
-	u16 level_width;
+	u8 camera_y;
+	u8 scroll_src_x;
+	u8 scroll_src_y;
+	u8 scroll_x;
+	u8 scroll_y;
+	u8 scroll_dest_x;
+	u8 scroll_dest_y;
+	u8 level_width;
+	u8 level_height;
+	u8 column_count;
 	s8 high_score_index;
 	u8 lives;
 	u8 current_screen;
 	u8 current_level_index;
 	u8 raw_level_width;
 	u8 raw_level_height;
-	u8 level_height;
 	u8 paused;
 	u8 selection;
 	u8 frame_counter;
-	u8 scroll_x;
-	u8 scroll_y;
-	u8 scroll_dest_x;
-	u8 scroll_dest_y;
 	u8 active_enemies;
 	u8 spawn_rate;
 	u8 level_ended;
 	Player player;
+	Player boss;
 	Enemy enemies[MAX_ENEMIES];
-	JoyPadState joypadState;
 	char* current_level;
 } Game;
 

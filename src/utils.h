@@ -86,6 +86,17 @@ char* LBGetNextFrameReverse(Animation* anim)
 	return anim->anims[anim->current_anim];
 }
 
+void LBResetJoyPadState(JoyPadState* p)
+/*
+ * Get the current joy pad button state for index controller
+ */
+{
+	p->held = 0;
+	p->pressed = 0;
+	p->released = 0;
+	p->held_cycles = 0;
+}
+
 void LBGetJoyPadState(JoyPadState* p, unsigned char index)
 /*
  * Get the current joy pad button state for index controller
@@ -177,8 +188,8 @@ void LBPrintStr(u8 x, u8 y, u8* txt, u8 count)
 	}
 }
 
-u8 LBCollides(u16 x1, u16 y1, u8 width1, u8 height1,
-						 u16 x2, u16 y2, u8 width2, u8 height2)
+u8 LBCollides(u8 x1, u8 y1, u8 width1, u8 height1,
+						 u8 x2, u8 y2, u8 width2, u8 height2)
 {
 	if (y1 + height1 <= y2) return 0;
 	if (y1 >= y2 + height2) return 0;

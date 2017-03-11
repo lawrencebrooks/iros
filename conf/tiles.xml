@@ -32,34 +32,34 @@
             <define def-name="L_ICE_MIDDLE" left="2" top="0"/>
             <define def-name="L_ICE_RIGHT" left="3" top="0"/>
             <define def-name="L_ICE_BOTTOM" left="4" top="0"/>
-            <define def-name="L_ICICLE_DOWN" left="9" top="0"/>
-            <define def-name="L_ICICLE_UP" left="10" top="0"/>
-            <define def-name="L_FIRE_BOTTOM" left="12" top="0"/>
-            <define def-name="L_FIRE_TOP" left="13" top="0"/>
-            <define def-name="L_FIRE_LAVA" left="14" top="0"/>
-            <define def-name="L_JUNGLE_BOTTOM" left="15" top="0"/>
-            <define def-name="L_JUNGLE_TOP" left="16" top="0"/>
-            <define def-name="L_JUNGLE_FLOWER" left="17" top="0"/>
-            <define def-name="L_JUNGLE_BRANCH" left="18" top="0"/>
-            <define def-name="L_CITY_BOTTOM" left="19" top="0"/>
-            <define def-name="L_CITY_TOP" left="20" top="0"/>
-            <define def-name="L_CITY_SPARK" left="21" top="0"/>
-            <define def-name="L_DESERT_BOTTOM" left="23" top="0"/>
-            <define def-name="L_DESERT_TOP" left="22" top="0"/>
-            <define def-name="L_DESERT_SPIKE_UP" left="25" top="0"/>
-            <define def-name="L_DESERT_SPIKE_DOWN" left="24" top="0"/>
-            <define def-name="L_AST_1" left="26" top="0"/>
-            <define def-name="L_AST_2" left="27" top="0"/>
-            <define def-name="L_AST_3" left="28" top="0"/>
-            <define def-name="L_AST_4" left="29" top="0"/>
-            <define def-name="L_LAZER" left="30" top="0"/>
-            <define def-name="L_METAL_1" left="31" top="0"/>
-            <define def-name="L_METAL_2" left="32" top="0"/>
-            <define def-name="L_METAL_3" left="33" top="0"/>
-            <define def-name="L_METAL_4" left="34" top="0"/>
-            <define def-name="L_EYE_1" left="35" top="0"/>
-            <define def-name="L_EYE_2" left="36" top="0"/>
-            <define def-name="L_BEAM" left="37" top="0"/>
+            <define def-name="L_ICICLE_DOWN" left="5" top="0"/>
+            <define def-name="L_ICICLE_UP" left="6" top="0"/>
+            <define def-name="L_FIRE_BOTTOM" left="7" top="0"/>
+            <define def-name="L_FIRE_TOP" left="8" top="0"/>
+            <define def-name="L_FIRE_LAVA" left="9" top="0"/>
+            <define def-name="L_JUNGLE_BOTTOM" left="10" top="0"/>
+            <define def-name="L_JUNGLE_TOP" left="11" top="0"/>
+            <define def-name="L_JUNGLE_FLOWER" left="12" top="0"/>
+            <define def-name="L_JUNGLE_BRANCH" left="13" top="0"/>
+            <define def-name="L_CITY_BOTTOM" left="14" top="0"/>
+            <define def-name="L_CITY_TOP" left="15" top="0"/>
+            <define def-name="L_CITY_SPARK" left="16" top="0"/>
+            <define def-name="L_DESERT_BOTTOM" left="17" top="0"/>
+            <define def-name="L_DESERT_TOP" left="18" top="0"/>
+            <define def-name="L_DESERT_SPIKE_UP" left="19" top="0"/>
+            <define def-name="L_DESERT_SPIKE_DOWN" left="20" top="0"/>
+            <define def-name="L_AST_1" left="21" top="0"/>
+            <define def-name="L_AST_2" left="22" top="0"/>
+            <define def-name="L_AST_3" left="23" top="0"/>
+            <define def-name="L_AST_4" left="24" top="0"/>
+            <define def-name="L_LAZER" left="25" top="0"/>
+            <define def-name="L_METAL_1" left="26" top="0"/>
+            <define def-name="L_METAL_2" left="27" top="0"/>
+            <define def-name="L_METAL_3" left="28" top="0"/>
+            <define def-name="L_METAL_4" left="29" top="0"/>
+            <define def-name="L_EYE_1" left="30" top="0"/>
+            <define def-name="L_EYE_2" left="31" top="0"/>
+            <define def-name="L_BEAM" left="32" top="0"/>
         </defines>
     </output>
 </gfx-xform>
