@@ -350,7 +350,7 @@ u8 get_hero_spawn_y(u8 level_index)
 	return 21;
 }
 
-u8 get_level_tile(char* level_data, u16 x, u16 y)
+u8 get_level_tile(char* level_data, u8 x, u8 y)
 {
 	u16 mega_tile_index = 0;
 	u16 mega_tile_offset = 0;
