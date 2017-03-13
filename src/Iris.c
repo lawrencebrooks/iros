@@ -350,6 +350,16 @@ u8 get_hero_spawn_y(u8 level_index)
 	return 21;
 }
 
+u8 get_boss_spawn_x(u8 level_index)
+{
+	return 251;
+}
+
+u8 get_boss_spawn_y(u8 level_index)
+{
+	return 21;
+}
+
 u8 get_level_tile(char* level_data, u8 x, u8 y)
 {
 	u16 mega_tile_index = 0;
@@ -552,6 +562,7 @@ void load_level(u8 index, u8 drop_ship)
 	game.current_level_index = index;
 	game.level_ended = 0;
 	LBResetJoyPadState(&game.player.controls);
+	LBResetJoyPadState(&game.boss.controls);
 	switch (index)
 	{
 		case 0: map_level_info((char*) map_level_ice); break;
@@ -570,6 +581,8 @@ void load_level(u8 index, u8 drop_ship)
 	game.camera_y = get_camera_y(index);
 	game.player.shared.x = get_hero_spawn_x(index)*8;
 	game.player.shared.y = get_hero_spawn_y(index)*8;
+	game.boss.shared.x = get_boss_spawn_x(index)*8;
+	game.boss.shared.y = get_boss_spawn_y(index)*8;
 	game.camera_x *= 8;
 	game.camera_y *= 8;
 	game.scroll_src_x = game.camera_x / 8 + CAMERA_WIDTH + 1;
@@ -681,7 +694,7 @@ void update_shot(Player* player)
 	}
 }
 
-void animate_shot(Player* player)
+void animate_shot(Player* player, u8 shot_slot)
 {
 	// Animate shots
 	u8 slot = ENEMY_SLOT;
@@ -691,13 +704,13 @@ void animate_shot(Player* player)
 		{
 			player->shot[i].shared.x += player->shot[i].shared.vx*FRAME_TIME*2;
 			player->shot[i].shared.y += player->shot[i].shared.vy*FRAME_TIME;
-			LBMoveSprite(PLAYER_SHOT_SLOT+i, player->shot[i].shared.x - game.camera_x, player->shot[i].shared.y - game.camera_y, 1, 1);
+			LBMoveSprite(shot_slot+i, player->shot[i].shared.x - game.camera_x, player->shot[i].shared.y - game.camera_y, 1, 1);
 			if (player->shot[i].shared.x < game.camera_x || player->shot[i].shared.x+8 > game.camera_x + CAMERA_WIDTH*8 ||
 			    collision_detect_level(&player->shot[i].shared, 1, 1))
 			{
 				player->shot[i].active = 0;
 				player->active_shots--;
-				LBMoveSprite(PLAYER_SHOT_SLOT+i, OFF_SCREEN, 0, 1, 1);
+				LBMoveSprite(shot_slot+i, OFF_SCREEN, 0, 1, 1);
 			}
 			else
 			{
@@ -723,7 +736,7 @@ void animate_shot(Player* player)
 						}
 						player->shot[i].active = 0;
 						player->active_shots--;
-						LBMoveSprite(PLAYER_SHOT_SLOT+i, OFF_SCREEN, 0, 1, 1);
+						LBMoveSprite(shot_slot+i, OFF_SCREEN, 0, 1, 1);
 					}
 					slot += game.enemies[j].width*game.enemies[j].height;
 				}
@@ -754,7 +767,7 @@ void handle_player_death()
 	load_level(game.current_level_index, false);
 }
 
-u8 update_player(Player* player)
+u8 update_player(Player* player, u8 slot)
 {
 	
 	if (player->flags & EXPLODING)
@@ -786,7 +799,7 @@ u8 update_player(Player* player)
 		{
 			player->shared.vy = -SPACE_SHIP_SPEED;
 		}
-		LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->run), 0);
+		LBMapSprite(slot, LBGetNextFrame(&player->run), 0);
 	}
 	else if (player->flags & (IDLE|RUNNING))
 	{
@@ -794,7 +807,7 @@ u8 update_player(Player* player)
 		{
 			player->shared.gravity = GRAVITY;
 			player->flags = JUMPING;
-			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->jump), extendedSprites[PLAYER_SLOT].flags);
+			LBMapSprite(slot, LBGetNextFrame(&player->jump), extendedSprites[slot].flags);
 		}
 		else
 		{
@@ -810,27 +823,27 @@ u8 update_player(Player* player)
 				player->width = 3;
 				player->height = 1;
 				clear_sprites(3, 3);
-				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->prone), extendedSprites[PLAYER_SLOT].flags);
+				LBMapSprite(slot, LBGetNextFrame(&player->prone), extendedSprites[slot].flags);
 			}
 			else if ((player->controls.held & BTN_RIGHT) && (player->shared.x/8 + 2 < game.level_width))
 			{
 				player->shared.vx = RUN_SPEED;
 				player->flags = RUNNING;
 				player->direction = D_RIGHT;
-				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->run), 0);
+				LBMapSprite(slot, LBGetNextFrame(&player->run), 0);
 			}
 			else if ((player->controls.held & BTN_LEFT) && (player->shared.x > game.camera_x))
 			{
 				player->shared.vx = -RUN_SPEED;
 				player->flags = RUNNING;
 				player->direction = D_LEFT;
-				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->run), SPRITE_FLIP_X);
+				LBMapSprite(slot, LBGetNextFrame(&player->run), SPRITE_FLIP_X);
 			}
 			else
 			{
 				player->flags = IDLE;
 				player->shared.vx = 0;
-				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->idle), extendedSprites[PLAYER_SLOT].flags);
+				LBMapSprite(slot, LBGetNextFrame(&player->idle), extendedSprites[slot].flags);
 			}
 			if (player->controls.pressed & BTN_B && !(player->flags & PRONE))
 			{
@@ -839,7 +852,7 @@ u8 update_player(Player* player)
 				player->flags = JUMPING;
 				player->width = 2;
 				player->height = 3;
-				LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->jump), extendedSprites[PLAYER_SLOT].flags);
+				LBMapSprite(slot, LBGetNextFrame(&player->jump), extendedSprites[slot].flags);
 			}
 		}
 	}
@@ -849,18 +862,18 @@ u8 update_player(Player* player)
 		{
 			player->shared.vx = RUN_SPEED;
 			player->direction = D_RIGHT;
-			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->jump), 0);
+			LBMapSprite(slot, LBGetNextFrame(&player->jump), 0);
 		}
 		else if ((player->controls.held & BTN_LEFT) && (player->shared.x > game.camera_x))
 		{
 			player->shared.vx = -RUN_SPEED;
 			player->direction = D_LEFT;
-			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->jump), SPRITE_FLIP_X);
+			LBMapSprite(slot, LBGetNextFrame(&player->jump), SPRITE_FLIP_X);
 		}
 		else
 		{
 			player->shared.vx = 0;
-			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->jump), extendedSprites[PLAYER_SLOT].flags);
+			LBMapSprite(slot, LBGetNextFrame(&player->jump), extendedSprites[slot].flags);
 		}
 		
 		if (player->shared.gravity == 0)
@@ -893,17 +906,17 @@ u8 update_player(Player* player)
 			player->shared.gravity = GRAVITY;
 			player->width = 2;
 			player->height = 3;
-			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->jump), extendedSprites[PLAYER_SLOT].flags);
+			LBMapSprite(slot, LBGetNextFrame(&player->jump), extendedSprites[slot].flags);
 		}
 		else if (player->controls.pressed & BTN_LEFT)
 		{
 			player->direction = D_LEFT;
-			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->prone), SPRITE_FLIP_X);
+			LBMapSprite(slot, LBGetNextFrame(&player->prone), SPRITE_FLIP_X);
 		}
 		else if (player->controls.pressed & BTN_RIGHT)
 		{
 			player->direction = D_RIGHT;
-			LBMapSprite(PLAYER_SLOT, LBGetNextFrame(&player->prone), 0);
+			LBMapSprite(slot, LBGetNextFrame(&player->prone), 0);
 		}
 	}
 	return 1;
@@ -1034,13 +1047,13 @@ void animate_sprite(SpriteShared* s, u8 slot, u8 width, u8 height)
 	LBMoveSprite(slot, s->x - game.camera_x, s->y - game.camera_y, width, height);
 }
 
-void animate_player(Player* player)
+void animate_player(Player* player, u8 slot)
 {
 	if (player->flags & EXPLODING)
 	{
-		LBMoveSprite(PLAYER_SLOT, player->shared.x - game.camera_x, player->shared.y - game.camera_y, player->width, player->height);
+		LBMoveSprite(slot, player->shared.x - game.camera_x, player->shared.y - game.camera_y, player->width, player->height);
 	}
-	else animate_sprite(&player->shared, PLAYER_SLOT, player->width, player->height);
+	else animate_sprite(&player->shared, slot, player->width, player->height);
 }
 
 void update_spider_enemy(Enemy* e, u8 slot)
@@ -1293,8 +1306,8 @@ void update_level()
 				LBRotateSprites();
 				ship_increment = -3;
 			}
-			LBMapSprite(6, LBGetNextFrame(&game.player.run), 0);
-			LBMoveSprite(6, ship_x, ship_y, 4, 2);
+			LBMapSprite(PLAYER_SHOT_SLOT, LBGetNextFrame(&game.player.run), 0);
+			LBMoveSprite(PLAYER_SHOT_SLOT, ship_x, ship_y, 4, 2);
 			ship_y += ship_increment;
 			if (ship_y == 0)
 			{
@@ -1769,16 +1782,24 @@ int main()
 		if (game.current_screen == LEVEL)
 		{
 			update_level();
-			if (update_player(&game.player))
+			if (update_player(&game.player, PLAYER_SLOT))
 			{
 				update_shot(&game.player);
-				update_enemies();
-				update_enemy_shots();
-				animate_player(&game.player);
-				animate_shot(&game.player);
-				animate_enemies();
-				animate_enemy_shots();
+				if ((game.camera_x <= (249 - CAMERA_WIDTH)*8)) {
+					update_enemies();
+					update_enemy_shots();
+					animate_enemies();
+					animate_enemy_shots();
+				}
+				animate_player(&game.player, PLAYER_SLOT);
+				animate_shot(&game.player, PLAYER_SHOT_SLOT);
 				update_pause();
+			}
+			if ((game.camera_x > (249 - CAMERA_WIDTH)*8) && update_player(&game.boss, BOSS_SLOT))
+			{
+				update_shot(&game.boss);
+				animate_player(&game.boss, BOSS_SLOT);
+				animate_shot(&game.boss, BOSS_SHOT_SLOT);
 			}
 		}
 		else if (game.current_screen == SPLASH)

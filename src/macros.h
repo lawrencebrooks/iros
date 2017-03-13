@@ -84,9 +84,11 @@
 
 // Sprite slots
 #define PLAYER_SLOT 0
-#define ENEMY_SLOT 6
-#define PLAYER_SHOT_SLOT 11
-#define ENEMY_SHOT_SLOT 14
+#define PLAYER_SHOT_SLOT 6
+#define ENEMY_SLOT 9
+#define ENEMY_SHOT_SLOT 15
+#define BOSS_SLOT 9
+#define BOSS_SHOT_SLOT 15
 
 
 // Enemy macros
