@@ -105,6 +105,17 @@
 #define ENEMY_SPIDER_SHIELD 2
 #define ENEMY_SHARK_SHIELD 4
 #define ENEMY_SHOT_DELAY_FRAMES 60
+#define ENEMY_SPAWN_CUTOFF 1480
+#define BOSS_UPDATE_THRESHOLD 1784
+
+// Player AI flags
+#define AI_NOT_READY 0
+#define AI_READY 1
+#define AI_WALKING 2
+#define AI_SHOOTING 4
+#define AI_JUMPING 8
+#define AI_PRONE 16
+#define AI_DEFEATED 32
 
 // Sound Effects
 #define SFX_NAVIGATE TriggerFx(PATCH_NAVIGATE,0xff,true)

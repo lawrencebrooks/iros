@@ -112,8 +112,9 @@ void init_boss_state()
 		game.boss.run.anims[2] = (char*) map_ahero_step_2;
 		game.boss.run.anims[3] = (char*) map_ahero_step_3;
 	}
-	game.boss.direction = D_LEFT;
+	game.boss.direction = D_RIGHT;
 	game.boss.flags = IDLE;
+	game.boss.ai_flags = AI_NOT_READY;
 	game.boss.shield = BOSS_SHIELD;
 	game.boss.idle.anim_count = 1;
 	game.boss.idle.frames_per_anim = 1;
@@ -169,6 +170,7 @@ void init_player_state()
 	}
 	game.player.direction = D_RIGHT;
 	game.player.flags = IDLE;
+	game.player.ai_flags = AI_NOT_READY;
 	game.player.shield = PLAYER_SHIELD;
 	game.player.idle.anim_count = 1;
 	game.player.idle.frames_per_anim = 1;
@@ -405,24 +407,27 @@ void render_camera_view()
 
 void spawn_enemy(u16 x, u16 y)
 {
-	for (u8 i = 0; i < MAX_ENEMIES; i++)
+	if (game.camera_x < ENEMY_SPAWN_CUTOFF)
 	{
-		if (!game.enemies[i].active)
+		for (u8 i = 0; i < MAX_ENEMIES; i++)
 		{
-			for (u8 j = 0; j < MAX_ENEMY_SHOTS; j++)
+			if (!game.enemies[i].active)
 			{
-				if (!game.enemies[i].shot[j].active)
+				for (u8 j = 0; j < MAX_ENEMY_SHOTS; j++)
 				{
-					if (is_space())
+					if (!game.enemies[i].shot[j].active)
 					{
-						init_enemy_shark(i, x, y);
+						if (is_space())
+						{
+							init_enemy_shark(i, x, y);
+						}
+						else
+						{
+							init_enemy_spider(i, x, y);
+						}
+						game.active_enemies++;
+						return;
 					}
-					else
-					{
-						init_enemy_spider(i, x, y);
-					}
-					game.active_enemies++;
-					return;
 				}
 			}
 		}
@@ -1274,7 +1279,7 @@ void update_level()
 	}
 	else if (game.camera_x/8 + CAMERA_WIDTH >= game.level_width)
 	{
-		game.level_ended = 1;
+		//game.level_ended = 1;
 	}
 	
 	if (!is_space() && game.player.shared.vy > 0 &&
@@ -1763,6 +1768,25 @@ void tally_score(char* title, u16 bonus)
 	render_camera_view();
 }
 
+void update_player_ai(Player* player) {
+	/*
+	 * #define AI_NOT_READY 0
+		#define AI_READY 1
+		#define AI_WALKING 2
+		#define AI_SHOOTING 4
+		#define AI_JUMPING 8
+		#define AI_PRONE 16
+		#define AI_DEFEATED 32
+	 */
+	 if (player->ai_flags == AI_NOT_READY) {
+		 player->controls.held = BTN_LEFT;
+		 player->ai_flags = AI_READY;
+	 }
+	 else if ((player->ai_flags & AI_READY) == AI_READY) {
+		 LBResetJoyPadState(&player->controls);
+	 }
+}
+
 int main()
 {
 	// Initialize
@@ -1785,21 +1809,20 @@ int main()
 			if (update_player(&game.player, PLAYER_SLOT))
 			{
 				update_shot(&game.player);
-				if ((game.camera_x <= (249 - CAMERA_WIDTH)*8)) {
-					update_enemies();
-					update_enemy_shots();
-					animate_enemies();
-					animate_enemy_shots();
-				}
+				update_enemies();
+				update_enemy_shots();
+				animate_enemies();
+				animate_enemy_shots();
 				animate_player(&game.player, PLAYER_SLOT);
 				animate_shot(&game.player, PLAYER_SHOT_SLOT);
 				update_pause();
 			}
-			if ((game.camera_x > (249 - CAMERA_WIDTH)*8) && update_player(&game.boss, BOSS_SLOT))
+			if ((game.camera_x >= BOSS_UPDATE_THRESHOLD) && update_player(&game.boss, BOSS_SLOT))
 			{
 				update_shot(&game.boss);
 				animate_player(&game.boss, BOSS_SLOT);
 				animate_shot(&game.boss, BOSS_SHOT_SLOT);
+				update_player_ai(&game.boss);
 			}
 		}
 		else if (game.current_screen == SPLASH)

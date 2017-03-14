@@ -59,6 +59,7 @@ typedef struct sPlayer {
 	SpriteShared shared;
 	u8 active_shots;
 	u8 flags;
+	u8 ai_flags;
 	u8 direction;
 	u8 width;
 	u8 height;
