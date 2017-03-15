@@ -63,11 +63,11 @@ const unsigned char strIntro [] PROGMEM="IRIS HAS BETRAYED US\0\0"
 "EMERALDS TO BRING PEACE TO\0"
 "THE GALAXY\0#";
 
-const unsigned char strReveal0 [] PROGMEM="I KNEW THEY WOULD SEND YOU\0#";
-const unsigned char strReveal1 [] PROGMEM="YOU ARE PERSISTENT\0#";
-const unsigned char strReveal2 [] PROGMEM="YOU CANT HAVE THEM ALL\0#";
-const unsigned char strReveal3 [] PROGMEM="YOU ARE MAKING A MISTAKE\0#";
-const unsigned char strReveal4 [] PROGMEM="YOU DONT KNOW\0WHAT YOU ARE DOING\0#";
+const unsigned char strChallenge [] PROGMEM="I KNEW THEY WOULD SEND YOU\0#       "
+"YOU ARE PERSISTENT\0#               "
+"YOU CANT HAVE THEM ALL\0#           "
+"YOU ARE MAKING A MISTAKE\0#         "
+"YOU DONT KNOW\0WHAT YOU ARE DOING\0#";
 
 const unsigned char strTwist [] PROGMEM="IRIS WAS A FOOL\0\0"
 "AND SO ARE YOU\0"

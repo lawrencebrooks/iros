@@ -1367,7 +1367,7 @@ char select_pressed(JoyPadState* p)
 }
 
 
-void stream_dialogue(const char* dialogue, u8 y)
+void stream_text_middle(const char* dialogue, u8 y)
 {
 	u8 x, ln, c;
 	
@@ -1380,6 +1380,22 @@ void stream_dialogue(const char* dialogue, u8 y)
 			LBPrintChar(x++, y, c);
 			LBGetJoyPadState(&game.player.controls, 0);
 			if (!(game.player.controls.held & BTN_B)) WaitUs(CHARACTER_DELAY_US);
+		}
+		y++;
+	}
+}
+
+void stream_text_anywhere(const char* dialogue, u8 x, u8 y)
+{
+	u8 ln, c;
+	
+	while (pgm_read_byte(dialogue) != '#')
+	{
+		ln = strnlen_P(dialogue, 255);
+		while ((c = pgm_read_byte(dialogue++)))
+		{
+			LBPrintChar(x++, y, c);
+			WaitUs(CHARACTER_DELAY_US);
 		}
 		y++;
 	}
@@ -1503,7 +1519,7 @@ void intro()
 	LBMapSprite(4, map_emerald_4, 0);
 	LBMoveSprite(4, 144, 48, 1, 1);
 	LBRotateSprites();
-	stream_dialogue((const char*) strIntro, 12);
+	stream_text_middle((const char*) strIntro, 12);
 	LBWaitSeconds(1);
 	planet_transition(0, 1, 28, -3, 199);
 }
@@ -1768,6 +1784,17 @@ void tally_score(char* title, u16 bonus)
 	render_camera_view();
 }
 
+void challenge()
+{
+	u16 counter = 0;
+	char* challange_pointer = (char*)strChallenge + (game.current_level_index/2)*CHALLANGE_LENGTH;
+	
+	DrawMap2(239, 18, map_dialog);
+	stream_text_anywhere((const char*)challange_pointer, 240, 19);
+	LBWaitSeconds(3);
+	render_camera_view();
+}
+
 void update_player_ai(Player* player) {
 	/*
 	 * #define AI_NOT_READY 0
@@ -1784,6 +1811,10 @@ void update_player_ai(Player* player) {
 	 }
 	 else if ((player->ai_flags & AI_READY) == AI_READY) {
 		 LBResetJoyPadState(&player->controls);
+		 if (game.camera_x/8 + CAMERA_WIDTH >= game.level_width) {
+			 challenge();
+			 player->ai_flags = AI_WALKING;
+		 }
 	 }
 }
 
