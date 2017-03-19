@@ -40,6 +40,7 @@ void exit_game();
 void tally_score(char* title, u16 bonus);
 void handle_player_death();
 void planet_transition(u8 index, char scroll, char atmosphere_height, char dy, u8 oy);
+void challenge();
 u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height);
 u8 map_explosion(u8* flags, Animation* anim, u8 slot, u8 width, u8 height);
 
@@ -1388,16 +1389,18 @@ void stream_text_middle(const char* dialogue, u8 y)
 void stream_text_anywhere(const char* dialogue, u8 x, u8 y)
 {
 	u8 ln, c;
+	u8 cursor = x; 
 	
 	while (pgm_read_byte(dialogue) != '#')
 	{
 		ln = strnlen_P(dialogue, 255);
 		while ((c = pgm_read_byte(dialogue++)))
 		{
-			LBPrintChar(x++, y, c);
+			LBPrintChar(cursor++, y, c);
 			WaitUs(CHARACTER_DELAY_US);
 		}
 		y++;
+		cursor = x;
 	}
 }
 
@@ -1787,10 +1790,10 @@ void tally_score(char* title, u16 bonus)
 void challenge()
 {
 	u16 counter = 0;
-	char* challange_pointer = (char*)strChallenge + (game.current_level_index/2)*CHALLANGE_LENGTH;
+	char* challenge_pointer = (char*)strChallenge + (game.current_level_index/2)*CHALLENGE_LENGTH;
 	
-	DrawMap2(239, 18, map_dialog);
-	stream_text_anywhere((const char*)challange_pointer, 240, 19);
+	DrawMap2(233, 7, map_dialog);
+	stream_text_anywhere((const char*)challenge_pointer, 234, 10);
 	LBWaitSeconds(3);
 	render_camera_view();
 }

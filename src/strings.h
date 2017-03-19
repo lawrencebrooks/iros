@@ -63,17 +63,10 @@ const unsigned char strIntro [] PROGMEM="IRIS HAS BETRAYED US\0\0"
 "EMERALDS TO BRING PEACE TO\0"
 "THE GALAXY\0#";
 
-const unsigned char strChallenge [] PROGMEM="I KNEW THEY WOULD SEND YOU\0#       "
-"YOU ARE PERSISTENT\0#               "
-"YOU CANT HAVE THEM ALL\0#           "
-"YOU ARE MAKING A MISTAKE\0#         "
-"YOU DONT KNOW\0WHAT YOU ARE DOING\0#";
-
-const unsigned char strTwist [] PROGMEM="IRIS WAS A FOOL\0\0"
-"AND SO ARE YOU\0"
-"WITH THE EMERALDS RETURNED\0"
-"THERE IS NO STOPPING OUR\0"
-"DOMINION OVER THE GALAXY\0\0"
-"NOW YOU WILL DIE\0#";
+const unsigned char strChallenge [] PROGMEM="I KNEW THEY\0WOULD SEND YOU\0#       "
+"YOU ARE\0PERSISTENT\0#               "
+"YOU CANT\0HAVE THEM ALL\0#           "
+"YOU ARE MAKING\0A MISTAKE\0#         "
+"THIS DOES NOT\0END HERE\0#           ";
 
 #endif
