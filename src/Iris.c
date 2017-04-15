@@ -818,6 +818,7 @@ u8 update_player(Player* player, u8 slot)
 	{
 		if (player->flags & END_OF_SPACE) {
 			player->shared.vx = SPACE_SHIP_SPEED*2;
+			player->shared.vy = 0;
 		} else {
 			player->shared.vy = 0;
 			player->shared.vx = SPACE_SHIP_SPEED;
@@ -838,8 +839,8 @@ u8 update_player(Player* player, u8 slot)
 			{
 				player->shared.vy = -SPACE_SHIP_SPEED;
 			}
-			LBMapSprite(slot, LBGetNextFrame(&player->run), 0);
 		}
+		LBMapSprite(slot, LBGetNextFrame(&player->run), 0);
 	}
 	else if (player->flags & (IDLE|RUNNING))
 	{
@@ -1945,8 +1946,10 @@ void prepare_debugging() {
 	game.scroll_src_y = game.camera_y / 8 + CAMERA_HEIGHT + 1;
     game.scroll_dest_y =  26;
 	if (is_space()) {
-		game.scroll_src_x = 0;
-		game.scroll_src_y = 0;
+		game.camera_x = 127*8;
+		game.player.shared.x = 130*8;
+		game.scroll_src_x = 29;
+		game.scroll_src_y = 26;
 	}
 #endif
 	game.boss.shared.x = get_boss_spawn_x(DEBUG_LEVEL)*8;
@@ -1954,7 +1957,6 @@ void prepare_debugging() {
 	game.scroll_x = 0;
 	game.scroll_y = 0;
 	game.spawn_rate = BASE_SPAWN_RATE;
-	render_camera_view();
 	LBPrint(0, VRAM_TILES_V-3, (char*) strShield);
 	LBPrint(18, VRAM_TILES_V-3, (char*) strTime);
 	LBPrint(0, VRAM_TILES_V-2, (char*) strLives);
@@ -1970,6 +1972,8 @@ void prepare_debugging() {
 	init_player_state();
 	init_boss_state();
 	init_enemy_state();
+	
+	render_camera_view();
 }
 #endif
 
