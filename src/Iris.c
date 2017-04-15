@@ -1186,9 +1186,11 @@ void animate_enemies()
 				game.active_enemies--;
 				LBMoveSprite(slot, OFF_SCREEN, 0, game.enemies[i].width, game.enemies[i].height);
 			}
+#if DEBUG_GODMODE
+#else
 			else if (LBCollides(game.player.shared.x-game.camera_x,game.player.shared.y, game.player.width*8, game.player.height*8,
 							game.enemies[i].shared.x-game.camera_x, game.enemies[i].shared.y, 8, 8
-						) && !(game.player.flags & EXPLODING) && !GODMODE
+						) && !(game.player.flags & EXPLODING)
 			)
 			{
 				SFX_PLAYER_EXPLODE;
@@ -1196,6 +1198,7 @@ void animate_enemies()
 				game.player.flags = EXPLODING;
 				return;
 			}
+#endif
 			else
 			{
 				animate_sprite(&game.enemies[i].shared, slot, game.enemies[i].width, game.enemies[i].height);
@@ -1233,7 +1236,10 @@ void animate_enemy_shots()
 					)
 					{
 						SFX_HIT;
-						if(!GODMODE) game.player.shield -= game.enemies[i].shot[j].hit_count;
+#if DEBUG_GODMODE
+#else
+						game.player.shield -= game.enemies[i].shot[j].hit_count;
+#endif
 						if (game.player.shield <= 0)
 						{
 							SFX_PLAYER_EXPLODE;
@@ -1789,11 +1795,12 @@ void tally_score(char* title, u16 bonus)
 
 void challenge()
 {
+	u8 x = Screen.scrollX / 8;
+	u8 y = Screen.scrollY / 8;
 	u16 counter = 0;
 	char* challenge_pointer = (char*)strChallenge + (game.current_level_index/2)*CHALLENGE_LENGTH;
-	
-	DrawMap2(233, 7, map_dialog);
-	stream_text_anywhere((const char*)challenge_pointer, 234, 10);
+	DrawMap2((x+7)%32, (y+6)%30, map_dialog);
+	stream_text_anywhere((const char*)challenge_pointer, (x+8)%32, (y+9)%30);
 	LBWaitSeconds(3);
 	render_camera_view();
 }
@@ -1812,7 +1819,7 @@ void update_player_ai(Player* player) {
 		 player->controls.held = BTN_LEFT;
 		 player->ai_flags = AI_READY;
 	 }
-	 else if ((player->ai_flags & AI_READY) == AI_READY) {
+	 else if ((player->ai_flags & AI_READY) == AI_READY && (!is_space() || game.current_level_index == 9) ) {
 		 LBResetJoyPadState(&player->controls);
 		 if (game.camera_x/8 + CAMERA_WIDTH >= game.level_width) {
 			 challenge();
@@ -1820,6 +1827,87 @@ void update_player_ai(Player* player) {
 		 }
 	 }
 }
+
+#if DEBUG_MODE
+void prepare_debugging() {
+	fade_through();
+	Screen.scrollX = 0;
+	Screen.scrollY = 0;
+	Screen.scrollHeight = 29;
+	Screen.overlayHeight = 3;
+	Screen.overlayTileTable = tiles_data;
+	clear_overlay(2);
+	game.current_screen = LEVEL;
+	game.selection = START_SELECTED;
+	game.lives = LIVES;
+	game.score = 0;
+	game.level_score = 0;
+	game.time = 0;
+	game.current_level_index = DEBUG_LEVEL;
+	game.level_ended = 0;
+	clear_sprites(0, MAX_EXTENDED_SPRITES);
+	LBResetJoyPadState(&game.player.controls);
+	LBResetJoyPadState(&game.boss.controls);
+	switch (DEBUG_LEVEL)
+	{
+		case 0: map_level_info((char*) map_level_ice); break;
+		case 1: map_level_info((char*) map_level_space); break;
+		case 2: map_level_info((char*) map_level_fire); break;
+		case 3: map_level_info((char*) map_level_space); break;
+		case 4: map_level_info((char*) map_level_forest); break;
+		case 5: map_level_info((char*) map_level_space); break;
+		case 6: map_level_info((char*) map_level_city); break;
+		case 7: map_level_info((char*) map_level_space); break;
+		case 8: map_level_info((char*) map_level_desert); break;
+		case 9: map_level_info((char*) map_level_space); break;
+	}
+	game.column_count = 0;
+#if DEBUG_LEVEL_LOCATION == DEBUG_BEGGINING
+	game.camera_x = get_camera_x(DEBUG_LEVEL)*8;
+	game.camera_y = get_camera_y(DEBUG_LEVEL)*8;
+	game.player.shared.x = get_hero_spawn_x(DEBUG_LEVEL)*8;
+	game.player.shared.y = get_hero_spawn_y(DEBUG_LEVEL)*8;
+	game.scroll_src_x = game.camera_x / 8 + CAMERA_WIDTH + 1;
+    game.scroll_dest_x = game.camera_x / 8 + CAMERA_WIDTH + 1;
+	game.scroll_src_y = game.camera_y / 8 + CAMERA_HEIGHT + 1;
+    game.scroll_dest_y =  game.camera_y / 8 + CAMERA_HEIGHT + 1;
+#else
+	game.camera_x = 199*8;
+	game.camera_y = 0*8;
+	game.player.shared.x = 202*8;
+	game.player.shared.y = 21*8;
+	game.scroll_src_x = game.camera_x / 8 + CAMERA_WIDTH + 1;
+    game.scroll_dest_x = 29;
+	game.scroll_src_y = game.camera_y / 8 + CAMERA_HEIGHT + 1;
+    game.scroll_dest_y =  26;
+	if (is_space()) {
+		game.scroll_src_x = 0;
+		game.scroll_src_y = 0;
+	}
+#endif
+	game.boss.shared.x = get_boss_spawn_x(DEBUG_LEVEL)*8;
+	game.boss.shared.y = get_boss_spawn_y(DEBUG_LEVEL)*8;
+	game.scroll_x = 0;
+	game.scroll_y = 0;
+	game.spawn_rate = BASE_SPAWN_RATE;
+	render_camera_view();
+	LBPrint(0, VRAM_TILES_V-3, (char*) strShield);
+	LBPrint(18, VRAM_TILES_V-3, (char*) strTime);
+	LBPrint(0, VRAM_TILES_V-2, (char*) strLives);
+	LBPrint(17, VRAM_TILES_V-2, (char*) strScore);
+	LBPrint(17, VRAM_TILES_V-1, (char*) strTally);
+	
+	LBPrintByte(9, VRAM_TILES_V-3, game.player.shield ,true);
+	LBPrintInt(27, VRAM_TILES_V-3, game.time ,true);
+	LBPrintByte(9, VRAM_TILES_V-2, game.lives ,true);
+	LBPrintInt(27, VRAM_TILES_V-2, game.level_score ,true);
+	LBPrintInt(27, VRAM_TILES_V-1, game.score ,true);
+	
+	init_player_state();
+	init_boss_state();
+	init_enemy_state();
+}
+#endif
 
 int main()
 {
@@ -1832,7 +1920,11 @@ int main()
 	SetSpritesTileTable(sprites_data);
 	LBSetFontTilesMap((char*) map_font);
 	init_default_high_scores();
+#if DEBUG_MODE
+	prepare_debugging();
+#else
 	load_splash();
+#endif
 	while (1)
 	{
 		WaitVsync(1);
@@ -1851,7 +1943,7 @@ int main()
 				animate_shot(&game.player, PLAYER_SHOT_SLOT);
 				update_pause();
 			}
-			if ((game.camera_x >= BOSS_UPDATE_THRESHOLD) && update_player(&game.boss, BOSS_SLOT))
+			if ((!is_space() || game.current_level_index == 9) && (game.camera_x >= BOSS_UPDATE_THRESHOLD) && update_player(&game.boss, BOSS_SLOT))
 			{
 				update_shot(&game.boss);
 				animate_player(&game.boss, BOSS_SLOT);

@@ -18,9 +18,13 @@
 #ifndef LB_MACROS_H
 #define LB_MACROS_H
 
-#ifndef RLE
-#define RLE 0
-#endif
+// Debug Flags
+#define DEBUG_MODE 1
+#define DEBUG_LEVEL 0
+#define DEBUG_LEVEL_BEGINNING 0
+#define DEBUG_LEVEL_END 1
+#define DEBUG_LEVEL_LOCATION DEBUG_LEVEL_END
+#define DEBUG_GODMODE 1
 
 // EEPROM ID
 #define EEPROM_SCORES_ID 0x8C
@@ -40,7 +44,6 @@
 #define FRAMES_PER_GRACE 120
 
 // General macros
-#define GODMODE 1
 #define FRAME_TIME 0.016666666666666666
 #define MAX_PLAYER_SHOTS 3
 #define TEXT_LINGER 3
