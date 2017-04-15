@@ -63,6 +63,7 @@ typedef struct sPlayer {
 	u8 direction;
 	u8 width;
 	u8 height;
+	u8 active;
 	s8 shield;
 	Shot shot[MAX_PLAYER_SHOTS];
 	Animation idle;

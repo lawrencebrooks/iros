@@ -24,7 +24,7 @@
 #define DEBUG_LEVEL_BEGINNING 0
 #define DEBUG_LEVEL_END 1
 #define DEBUG_LEVEL_LOCATION DEBUG_LEVEL_END
-#define DEBUG_GODMODE 1
+#define DEBUG_GODMODE 0
 
 // EEPROM ID
 #define EEPROM_SCORES_ID 0x8C
@@ -53,6 +53,7 @@
 #define LEVEL_HEIGHT 52
 #define OVERLAP_THRESHOLD 4
 #define KILL_SCORE 10
+#define BOSS_KILL_SCORE 100
 #define EXPLOSION_FRAME_COUNT 5
 #define CHARACTER_DELAY_US 6000
 #define TALLY_DELAY 1500
@@ -69,7 +70,7 @@
 #define D_RIGHT 1
 #define LIVES 5
 #define PLAYER_SHIELD 10
-#define BOSS_SHIELD 30
+#define BOSS_SHIELD 10
 
 // State flags
 #define JUMPING 1
@@ -77,6 +78,7 @@
 #define PRONE 4
 #define IDLE 8
 #define EXPLODING 16
+#define END_OF_SPACE 32
 
 // Shot macros
 #define BASIC_SHOT 0
