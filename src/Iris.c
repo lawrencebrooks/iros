@@ -372,25 +372,13 @@ u8 get_level_tile(char* level_data, u8 x, u8 y)
 	u16 mega_tile_offset = 0;
 	u8 map_x = 0;
 	u8 map_y = 0;
-
-	if (is_space())
-	{
-		map_x = x / MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH;
-		map_y = y / MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT;
-		mega_tile_offset = (y % MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT)*MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH + (x % MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH);
-		mega_tile_index = pgm_read_byte(2+(&level_data[map_y*game.raw_level_width + map_x]));
-		mega_tile_index *= MAP_SPACE_MEGA_TILES_MEGA_TILE_WIDTH*MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT;
-		return pgm_read_byte(&map_space_mega_tiles[mega_tile_index+mega_tile_offset]);
-	}
-	else
-	{
-		map_x = x / MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH;
-		map_y = y / MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
-		mega_tile_offset = (y % MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT)*MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH + (x % MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH);
-		mega_tile_index = pgm_read_byte(2+(&level_data[map_y*game.raw_level_width + map_x]));
-		mega_tile_index *= MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH*MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
-		return pgm_read_byte(&map_level_mega_tiles[mega_tile_index+mega_tile_offset]);
-	}
+	
+	map_x = x / MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH;
+	map_y = y / MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
+	mega_tile_offset = (y % MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT)*MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH + (x % MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH);
+	mega_tile_index = pgm_read_byte(2+(&level_data[map_y*game.raw_level_width + map_x]));
+	mega_tile_index *= MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH*MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
+	return pgm_read_byte(&map_level_mega_tiles[mega_tile_index+mega_tile_offset]);
 }
 
 void render_camera_view()
@@ -487,22 +475,6 @@ void append_tile_column()
     game.scroll_src_x++;
 	game.scroll_dest_x++;
     if(game.scroll_dest_x>=32)game.scroll_dest_x=0;
-	if(is_space() && game.scroll_src_x>=32)game.scroll_src_x=0;
-}
-
-void append_tile_row()
-{
-	u8 level_tile;
-
-    for (u8 x = 0; x <= CAMERA_WIDTH; x++)
-	{
-		level_tile = get_level_tile(game.current_level, x + game.camera_x / 8, game.scroll_src_y);
-		render_level_tile(level_tile, (x + Screen.scrollX / 8) % 32, game.scroll_dest_y);
-    }
-	
-    game.scroll_src_y++;
-	game.scroll_dest_y++;
-    if(game.scroll_dest_y>=30)game.scroll_dest_y=0;
 }
 
 void move_camera_x()
@@ -513,18 +485,6 @@ void move_camera_x()
 	{
 		game.scroll_x = 0;
 		append_tile_column();
-	}
-}
-
-void move_camera_y()
-{	
-	game.camera_y+=2;
-	game.scroll_y+=2;
-	Scroll(0,2);
-	if (game.scroll_y == 8)
-	{
-		game.scroll_y = 0;
-		append_tile_row();
 	}
 }
 
@@ -543,17 +503,8 @@ void map_level_info(char* level)
 	
 	game.raw_level_width = pgm_read_byte(&level[0]);
 	game.raw_level_height = pgm_read_byte(&level[1]);
-	if (!is_space())
-	{
-		game.level_width = pgm_read_byte(&level[0])*MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH;
-		game.level_height = pgm_read_byte(&level[1])*MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
-		
-	}
-	else
-	{
-		game.level_width = 255;
-		game.level_height = pgm_read_byte(&map_level_space[1])*MAP_SPACE_MEGA_TILES_MEGA_TILE_HEIGHT;
-	}
+	game.level_width = pgm_read_byte(&level[0])*MAP_LEVEL_MEGA_TILES_MEGA_TILE_WIDTH;
+	game.level_height = pgm_read_byte(&level[1])*MAP_LEVEL_MEGA_TILES_MEGA_TILE_HEIGHT;
 }
 
 void load_level(u8 index, u8 drop_ship)
@@ -989,9 +940,6 @@ u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 	u8 lt1, lt2;
 	u8 result = 0;
 	
-	// Only if moving on planet
-	if (is_space() || (s->vx == 0 && s->vy == 0)) return result;
-	
 	// Top and Bottom
 	if (s->vy != 0)
 	{
@@ -1339,13 +1287,6 @@ void update_level()
 		move_camera_x();
 	}
 	
-	if (!is_space() && game.player.shared.vy > 0 &&
-	    (game.player.shared.y - game.camera_y + 24) >= ((CAMERA_HEIGHT - 2) * 8) &&
-		(game.camera_y/8 + CAMERA_HEIGHT < game.level_height))
-	{
-		move_camera_y();
-	}
-	
 	// Score
 	LBPrintByte(9, VRAM_TILES_V-3, game.player.shield ,true);
 	LBPrintInt(27, VRAM_TILES_V-3, game.time ,true);
@@ -1391,7 +1332,11 @@ void update_level()
 	else if (game.level_ended && is_space())
 	{
 		tally_score((char*) strLevelClear, 100);
-		planet_transition(game.current_level_index+1, 1, 28, -3, 199);
+		if (game.current_level_index == 9) {
+			exit_game();
+		} else {
+			planet_transition(game.current_level_index+1, 1, 28, -3, 199);
+		}
 	}
 	
 }
@@ -1924,7 +1869,7 @@ void prepare_debugging() {
 		case 6: map_level_info((char*) map_level_city); break;
 		case 7: map_level_info((char*) map_level_space); break;
 		case 8: map_level_info((char*) map_level_desert); break;
-		case 9: map_level_info((char*) map_level_space); break;
+		case 9: map_level_info((char*) map_level_space_final); break;
 	}
 	game.column_count = 0;
 #if DEBUG_LEVEL_LOCATION == DEBUG_BEGGINING
@@ -1945,12 +1890,6 @@ void prepare_debugging() {
     game.scroll_dest_x = 29;
 	game.scroll_src_y = game.camera_y / 8 + CAMERA_HEIGHT + 1;
     game.scroll_dest_y =  26;
-	if (is_space()) {
-		game.camera_x = 127*8;
-		game.player.shared.x = 130*8;
-		game.scroll_src_x = 29;
-		game.scroll_src_y = 26;
-	}
 #endif
 	game.boss.shared.x = get_boss_spawn_x(DEBUG_LEVEL)*8;
 	game.boss.shared.y = get_boss_spawn_y(DEBUG_LEVEL)*8;
@@ -2011,7 +1950,7 @@ int main()
 				animate_shot(&game.player, &game.boss, PLAYER_SHOT_SLOT);
 				update_pause();
 			}
-			if ((!is_space() || game.current_level_index == 9) && (game.camera_x >= BOSS_UPDATE_THRESHOLD) && update_player(&game.boss, BOSS_SLOT))
+			if (!is_space() && (game.camera_x >= BOSS_UPDATE_THRESHOLD) && update_player(&game.boss, BOSS_SLOT))
 			{
 				update_shot(&game.boss, BOSS_SHOT_SLOT);
 				animate_player(&game.boss, &game.player, BOSS_SLOT);

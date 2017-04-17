@@ -22,9 +22,8 @@
                 <map var-name="map_level_forest" left="0" top="85" width="255" height="25"/>
                 <map var-name="map_level_city" left="0" top="110" width="255" height="25"/>
                 <map var-name="map_level_desert" left="0" top="135" width="255" height="25"/>
-            </mega-map>
-            <mega-map var-name="map_space_mega_tiles" mega-tile-width="4" mega-tile-height="5">
-                <map var-name="map_level_space" left="0" top="35" width="124" height="25"/>
+                <map var-name="map_level_space" left="0" top="35" width="255" height="25"/>
+                <map var-name="map_level_space_final" left="0" top="160" width="255" height="25"/>
             </mega-map>
         </maps>
         <defines>
