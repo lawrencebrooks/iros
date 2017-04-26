@@ -933,10 +933,10 @@ u8 pixel_overlap(u8 s1, u8 s2, u8 w1, u8 w2)
 
 u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 {
-	u8 x0_tile = s->x / 8;
-	u8 y0_tile = s->y / 8;
-	u8 x1_tile = (s->x+7) / 8;
-	u8 y1_tile = (s->y+7) / 8;
+	u8 x0_tile = s->x >> 3;
+	u8 y0_tile = s->y >> 3;
+	u8 x1_tile = (s->x+7) >> 3;
+	u8 y1_tile = (s->y+7) >> 3;
 	u8 lt1, lt2;
 	u8 result = 0;
 	

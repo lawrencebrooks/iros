@@ -19,7 +19,7 @@
 #define LB_MACROS_H
 
 // Debug Flags
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 #define DEBUG_LEVEL 9
 #define DEBUG_LEVEL_BEGINNING 0
 #define DEBUG_LEVEL_END 1

@@ -22,8 +22,8 @@
 #include "macros.h"
 
 typedef struct sSpriteShared {
-	float x;
-	float y;
+	u16 x;
+	u16 y;
 	s8 vy;
 	s8 vx;
 	u8 gravity;
