@@ -428,7 +428,7 @@ void spawn_enemy(u16 x, u16 y)
 
 u8 solid_tile(u8 level_tile)
 {
-	if (level_tile >= L_ICE_LEFT && level_tile <= L_BEAM)
+	if (level_tile >= 1 && level_tile <= 24)
 	{
 		return 1;
 	}
@@ -439,9 +439,13 @@ u8 level_hazard(u8 level_tile)
 {
 	switch (level_tile)
 	{
+		case L_DESERT_SPIKE_DOWN : return 1;
+		case L_DESERT_SPIKE_UP : return 1;
 		case L_ICICLE_DOWN : return 1;
 		case L_ICICLE_UP : return 1;
+		case L_JUNGLE_FLOWER : return 1;
 		case L_FIRE_LAVA : return 1;
+		case L_JUNGLE_WATER : return 1;
 	}
 	return 0;
 }
