@@ -34,6 +34,7 @@
             <define def-name="L_JUNGLE_FLOWER" left="22" top="0"/>
             <define def-name="L_FIRE_LAVA" left="23" top="0"/>
             <define def-name="L_JUNGLE_WATER" left="24" top="0"/>
+            <define def-name="L_CITY_ACID" left="25" top="0"/>
         </defines>
     </output>
 </gfx-xform>
