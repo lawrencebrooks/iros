@@ -55,6 +55,7 @@ char* run_anim[4];
 char* shot_anim[1];
 char* spider_anim[2];
 char* shark_anim[1];
+char* hazard_anim[1];
 char* enemy_shot_anim[1];
 char* expl_anim[3];
 char* boss_idle_anim[1];
@@ -283,6 +284,26 @@ void init_enemy_shark(u8 i, u16 x, u16 y)
 	init_enemy_shot(i, x, y);
 }
 
+void init_enemy_level_hazard(u8 i, u16 x, u16 y, u8 enemy_type, char* map)
+{
+	game.enemies[i].active = 1;
+	game.enemies[i].width = 1;
+	game.enemies[i].height = 1;
+	game.enemies[i].enemy_type = enemy_type;
+	game.enemies[i].frame_count = 0;
+	game.enemies[i].shot_frame_count = 0;
+	
+	game.enemies[i].anim.anim_count = 1;
+	game.enemies[i].anim.frames_per_anim = 1;
+	game.enemies[i].anim.anims = hazard_anim;
+	game.enemies[i].anim.anims[0] = map;
+	game.enemies[i].shared.gravity = 0;
+	game.enemies[i].shared.vx = HAZARD_SPEED;
+	game.enemies[i].shared.vy = 0;
+	game.enemies[i].shared.x = x;
+	game.enemies[i].shared.y = y;
+}
+
 
 void load_eeprom(struct EepromBlockStruct* block)
 /*
@@ -428,54 +449,66 @@ void spawn_enemy(u16 x, u16 y)
 
 u8 solid_tile(u8 level_tile)
 {
-	if (level_tile >= 1 && level_tile <= 25)
+	if (level_tile >= 1 && level_tile <= 17)
 	{
 		return 1;
 	}
 	return 0;
 }
 
-u8 level_hazard(u8 level_tile)
+u8 hazard_projectile_tile(u8 level_tile)
 {
-	switch (level_tile)
+	if (level_tile >= 18 && level_tile <= 23)
 	{
-		case L_DESERT_SPIKE_DOWN : return 1;
-		case L_DESERT_SPIKE_UP : return 1;
-		case L_ICICLE_DOWN : return 1;
-		case L_ICICLE_UP : return 1;
-		case L_JUNGLE_FLOWER : return 1;
-		case L_FIRE_LAVA : return 1;
-		case L_JUNGLE_WATER : return 1;
-		case L_CITY_ACID : return 1;
+		return 1;
+	}
+	return 0;
+}
+
+u8 hazard_tile(u8 level_tile)
+{
+	if (level_tile >= 18 && level_tile <= 27)
+	{
+		return 1;
 	}
 	return 0;
 }
 
 void append_tile_column()
 {
-	u8 enemy_spawned = 0;
 	u8 level_tile;
 	u8 rndom = LBRandom(0, CAMERA_HEIGHT-1)*8;
+	u8 hazard_tile_index = 0;
+	u8 solid_tile_index = 0;
 
 	game.column_count++;
     for (u8 y = 0; y <= CAMERA_HEIGHT; y++)
 	{
 		level_tile = get_level_tile(game.current_level, game.scroll_src_x, y + game.camera_y / 8);
 		render_level_tile(level_tile, game.scroll_dest_x, (y + Screen.scrollY / 8) % 30);
-		if (game.column_count % game.spawn_rate == game.spawn_rate - 1 && game.active_enemies < MAX_ENEMIES && !enemy_spawned)
+		if (game.column_count % game.spawn_rate == game.spawn_rate - 1 && game.active_enemies < MAX_ENEMIES && y > 0)
 		{
 			if (is_space())
 			{
 				spawn_enemy(game.camera_x+CAMERA_WIDTH*8, rndom);
-				enemy_spawned = 1;
 			}
-			else if (solid_tile(level_tile))
+			else if (solid_tile(level_tile) && solid_tile_index == 0)
 			{
-				spawn_enemy(game.camera_x+CAMERA_WIDTH*8, (game.camera_y / 8 + y - 1)*8);
-				enemy_spawned = 1;
+				solid_tile_index = y;
+			}
+			else if (hazard_projectile_tile(level_tile) && hazard_tile_index == 0)
+			{
+				hazard_tile_index = y;
 			}
 		}
     }
+	if (hazard_tile_index > 0)
+	{
+		spawn_level_hazard(game.camera_x+CAMERA_WIDTH*8, (game.camera_y / 8 + hazard_tile_index - 1)*8);
+	}
+	else if (level_tile_index > 0) {
+		spawn_enemy(game.camera_x+CAMERA_WIDTH*8, (game.camera_y / 8 + level_tile_index - 1)*8);
+	}
 	
     game.scroll_src_x++;
 	game.scroll_dest_x++;
@@ -1122,10 +1155,23 @@ void update_enemies()
 			{
 				case ENEMY_SPIDER: update_spider_enemy(&game.enemies[i], slot); break;
 				case ENEMY_SHARK: update_shark_enemy(&game.enemies[i], slot); break;
+				default: update_level_hazard(&game.enemies[i], slot); break;
 			}
 		}
 		slot += game.enemies[i].width * game.enemies[i].height;
 	}
+}
+
+u8 hazard_enemy(u8 enemy_type) {
+	switch (enemy_type)
+	{
+		case ENEMY_ACID: return 1;
+		case ENEMY_FIREBALL: return 1;
+		case ENEMY_ICICLE: return 1;
+		case ENEMY_SPORE: return 1;
+		case ENEMY_SUNRAY: return 1;
+	}
+	return 0;
 }
 
 void update_enemy_shots()
@@ -1134,7 +1180,7 @@ void update_enemy_shots()
 	
 	for (u8 i = 0; i < MAX_ENEMIES; i++)
 	{
-		if (game.enemies[i].active && game.enemies[i].shot_frame_count >= ENEMY_SHOT_DELAY_FRAMES)
+		if (!(hazard_enemy(game.enemies[i].enemy_type)) && game.enemies[i].active && game.enemies[i].shot_frame_count >= ENEMY_SHOT_DELAY_FRAMES)
 		{
 			game.enemies[i].shot_frame_count = 0;	
 			for (u8 j = 0; j < MAX_ENEMY_SHOTS; j++)
