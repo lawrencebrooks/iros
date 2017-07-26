@@ -717,8 +717,8 @@ void animate_shot(Player* player, Player* other_player, u8 shot_slot)
 	{
 		if (player->shot[i].active)
 		{
-			player->shot[i].shared.x += player->shot[i].shared.vx*FRAME_TIME*2;
-			player->shot[i].shared.y += player->shot[i].shared.vy*FRAME_TIME;
+			player->shot[i].shared.x += LBMoveDelta(player->shot[i].shared.vx, game.frame_counter)*2;
+			player->shot[i].shared.y += LBMoveDelta(player->shot[i].shared.vy, game.frame_counter);
 			LBMoveSprite(shot_slot+i, player->shot[i].shared.x - game.camera_x, player->shot[i].shared.y - game.camera_y, 1, 1);
 			if (player->shot[i].shared.x < game.camera_x || player->shot[i].shared.x+8 > game.camera_x + CAMERA_WIDTH*8 ||
 			    collision_detect_level(&player->shot[i].shared, 1, 1))
@@ -1085,8 +1085,8 @@ void animate_sprite(SpriteShared* s, u8 slot, u8 width, u8 height, u8 level_haza
 {
 	s->vy = s->vy + s->gravity*FRAME_TIME;
 	if (s->vy > MAX_SPEED) s->vy = MAX_SPEED;
-	s->x += s->vx*FRAME_TIME;
-	s->y += s->vy*FRAME_TIME;
+	s->x += LBMoveDelta(s->vx, game.frame_counter);
+	s->y += LBMoveDelta(s->vy, game.frame_counter);
 	if(collision_detect_level(s, width, height) && level_hazard)
 	{
 		s->y = origin_tile*8;
@@ -1318,7 +1318,7 @@ void animate_enemy_shots()
 					}
 					else
 					{
-						game.enemies[i].shot[j].shared.x += game.enemies[i].shot[j].shared.vx*FRAME_TIME;
+						game.enemies[i].shot[j].shared.x += LBMoveDelta(game.enemies[i].shot[j].shared.vx, game.frame_counter);
 						LBMoveSprite(slot, game.enemies[i].shot[j].shared.x - game.camera_x, game.enemies[i].shot[j].shared.y - game.camera_y, 1, 1);
 					}
 				}

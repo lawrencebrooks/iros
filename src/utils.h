@@ -41,6 +41,35 @@ typedef struct sAnimation {
 	char** anims;
 } Animation;
 
+u16 LBMoveDelta(s8 unitsPerSecond, u8 frame_counter)
+/*
+ * Calculate distance travelled, given speed (unitsPerSecond), by counting frames instead of
+ * multiplying by a time fraction.
+ * This allows for fairly accurate movement without resorting to slow and memory intensive floating
+ * point numbers. This function assumes a game loop speed of 60 frames per second
+ */
+{
+	s8 direction = 1;
+	u8 mod_factor;
+	u8 base_delta;
+	u8 remainder_delta;
+	
+	if (unitsPerSecond == 0) return 0;
+	if (unitsPerSecond < 0)
+	{
+		direction = -1;
+		unitsPerSecond = -unitsPerSecond;
+	}
+	base_delta = unitsPerSecond / 60;
+	remainder_delta = unitsPerSecond % 60;
+	if (remainder_delta == 0) return direction*base_delta;
+	mod_factor = 60 / remainder_delta;
+	if (frame_counter % mod_factor == 0) {
+		return direction*(base_delta + 1);
+	}
+	return direction*base_delta;
+}
+
 char* LBGetNextFrame(Animation* anim)
 {
 	anim->looped = 0;
