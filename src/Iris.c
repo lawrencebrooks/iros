@@ -469,6 +469,19 @@ u8 solid_tile(u8 level_tile)
 	return 0;
 }
 
+u8 solid_or_hazard_tile(u8 level_tile)
+{
+	if (level_tile >= 1 && level_tile <= 17)
+	{
+		return 1;
+	}
+	if (level_tile >= 18 && level_tile <= 27)
+	{
+		return 2;
+	}
+	return 0;
+}
+
 u8 hazard_tile(u8 level_tile)
 {
 	if (level_tile >= 18 && level_tile <= 27)
@@ -993,6 +1006,8 @@ u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 	u8 x1_tile = (s->x+7) >> 3;
 	u8 y1_tile = (s->y+7) >> 3;
 	u8 lt1, lt2;
+	u8 solid_tile_1 = 0;
+	u8 solid_tile_2 = 0;
 	u8 result = 0;
 	
 	// Top and Bottom
@@ -1004,25 +1019,31 @@ u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 			{
 				lt1 = get_level_tile(game.current_level, x0_tile + x, y0_tile);
 				lt2 = get_level_tile(game.current_level, x1_tile + x, y0_tile);
-				if ((solid_tile(lt1) && pixel_overlap(s->x-game.camera_x, x0_tile * 8, 8, 8) >= OVERLAP_THRESHOLD) ||
-					(solid_tile(lt2) && pixel_overlap(s->x-game.camera_x, x1_tile * 8, 8, 8) >= OVERLAP_THRESHOLD))
+				solid_tile_1 = solid_or_hazard_tile(lt1);
+				solid_tile_2 = solid_or_hazard_tile(lt2);
+				if ((solid_tile_1 && pixel_overlap(s->x-game.camera_x, x0_tile * 8-game.camera_x, 8, 8) >= OVERLAP_THRESHOLD) ||
+					(solid_tile_2 && pixel_overlap(s->x-game.camera_x, x1_tile * 8-game.camera_x, 8, 8) >= OVERLAP_THRESHOLD))
 				{
 					s->vy =  0;
 					s->y = (y0_tile + 1) * 8;
-					result = 1;
+					if (solid_tile_1 > result) result = solid_tile_1;
+					if (solid_tile_2 > result) result = solid_tile_2;
 				}
 			}
 			if (s->vy > 0)
 			{
 				lt1 = get_level_tile(game.current_level, x0_tile + x, (s->y + tile_height*8 - 1) / 8);
 				lt2 = get_level_tile(game.current_level, x1_tile + x, (s->y + tile_height*8 - 1) / 8);
-				if ((solid_tile(lt1) && pixel_overlap(s->x-game.camera_x, x0_tile * 8, 8, 8) >= OVERLAP_THRESHOLD) || 
-					(solid_tile(lt2) && pixel_overlap(s->x-game.camera_x, x1_tile * 8, 8, 8) >= OVERLAP_THRESHOLD))
+				solid_tile_1 = solid_or_hazard_tile(lt1);
+				solid_tile_2 = solid_or_hazard_tile(lt2);
+				if ((solid_tile_1 && pixel_overlap(s->x-game.camera_x, x0_tile * 8-game.camera_x, 8, 8) >= OVERLAP_THRESHOLD) || 
+					(solid_tile_2 && pixel_overlap(s->x-game.camera_x, x1_tile * 8-game.camera_x, 8, 8) >= OVERLAP_THRESHOLD))
 				{
 					s->vy =  0;
 					s->gravity = 0;
 					s->y = y0_tile * 8;
-					result = 1;
+					if (solid_tile_1 > result) result = solid_tile_1;
+					if (solid_tile_2 > result) result = solid_tile_2;
 				}
 			}
 		}
@@ -1039,12 +1060,15 @@ u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 			{
 				lt1 = get_level_tile(game.current_level, x0_tile, y0_tile + y);
 				lt2 = get_level_tile(game.current_level, x0_tile, y1_tile + y);
-				if ((solid_tile(lt1) && pixel_overlap(s->y, y0_tile * 8, 8, 8) >= OVERLAP_THRESHOLD) ||
-					(solid_tile(lt2) && pixel_overlap(s->y, y1_tile * 8, 8, 8) >= OVERLAP_THRESHOLD))
+				solid_tile_1 = solid_or_hazard_tile(lt1);
+				solid_tile_2 = solid_or_hazard_tile(lt2);
+				if ((solid_tile_1 && pixel_overlap(s->y-game.camera_y, y0_tile * 8-game.camera_y, 8, 8) >= OVERLAP_THRESHOLD) ||
+					(solid_tile_2 && pixel_overlap(s->y-game.camera_y, y1_tile * 8-game.camera_y, 8, 8) >= OVERLAP_THRESHOLD))
 				{
 					s->vx =  0;
 					s->x = (x0_tile + 1) * 8;
-					result = 1;
+					if (solid_tile_1 > result) result = solid_tile_1;
+					if (solid_tile_2 > result) result = solid_tile_2;
 				}
 			}
 			
@@ -1052,12 +1076,15 @@ u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height)
 			{
 				lt1 = get_level_tile(game.current_level, (s->x + tile_width * 8 - 1) / 8, y0_tile + y);
 				lt2 = get_level_tile(game.current_level, (s->x + tile_width * 8 - 1) / 8, y1_tile + y);
-				if ((solid_tile(lt1) && pixel_overlap(s->y, y0_tile * 8, 8, 8) >= OVERLAP_THRESHOLD) ||
-					(solid_tile(lt2) && pixel_overlap(s->y, y1_tile * 8, 8, 8) >= OVERLAP_THRESHOLD))
+				solid_tile_1 = solid_or_hazard_tile(lt1);
+				solid_tile_2 = solid_or_hazard_tile(lt2);
+				if ((solid_tile_1 && pixel_overlap(s->y-game.camera_y, y0_tile * 8-game.camera_y, 8, 8) >= OVERLAP_THRESHOLD) ||
+					(solid_tile_2 && pixel_overlap(s->y-game.camera_y, y1_tile * 8-game.camera_y, 8, 8) >= OVERLAP_THRESHOLD))
 				{
 					s->vx =  0;
 					s->x = x0_tile * 8;
-					result = 1;
+					if (solid_tile_1 > result) result = solid_tile_1;
+					if (solid_tile_2 > result) result = solid_tile_2;
 				}
 			}
 		}
