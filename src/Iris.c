@@ -668,7 +668,7 @@ char on_solid_ground(SpriteShared* s, u8 tile_width, u8 tile_height)
 	{
 		lt1 = get_level_tile(game.current_level, s->x / 8 + x, (s->y + tile_height*8) / 8);
 		lt2 = get_level_tile(game.current_level, (s->x+7) / 8 + x, (s->y + tile_height*8) / 8);
-		if (solid_tile(lt1) || solid_tile(lt2))
+		if (solid_or_hazard_tile(lt1) || solid_or_hazard_tile(lt2))
 		{
 			return 1;
 		}
