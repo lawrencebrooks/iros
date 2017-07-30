@@ -503,22 +503,23 @@ u8 hazard_projectile_tile(u8 level_tile)
 void append_tile_column()
 {
 	u8 level_tile;
-	u8 rndom = LBRandom(0, CAMERA_HEIGHT-1)*8;
+	u8 rndom = LBRandom(1, CAMERA_HEIGHT-1)*8;
 	u8 hazard_tile_index = 0;
 	u8 solid_tile_index = 0;
-
+	u8 do_spawn = 0;
+	
 	game.column_count++;
-    for (u8 y = 0; y <= CAMERA_HEIGHT; y++)
+	if (game.column_count % game.spawn_rate == game.spawn_rate - 1 && game.active_enemies < MAX_ENEMIES)
+	{
+		do_spawn = 1;
+	}
+    for (u8 y = 0; y < CAMERA_HEIGHT; y++)
 	{
 		level_tile = get_level_tile(game.current_level, game.scroll_src_x, y + game.camera_y / 8);
 		render_level_tile(level_tile, game.scroll_dest_x, (y + Screen.scrollY / 8) % 30);
-		if (game.column_count % game.spawn_rate == game.spawn_rate - 1 && game.active_enemies < MAX_ENEMIES && y > 0)
+		if (do_spawn && y > 0)
 		{
-			if (is_space())
-			{
-				spawn_enemy(game.camera_x+CAMERA_WIDTH*8, rndom, 0);
-			}
-			else if (hazard_projectile_tile(level_tile) && hazard_tile_index == 0)
+			if (hazard_projectile_tile(level_tile) && hazard_tile_index == 0)
 			{
 				hazard_tile_index = y;
 			}
@@ -528,7 +529,11 @@ void append_tile_column()
 			}
 		}
     }
-	if (hazard_tile_index > 0 && game.current_level_index == 2)
+	if (do_spawn && is_space())
+	{
+		spawn_enemy(game.camera_x+CAMERA_WIDTH*8, rndom, 0);
+	}
+	else if (hazard_tile_index > 0 && game.current_level_index == 2)
 	{
 		spawn_enemy(game.camera_x+CAMERA_WIDTH*8, (game.camera_y / 8 + hazard_tile_index - 1)*8, 1);
 	}
@@ -1108,17 +1113,21 @@ u8 map_explosion(u8* flags, Animation* anim, u8 slot, u8 width, u8 height)
 	return anim->looped;
 }
 
-void animate_sprite(SpriteShared* s, u8 slot, u8 width, u8 height, u8 level_hazard, u8 origin_tile)
+u8 animate_sprite(SpriteShared* s, u8 slot, u8 width, u8 height, u8 level_hazard, u8 origin_tile)
 {
+	u8 result;
+	
 	s->vy = s->vy + s->gravity*FRAME_TIME;
 	if (s->vy > MAX_SPEED) s->vy = MAX_SPEED;
 	s->x += LBMoveDelta(s->vx, game.frame_counter);
 	s->y += LBMoveDelta(s->vy, game.frame_counter);
-	if(collision_detect_level(s, width, height) && level_hazard)
+	result = collision_detect_level(s, width, height);
+	if(result && level_hazard)
 	{
 		s->y = origin_tile*8;
 	}
 	LBMoveSprite(slot, s->x - game.camera_x, s->y - game.camera_y, width, height);
+	return result;
 }
 
 void animate_player(Player* player, Player* other_player, u8 slot)
@@ -1136,7 +1145,12 @@ void animate_player(Player* player, Player* other_player, u8 slot)
 		other_player->shield = 0;
 		other_player->flags = EXPLODING;
 	}
-	else animate_sprite(&player->shared, slot, player->width, player->height, 0, 0);
+	else if (animate_sprite(&player->shared, slot, player->width, player->height, 0, 0) > 1 && !DEBUG_GODMODE)
+	{
+		SFX_PLAYER_EXPLODE;
+		game.player.shield = 0;
+		game.player.flags = EXPLODING;
+	}
 }
 
 void update_spider_enemy(Enemy* e, u8 slot)
@@ -1293,9 +1307,12 @@ void animate_enemies()
 			{
 				animate_sprite(&game.enemies[i].shared, slot, game.enemies[i].width, game.enemies[i].height, 1, game.enemies[i].origin_tile);
 			}
-			else
+			else if (animate_sprite(&game.enemies[i].shared, slot, game.enemies[i].width, game.enemies[i].height, 0, 0) > 1)
 			{
-				animate_sprite(&game.enemies[i].shared, slot, game.enemies[i].width, game.enemies[i].height, 0, 0);
+				SFX_ENEMY_EXPLODE;
+				game.enemies[i].flags = EXPLODING;
+				game.enemies[i].active = 0;
+				game.active_enemies--;
 			}
 		}
 		else if (game.enemies[i].flags & EXPLODING)
