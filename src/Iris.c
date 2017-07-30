@@ -1372,7 +1372,7 @@ void animate_enemy_shots()
 	}
 }
 
-void update_level()
+u8 update_level()
 {
 	u8 ship_x = game.player.shared.x - game.camera_x;
 	u8 ship_y = 0;
@@ -1453,10 +1453,12 @@ void update_level()
 		tally_score((char*) strLevelClear, 100);
 		if (game.current_level_index == 9) {
 			exit_game();
+			return 1;
 		} else {
 			planet_transition(game.current_level_index+1, 1, 28, -3, 199);
 		}
 	}
+	return 0;
 	
 }
 
@@ -2057,7 +2059,7 @@ int main()
 		LBGetJoyPadState(&game.player.controls, 0);
 		if (game.current_screen == LEVEL)
 		{
-			update_level();
+			if (update_level()) continue;
 			if (update_player(&game.player, PLAYER_SLOT))
 			{
 				update_shot(&game.player, PLAYER_SHOT_SLOT);
