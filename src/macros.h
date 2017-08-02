@@ -83,13 +83,22 @@
 #define END_OF_SPACE 32
 
 // Shot macros
-#define BASIC_SHOT 0
-#define BASIC_ENEMY_SHOT 1
-#define NO_SHOT 2
-#define SHOT_SPEED 127
-#define ENEMY_SHOT_SPEED 100
-#define BASIC_ENEMY_SHOT_HITCOUNT 1
-#define BSIC_SHOT_HITCOUNT 1
+#define BALL_SHOT 0
+#define ICE_SHOT 1
+#define RED_PLASMA_SHOT 2
+#define GREEN_PLASMA_SHOT 3
+#define ANGLED_SHOT 4
+#define SPACE_SHOT 5
+#define SPACE_BOMB_SHOT 6
+#define ENEMY_BALL_SHOT 7
+
+#define SLOW_SHOT_SPEED 80
+#define MEDIUM_SHOT_SPEED 100
+#define FAST_SHOT_SPEED 127
+
+#define LOW_SHOT_DAMAGE 1
+#define MEDIUM_SHOT_DAMAGE 2
+#define SERVERE_SHOT_DAMAGE 4
 
 // Sprite slots
 #define PLAYER_SLOT 0
