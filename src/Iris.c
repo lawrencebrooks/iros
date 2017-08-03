@@ -101,6 +101,9 @@ void init_shot(Shot* shot, u8 type, u8 damage, u8 speed, const char* map, char**
 	shot->anim.anims = anim;
 	shot->anim.anims[0] = (char*) map;
 	shot->shared.vx = speed;
+	if (type == ANGLED_SHOT) {
+		shot->shared.vy = -speed;
+	}
 }
 
 void init_player_shot(u8 level)
@@ -792,49 +795,81 @@ char on_solid_ground(SpriteShared* s, u8 tile_width, u8 tile_height)
 	return 0;
 }
 
-u8 find_shot_slot(Player* player, u8 from)
+void find_shot_slots(Player* player, u8* idx)
 {
-	for (u8 i = from; i < MAX_PLAYER_SHOTS; i++)
+	u8 j = 0;
+	for (u8 i = 0; i < MAX_PLAYER_SHOTS; i++)
 	{
-		if (!player->shot[i].active) return i;
+		if (!player->shot[i].active)
+		{
+			idx[j] = i;
+			if (++j == 3) break;
+		}
 	}
-	return from;
 }
 
 void update_shot(Player* player, u8 shot_slot)
 {
 	// Shot updates
-	u8 idx0, idx1, idx2;
+	u8 idx[3];
 	
 	if (player->controls.pressed & BTN_A && (MAX_PLAYER_SHOTS - player->active_shots) >= player->shots_per_fire )
 	{
 		SFX_PLAYER_SHOOT;
-		idx0 = find_shot_slot(player, 0);
-		LBMapSprite(shot_slot+idx, LBGetNextFrame(&player->shot[idx].anim), 0);
-		player->shot[idx].active = 1;
-		player->shot[idx].shared.y = (u16) player->shared.y / 8 * 8;
+		find_shot_slots(player, idx);
+		
+		if (player->shots_per_fire >= 1)
+		{
+			LBMapSprite(shot_slot+idx[0], LBGetNextFrame(&player->shot[idx[0]].anim), 0);
+			player->shot[idx[0]].active = 1;
+			player->shot[idx[0]].shared.y = (u16) player->shared.y / 8 * 8;
+			player->active_shots++;
+		}
+		if (player->shots_per_fire >= 2)
+		{
+			LBMapSprite(shot_slot+idx[1], LBGetNextFrame(&player->shot[idx[1]].anim), 0);
+			player->shot[idx[0]].shared.y -= 8;
+			player->shot[idx[1]].active = 1;
+			player->shot[idx[1]].shared.y = (u16) player->shared.y / 8 * 8;
+			player->active_shots++;
+		}
+		if (player->shots_per_fire == 3)
+		{
+			LBMapSprite(shot_slot+idx[2], LBGetNextFrame(&player->shot[idx[2]].anim), 0);
+			player->shot[idx[2]].active = 1;
+			player->shot[idx[2]].shared.y = (u16) player->shared.y / 8 * 8 + 8;
+			player->active_shots++;
+		}
 		if (is_space())
 		{
-			player->shot[idx].shared.x = player->shared.x+player->width*8;
+			player->shot[idx[0]].shared.x = player->shared.x+player->width*8;
 		}
 		else
 		{
-			if (!(player->flags & PRONE))
+			if (!(player->flags & PRONE) && player->shots_per_fire != 3)
 			{
-				player->shot[idx].shared.y += 8;
+				for (u8 i = 0; i < 2; i++)
+				{
+					player->shot[idx[i]].shared.y += 8;
+				}
 			}
 			if (player->direction == D_RIGHT)
 			{
-				player->shot[idx].shared.x = player->shared.x+2*8;
-				if (player->shot[idx].shared.vx < 0) player->shot[idx].shared.vx = -player->shot[idx].shared.vx;
+				for (u8 i = 0; i < 3; i++)
+				{
+					player->shot[idx[i]].shared.x = player->shared.x+2*8;
+					if (player->shot[idx[i]].shared.vx < 0) player->shot[idx[i]].shared.vx = -player->shot[idx[i]].shared.vx;
+				}
 			}
 			else
 			{
-				if (player->shot[idx].shared.vx > 0) player->shot[idx].shared.vx = -player->shot[idx].shared.vx;
-				player->shot[idx].shared.x = player->shared.x-1*8;
+				for (u8 i = 0; i < 3; i++)
+				{
+					player->shot[idx[i]].shared.x = player->shared.x-1*8;
+					if (player->shot[idx[i]].shared.vx > 0) player->shot[idx[i]].shared.vx = -player->shot[idx[i]].shared.vx;
+				}
 			}
 		}
-		player->active_shots++;
 	}
 }
 
