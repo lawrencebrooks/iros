@@ -1,5 +1,5 @@
 /*
- * Program: Iris
+ * Program: Iros
  *
  * Copyright 2016 Lawrence Brooks
  *
@@ -1975,7 +1975,6 @@ void load_splash()
 	LBPrint(8, 15, (char*) str1Player);
 	LBPrint(8, 16, (char*) strHighScores);
 	LBPrint(4, 21, (char*) strCopyright);
-	LBPrint(3, 26, (char*) strMusic);
 	DrawMap2(6, 5, map_splash);
 	LBMapSprite(0, map_right_arrow, 0);
 }

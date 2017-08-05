@@ -1,4 +1,4 @@
-Iris.o: ../Iris.c ../kernel/uzebox.h \
+Iros.o: ../Iros.c ../kernel/uzebox.h \
  /usr/local/lib/gcc/avr/4.9.2/include/stdbool.h ../kernel/defines.h \
  /usr/local/avr/include/avr/io.h /usr/local/avr/include/avr/sfr_defs.h \
  /usr/local/avr/include/inttypes.h \

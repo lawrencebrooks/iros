@@ -1,2 +1,2 @@
-# Iris 
-Source code and assets for the Iris Uzebox game.
+# Iros 
+Source code and assets for the Iros Uzebox game.

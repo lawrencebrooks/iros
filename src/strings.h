@@ -22,7 +22,6 @@
 
 // String indexes
 const unsigned char strCopyright [] PROGMEM="2016 LAWRENCE BROOKS";
-const unsigned char strMusic [] PROGMEM="MUSIC BY TANNER HELLAND";
 const unsigned char str1Player [] PROGMEM="START";
 const unsigned char strHighScores [] PROGMEM="HIGH SCORES";
 const unsigned char strSelectHandle [] PROGMEM="";

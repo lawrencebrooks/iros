@@ -1,10 +1,10 @@
 ###############################################################################
-# Makefile for the project Iris
+# Makefile for the project Iros
 ###############################################################################
 
 ## General Flags
-PROJECT = Iris 
-GAME= Iris
+PROJECT = Iros 
+GAME= Iros
 MCU = atmega644
 TARGET = $(GAME).elf
 CC = avr-gcc

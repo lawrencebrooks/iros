@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="iris" InternalType="Console">
+<CodeLite_Project Name="iros" InternalType="Console">
   <Description/>
   <Dependencies/>
   <Settings Type="Executable">
@@ -281,13 +281,13 @@
       <File Name="src/data/planetmusic.h"/>
       <File Name="src/data/spacemusic.h"/>
     </VirtualDirectory>
-    <File Name="src/Iris.c"/>
+    <File Name="src/Iros.c"/>
   </VirtualDirectory>
-  <VirtualDirectory Name="iris">
+  <VirtualDirectory Name="iros">
     <File Name="eeprom.bin"/>
     <File Name="LICENSE"/>
     <File Name="README.md"/>
-    <File Name="iris.project"/>
+    <File Name="iros.project"/>
   </VirtualDirectory>
   <VirtualDirectory Name="art">
     <File Name="art/cc.txt"/>
