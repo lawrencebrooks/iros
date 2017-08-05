@@ -105,8 +105,12 @@ void init_shot(Shot* shot, u8 type, u8 damage, u8 speed, s8 y_delta, const char*
 	shot->anim.anims = anim;
 	shot->anim.anims[0] = (char*) map;
 	shot->shared.vx = speed;
+	shot->shared.vy = 0;
 	if (type == ANGLED_SHOT) {
 		shot->shared.vy = -speed;
+	}
+	if (type == SPACE_BOMB_SHOT) {
+		shot->shared.vy = speed;
 	}
 }
 
@@ -155,7 +159,7 @@ void init_player_shot(u8 level)
 	{
 		init_shot(&game.player.shot[0], SPACE_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 0, map_hero_space_shot, shot_top_anim);
 		init_shot(&game.player.shot[1], SPACE_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 0, map_hero_space_shot, shot_middle_anim);
-		init_shot(&game.player.shot[2], SPACE_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 0, map_hero_space_shot, shot_bottom_anim);
+		init_shot(&game.player.shot[2], SPACE_BOMB_SHOT, SEVERE_SHOT_DAMAGE, FAST_SHOT_SPEED, 0, map_hero_space_bomb, shot_bottom_anim);
 		game.player.shots_per_fire = 1;
 	}
 }
@@ -804,7 +808,10 @@ void update_shot(Player* player, u8 shot_slot)
 		{
 			player->shot[idx].shared.x = player->shared.x+player->width*8;
 			player->shot[idx].shared.vx = player->shot[idx].shot_speed;
-			player->shot[idx].shared.vy = 0;
+			if (player->shot[idx].shot_type == SPACE_BOMB_SHOT)
+			{
+				player->shot[idx].shared.vy *= -1;
+			}
 		}
 		else
 		{
