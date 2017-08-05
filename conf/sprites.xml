@@ -57,6 +57,7 @@
             <map var-name="map_enemy_drone" left="11" top="3" width="1" height="1"/>
             <map var-name="map_enemy_boss_turret" left="12" top="3" width="1" height="1"/>
             <map var-name="map_enemy_boss_eye" left="13" top="3" width="1" height="1"/>
+            <map var-name="map_enemy_boss_shot" left="15" top="3" width="1" height="1"/>
 
             <!-- Level Hazards -->
             <map var-name="map_hazard_ice" left="12" top="2" width="1" height="1"/>
