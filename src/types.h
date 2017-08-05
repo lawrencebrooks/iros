@@ -34,6 +34,8 @@ typedef struct sShot {
 	u8 shot_type;
 	u8 hit_count;
 	u8 active;
+	s8 shot_speed;
+	s8 y_delta;
 	Animation anim;
 
 } Shot;

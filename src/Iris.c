@@ -63,7 +63,9 @@ char* expl_anim[3];
 char* boss_idle_anim[1];
 char* boss_jump_anim[1];
 char* boss_run_anim[4];
-char* boss_shot_anim[1];
+char* boss_shot_top_anim[1];
+char* boss_shot_middle_anim[1];
+char* boss_shot_bottom_anim[1];
 
 u8 is_space()
 {
@@ -92,10 +94,12 @@ void init_enemy_state()
 	game.active_enemies = 0;
 }
 
-void init_shot(Shot* shot, u8 type, u8 damage, u8 speed, const char* map, char** anim)
+void init_shot(Shot* shot, u8 type, u8 damage, u8 speed, s8 y_delta, const char* map, char* anim[])
 {
 	shot->shot_type = type;
 	shot->hit_count = damage;
+	shot->shot_speed = speed;
+	shot->y_delta = y_delta;
 	shot->anim.anim_count = 1;
 	shot->anim.frames_per_anim = 1;
 	shot->anim.anims = anim;
@@ -110,59 +114,49 @@ void init_player_shot(u8 level)
 {
 	if (level == 0)	// Ice
 	{
-		for (u8 i = 0; i < MAX_PLAYER_SHOTS; i++)
-		{
-			init_shot(&game.player.shot[i], BALL_SHOT, LOW_SHOT_DAMAGE, SLOW_SHOT_SPEED, map_hero_ball_shot, shot_top_anim);
-			game.player.shots_per_fire = 1;
-		}
+		init_shot(&game.player.shot[0], BALL_SHOT, LOW_SHOT_DAMAGE, SLOW_SHOT_SPEED, 0, map_hero_ball_shot, shot_top_anim);
+		init_shot(&game.player.shot[1], BALL_SHOT, LOW_SHOT_DAMAGE, SLOW_SHOT_SPEED, 0, map_hero_ball_shot, shot_middle_anim);
+		init_shot(&game.player.shot[2], BALL_SHOT, LOW_SHOT_DAMAGE, SLOW_SHOT_SPEED, 0, map_hero_ball_shot, shot_bottom_anim);
+		game.player.shots_per_fire = 1;
 	}
 	else if (level == 2) // Fire
 	{
-		for (u8 i = 0; i < MAX_PLAYER_SHOTS; i++)
-		{
-			init_shot(&game.player.shot[i], ICE_SHOT, MEDIUM_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, map_hero_ice_shot, shot_top_anim);
-			game.player.shots_per_fire = 1;
-		}
+		init_shot(&game.player.shot[0], ICE_SHOT, MEDIUM_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, 0, map_hero_ice_shot, shot_top_anim);
+		init_shot(&game.player.shot[1], ICE_SHOT, MEDIUM_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, 0, map_hero_ice_shot, shot_middle_anim);
+		init_shot(&game.player.shot[2], ICE_SHOT, MEDIUM_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, 0, map_hero_ice_shot, shot_bottom_anim);
+		game.player.shots_per_fire = 1;
 		
 	}
 	else if (level == 4) // Jungle
 	{
-		for (u8 i = 1; i < MAX_PLAYER_SHOTS; i += 2)
-		{
-			init_shot(&game.player.shot[i], RED_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, map_hero_rplasma_shot, shot_middle_anim);
-			init_shot(&game.player.shot[i-1], ANGLED_SHOT, LOW_SHOT_DAMAGE, FAST_SHOT_SPEED, map_hero_ball_shot, shot_top_anim);
-			game.player.shots_per_fire = 2;
-		}
+		init_shot(&game.player.shot[0], ANGLED_SHOT, LOW_SHOT_DAMAGE, FAST_SHOT_SPEED, -8, map_hero_ball_shot, shot_top_anim);
+		init_shot(&game.player.shot[1], RED_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 0, map_hero_rplasma_shot, shot_middle_anim);
+		init_shot(&game.player.shot[2], RED_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 0, map_hero_rplasma_shot, shot_bottom_anim);
+		game.player.shots_per_fire = 2;
 		
 	}
 	else if (level == 6) // City
 	{
-		for (u8 i = 1; i < MAX_PLAYER_SHOTS; i += 2)
-		{
-			init_shot(&game.player.shot[i], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, map_hero_gplasma_shot, shot_middle_anim);
-			init_shot(&game.player.shot[i-1], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, map_hero_gplasma_shot, shot_top_anim);
-			game.player.shots_per_fire = 2;
-		}
+		init_shot(&game.player.shot[0], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, -8, map_hero_gplasma_shot, shot_top_anim);
+		init_shot(&game.player.shot[1], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 0, map_hero_gplasma_shot, shot_middle_anim);
+		init_shot(&game.player.shot[2], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 0, map_hero_gplasma_shot, shot_bottom_anim);
+		game.player.shots_per_fire = 2;
 		
 	}
 	else if (level == 8) // Dessert
 	{
-		for (u8 i = 2; i < MAX_PLAYER_SHOTS; i += 3)
-		{
-			init_shot(&game.player.shot[i], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, map_hero_gplasma_shot, shot_bottom_anim);
-			init_shot(&game.player.shot[i-1], ICE_SHOT, MEDIUM_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, map_hero_ice_shot, shot_middle_anim);
-			init_shot(&game.player.shot[i-2], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, map_hero_gplasma_shot, shot_top_anim);
-			game.player.shots_per_fire = 3;
-		}
+		init_shot(&game.player.shot[0], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, -8, map_hero_gplasma_shot, shot_top_anim);
+		init_shot(&game.player.shot[1], ICE_SHOT, MEDIUM_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, 0, map_hero_ice_shot, shot_middle_anim);
+		init_shot(&game.player.shot[2], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 8, map_hero_gplasma_shot, shot_bottom_anim);
+		game.player.shots_per_fire = 3;
 		
 	}
 	else
 	{
-		for (u8 i = 0; i < MAX_PLAYER_SHOTS; i++)
-		{
-			init_shot(&game.player.shot[i], SPACE_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, map_hero_space_shot, shot_middle_anim);
-			game.player.shots_per_fire = 1;
-		}
+		init_shot(&game.player.shot[0], SPACE_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 0, map_hero_space_shot, shot_top_anim);
+		init_shot(&game.player.shot[1], SPACE_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 0, map_hero_space_shot, shot_middle_anim);
+		init_shot(&game.player.shot[2], SPACE_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 0, map_hero_space_shot, shot_bottom_anim);
+		game.player.shots_per_fire = 1;
 	}
 }
 
@@ -170,53 +164,38 @@ void init_boss_shot(u8 level)
 {
 	if (level == 0)	// Ice
 	{
-		for (u8 i = 0; i < MAX_PLAYER_SHOTS; i++)
-		{
-			init_shot(&game.boss.shot[i], ICE_SHOT, MEDIUM_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, map_hero_ice_shot, shot_top_anim);
-			game.player.shots_per_fire = 1;
-		}
+		init_shot(&game.boss.shot[0], ICE_SHOT, MEDIUM_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, 0, map_hero_ice_shot, boss_shot_top_anim);
+		init_shot(&game.boss.shot[1], ICE_SHOT, MEDIUM_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, 0, map_hero_ice_shot, boss_shot_middle_anim);
+		init_shot(&game.boss.shot[2], ICE_SHOT, MEDIUM_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, 0, map_hero_ice_shot, boss_shot_bottom_anim);
+		game.boss.shots_per_fire = 1;
 	}
 	else if (level == 2) // Fire
 	{
-		for (u8 i = 1; i < MAX_PLAYER_SHOTS; i += 2)
-		{
-			init_shot(&game.boss.shot[i], RED_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, map_hero_rplasma_shot, shot_middle_anim);
-			init_shot(&game.boss.shot[i-1], ANGLED_SHOT, LOW_SHOT_DAMAGE, FAST_SHOT_SPEED, map_hero_ball_shot, shot_top_anim);
-			game.player.shots_per_fire = 2;
-		}
-		
+		init_shot(&game.boss.shot[0], ANGLED_SHOT, LOW_SHOT_DAMAGE, FAST_SHOT_SPEED, -8, map_hero_ball_shot, boss_shot_top_anim);
+		init_shot(&game.boss.shot[1], RED_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 0, map_hero_rplasma_shot, boss_shot_middle_anim);
+		init_shot(&game.boss.shot[2], RED_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 0, map_hero_rplasma_shot, boss_shot_bottom_anim);
+		game.boss.shots_per_fire = 2;
 	}
 	else if (level == 4) // Jungle
 	{
-		for (u8 i = 1; i < MAX_PLAYER_SHOTS; i += 2)
-		{
-			init_shot(&game.boss.shot[i], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, map_hero_gplasma_shot, shot_middle_anim);
-			init_shot(&game.boss.shot[i-1], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, map_hero_gplasma_shot, shot_top_anim);
-			game.player.shots_per_fire = 2;
-		}
-		
+		init_shot(&game.boss.shot[0], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, -8, map_hero_gplasma_shot, boss_shot_top_anim);
+		init_shot(&game.boss.shot[1], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 0, map_hero_gplasma_shot, boss_shot_middle_anim);
+		init_shot(&game.boss.shot[2], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 0, map_hero_gplasma_shot, boss_shot_bottom_anim);
+		game.boss.shots_per_fire = 2;
 	}
 	else if (level == 6) // City
 	{
-		for (u8 i = 2; i < MAX_PLAYER_SHOTS; i += 3)
-		{
-			init_shot(&game.boss.shot[i], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, map_hero_gplasma_shot, shot_bottom_anim);
-			init_shot(&game.boss.shot[i-1], ICE_SHOT, MEDIUM_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, map_hero_ice_shot, shot_middle_anim);
-			init_shot(&game.boss.shot[i-2], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, map_hero_gplasma_shot, shot_top_anim);
-			game.player.shots_per_fire = 3;
-		}
-		
+		init_shot(&game.boss.shot[0], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, -8, map_hero_gplasma_shot, boss_shot_top_anim);
+		init_shot(&game.boss.shot[1], ICE_SHOT, MEDIUM_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, 0, map_hero_ice_shot, boss_shot_middle_anim);
+		init_shot(&game.boss.shot[2], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 8, map_hero_gplasma_shot, boss_shot_bottom_anim);
+		game.boss.shots_per_fire = 3;
 	}
 	else if (level == 8) // Dessert
 	{
-		for (u8 i = 2; i < MAX_PLAYER_SHOTS; i += 3)
-		{
-			init_shot(&game.boss.shot[i], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, map_hero_gplasma_shot, shot_bottom_anim);
-			init_shot(&game.boss.shot[i-1], RED_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, map_hero_ice_shot, shot_middle_anim);
-			init_shot(&game.boss.shot[i-2], GREEN_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, map_hero_gplasma_shot, shot_top_anim);
-			game.player.shots_per_fire = 3;
-		}
-		
+		init_shot(&game.boss.shot[0], RED_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, -8, map_hero_rplasma_shot, boss_shot_top_anim);
+		init_shot(&game.boss.shot[1], RED_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, 0, map_hero_rplasma_shot, boss_shot_middle_anim);
+		init_shot(&game.boss.shot[2], RED_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 8, map_hero_rplasma_shot, boss_shot_bottom_anim);
+		game.boss.shots_per_fire = 3;
 	}
 }
 
@@ -343,6 +322,7 @@ void init_enemy_shot(u8 i, u16 x, u16 y)
 		game.enemies[i].shot[j].anim.anims = enemy_shot_anim;
 		game.enemies[i].shot[j].anim.anims[0] = (char*) map_enemy_shot;
 		game.enemies[i].shot[j].shared.vx = SLOW_SHOT_SPEED;
+		game.enemies[i].shot[j].shot_speed = SLOW_SHOT_SPEED;
 		game.enemies[i].shot[j].shared.vy = 0;
 		game.enemies[i].shot[j].shared.x = x;
 		game.enemies[i].shot[j].shared.y = y;
@@ -795,82 +775,68 @@ char on_solid_ground(SpriteShared* s, u8 tile_width, u8 tile_height)
 	return 0;
 }
 
-void find_shot_slots(Player* player, u8* idx)
+u8 find_shot_slot(Player* player)
 {
-	u8 j = 0;
-	for (u8 i = 0; i < MAX_PLAYER_SHOTS; i++)
+	static u8 i = 0;
+	while (1)
 	{
+		if (i >= MAX_PLAYER_SHOTS) i = 0;
 		if (!player->shot[i].active)
 		{
-			idx[j] = i;
-			if (++j == 3) break;
+			return i++;
 		}
+		i++;
 	}
 }
 
 void update_shot(Player* player, u8 shot_slot)
 {
 	// Shot updates
-	u8 idx[3];
-	
-	if (player->controls.pressed & BTN_A && (MAX_PLAYER_SHOTS - player->active_shots) >= player->shots_per_fire )
+	u8 idx;
+	if (player->controls.pressed & BTN_A && player->active_shots < MAX_PLAYER_SHOTS)
 	{
 		SFX_PLAYER_SHOOT;
-		find_shot_slots(player, idx);
-		
-		if (player->shots_per_fire >= 1)
-		{
-			LBMapSprite(shot_slot+idx[0], LBGetNextFrame(&player->shot[idx[0]].anim), 0);
-			player->shot[idx[0]].active = 1;
-			player->shot[idx[0]].shared.y = (u16) player->shared.y / 8 * 8;
-			player->active_shots++;
-		}
-		if (player->shots_per_fire >= 2)
-		{
-			LBMapSprite(shot_slot+idx[1], LBGetNextFrame(&player->shot[idx[1]].anim), 0);
-			player->shot[idx[0]].shared.y -= 8;
-			player->shot[idx[1]].active = 1;
-			player->shot[idx[1]].shared.y = (u16) player->shared.y / 8 * 8;
-			player->active_shots++;
-		}
-		if (player->shots_per_fire == 3)
-		{
-			LBMapSprite(shot_slot+idx[2], LBGetNextFrame(&player->shot[idx[2]].anim), 0);
-			player->shot[idx[2]].active = 1;
-			player->shot[idx[2]].shared.y = (u16) player->shared.y / 8 * 8 + 8;
-			player->active_shots++;
-		}
+		idx = find_shot_slot(player);
+		LBMapSprite(shot_slot+idx, LBGetNextFrame(&player->shot[idx].anim), 0);
+		player->shot[idx].active = 1;
+		player->shot[idx].shared.y = (u16) player->shared.y / 8 * 8 + player->shot[idx].y_delta;
 		if (is_space())
 		{
-			player->shot[idx[0]].shared.x = player->shared.x+player->width*8;
+			player->shot[idx].shared.x = player->shared.x+player->width*8;
+			player->shot[idx].shared.vx = player->shot[idx].shot_speed;
+			player->shot[idx].shared.vy = 0;
 		}
 		else
 		{
-			if (!(player->flags & PRONE) && player->shots_per_fire != 3)
+			if (!(player->flags & PRONE))
 			{
-				for (u8 i = 0; i < 2; i++)
-				{
-					player->shot[idx[i]].shared.y += 8;
-				}
+				player->shot[idx].shared.y += 8;
 			}
 			if (player->direction == D_RIGHT)
 			{
-				for (u8 i = 0; i < 3; i++)
-				{
-					player->shot[idx[i]].shared.x = player->shared.x+2*8;
-					if (player->shot[idx[i]].shared.vx < 0) player->shot[idx[i]].shared.vx = -player->shot[idx[i]].shared.vx;
-				}
+				player->shot[idx].shared.x = player->shared.x+2*8;
+				player->shot[idx].shared.vx = player->shot[idx].shot_speed;
+				if (player->shot[idx].shot_type == ANGLED_SHOT) player->shot[idx].shared.vy = -player->shot[idx].shot_speed;
 			}
 			else
 			{
-				for (u8 i = 0; i < 3; i++)
-				{
-					player->shot[idx[i]].shared.x = player->shared.x-1*8;
-					if (player->shot[idx[i]].shared.vx > 0) player->shot[idx[i]].shared.vx = -player->shot[idx[i]].shared.vx;
-				}
+				player->shot[idx].shared.x = player->shared.x-1*8;
+				player->shot[idx].shared.vx = -player->shot[idx].shot_speed;
+				if (player->shot[idx].shot_type == ANGLED_SHOT) player->shot[idx].shared.vy = -player->shot[idx].shot_speed;
 			}
 		}
+		player->active_shots++;
 	}
+}
+
+u8 out_of_bounds(SpriteShared* s)
+{
+	if (s->x < game.camera_x) return 1;
+	if (s->x+8 > game.camera_x + CAMERA_WIDTH*8) return 1;
+	if (s->y < game.camera_y) return 1;
+	if (s->y < 4) return 1;
+	if (s->y+8 > game.camera_y + CAMERA_HEIGHT*8) return 1;
+	return 0;
 }
 
 void animate_shot(Player* player, Player* other_player, u8 shot_slot)
@@ -884,7 +850,7 @@ void animate_shot(Player* player, Player* other_player, u8 shot_slot)
 			player->shot[i].shared.x += LBMoveDelta(player->shot[i].shared.vx, game.frame_counter)*2;
 			player->shot[i].shared.y += LBMoveDelta(player->shot[i].shared.vy, game.frame_counter);
 			LBMoveSprite(shot_slot+i, player->shot[i].shared.x - game.camera_x, player->shot[i].shared.y - game.camera_y, 1, 1);
-			if (player->shot[i].shared.x < game.camera_x || player->shot[i].shared.x+8 > game.camera_x + CAMERA_WIDTH*8 ||
+			if (out_of_bounds(&player->shot[i].shared) ||
 			    collision_detect_level(&player->shot[i].shared, 1, 1))
 			{
 				player->shot[i].active = 0;
@@ -1399,10 +1365,10 @@ void update_enemy_shots()
 						game.enemies[i].shot[j].active = 1;
 						game.enemies[i].shot[j].shared.x = game.enemies[i].shared.x;
 						game.enemies[i].shot[j].shared.y = ((u16 ) game.enemies[i].shared.y / 8) * 8;
-						if (game.enemies[i].shot[j].shared.vx < 0) game.enemies[i].shot[j].shared.vx = -game.enemies[i].shot[j].shared.vx;
+						game.enemies[i].shot[j].shared.vx = game.enemies[i].shot[j].shot_speed;
 						if (game.player.shared.x <= game.enemies[i].shared.x)
 						{
-							if (game.enemies[i].shot[j].shared.vx > 0) game.enemies[i].shot[j].shared.vx = -game.enemies[i].shot[j].shared.vx;
+							game.enemies[i].shot[j].shared.vx = -game.enemies[i].shot[j].shot_speed;
 						}
 					}
 					update_basic_shot(&game.enemies[i].shot[j], slot);
