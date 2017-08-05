@@ -56,7 +56,10 @@ char* shot_top_anim[1];
 char* shot_middle_anim[1];
 char* shot_bottom_anim[1];
 char* spider_anim[2];
+char* turret_anim[1];
+char* drone_anim[1];
 char* shark_anim[1];
+char* globe_anim[1];
 char* hazard_anim[1];
 char* enemy_shot_anim[1];
 char* expl_anim[3];
@@ -325,8 +328,21 @@ void init_enemy_shot(u8 i, u16 x, u16 y)
 		game.enemies[i].shot[j].anim.frames_per_anim = 1;
 		game.enemies[i].shot[j].anim.anims = enemy_shot_anim;
 		game.enemies[i].shot[j].anim.anims[0] = (char*) map_enemy_shot;
-		game.enemies[i].shot[j].shared.vx = SLOW_SHOT_SPEED;
 		game.enemies[i].shot[j].shot_speed = SLOW_SHOT_SPEED;
+		if (game.enemies[i].enemy_type == ENEMY_DRONE)
+		{
+			game.enemies[i].shot[j].shared.vy = SLOW_SHOT_SPEED;
+			game.enemies[i].shot[j].shared.vx = -DRONE_SPEED;
+		}
+		else if (game.enemies[i].enemy_type == ENEMY_GLOBE)
+		{
+			game.enemies[i].shot[j].shared.vy = SLOW_SHOT_SPEED;
+			game.enemies[i].shot[j].shared.vx = GLOBE_SPEED;
+		}
+		else
+		{
+			game.enemies[i].shot[j].shared.vx = SLOW_SHOT_SPEED;
+		}
 		game.enemies[i].shot[j].shared.vy = 0;
 		game.enemies[i].shot[j].shared.x = x;
 		game.enemies[i].shot[j].shared.y = y;
@@ -359,6 +375,54 @@ void init_enemy_spider(u8 i, u16 x, u16 y)
 	init_enemy_shot(i, x, y);
 }
 
+void init_enemy_turret(u8 i, u16 x, u16 y)
+{
+	game.enemies[i].active = 1;
+	game.enemies[i].direction = D_LEFT;
+	game.enemies[i].width = 1;
+	game.enemies[i].height = 1;
+	game.enemies[i].enemy_type = ENEMY_TURRET;
+	game.enemies[i].frame_count = 0;
+	game.enemies[i].shot_frame_count = 0;
+	game.enemies[i].shield = ENEMY_TURRET_SHIELD;
+	
+	game.enemies[i].anim.anim_count = 1;
+	game.enemies[i].anim.frames_per_anim = 1;
+	game.enemies[i].anim.anims = turret_anim;
+	game.enemies[i].anim.anims[0] = (char*) map_enemy_tank;
+	game.enemies[i].shared.gravity = 0;
+	game.enemies[i].shared.vx = 0;
+	game.enemies[i].shared.vy = 0;
+	game.enemies[i].shared.x = x;
+	game.enemies[i].shared.y = y;
+	
+	init_enemy_shot(i, x, y);
+}
+
+void init_enemy_drone(u8 i, u16 x, u16 y)
+{
+	game.enemies[i].active = 1;
+	game.enemies[i].direction = D_LEFT;
+	game.enemies[i].width = 1;
+	game.enemies[i].height = 1;
+	game.enemies[i].enemy_type = ENEMY_DRONE;
+	game.enemies[i].frame_count = 0;
+	game.enemies[i].shot_frame_count = 0;
+	game.enemies[i].shield = ENEMY_DRONE_SHIELD;
+	
+	game.enemies[i].anim.anim_count = 1;
+	game.enemies[i].anim.frames_per_anim = 1;
+	game.enemies[i].anim.anims = drone_anim;
+	game.enemies[i].anim.anims[0] = (char*) map_enemy_drone;
+	game.enemies[i].shared.gravity = 0;
+	game.enemies[i].shared.vx = -DRONE_SPEED;
+	game.enemies[i].shared.vy = 0;
+	game.enemies[i].shared.x = x;
+	game.enemies[i].shared.y = y;
+	
+	init_enemy_shot(i, x, y);
+}
+
 void init_enemy_shark(u8 i, u16 x, u16 y)
 {
 	game.enemies[i].active = 1;
@@ -375,6 +439,29 @@ void init_enemy_shark(u8 i, u16 x, u16 y)
 	game.enemies[i].anim.anims[0] = (char*) map_enemy_shark;
 	game.enemies[i].shared.gravity = 0;
 	game.enemies[i].shared.vx = SHARK_SPEED;
+	game.enemies[i].shared.vy = 0;
+	game.enemies[i].shared.x = x;
+	game.enemies[i].shared.y = y;
+	
+	init_enemy_shot(i, x, y);
+}
+
+void init_enemy_globe(u8 i, u16 x, u16 y)
+{
+	game.enemies[i].active = 1;
+	game.enemies[i].width = 1;
+	game.enemies[i].height = 1;
+	game.enemies[i].enemy_type = ENEMY_GLOBE;
+	game.enemies[i].frame_count = 0;
+	game.enemies[i].shot_frame_count = 0;
+	game.enemies[i].shield = ENEMY_GLOBE_SHIELD;
+	
+	game.enemies[i].anim.anim_count = 1;
+	game.enemies[i].anim.frames_per_anim = 1;
+	game.enemies[i].anim.anims = globe_anim;
+	game.enemies[i].anim.anims[0] = (char*) map_enemy_ball;
+	game.enemies[i].shared.gravity = 0;
+	game.enemies[i].shared.vx = GLOBE_SPEED;
 	game.enemies[i].shared.vy = 0;
 	game.enemies[i].shared.x = x;
 	game.enemies[i].shared.y = y;
@@ -525,6 +612,58 @@ void render_camera_view()
 	}
 }
 
+void init_level_enemy(u8 i, u16 x, u16 y)
+{
+	if (game.current_level_index == 0)
+	{
+		init_enemy_turret(i, x, y);
+	}
+	else if (game.current_level_index == 2)
+	{
+		init_enemy_spider(i, x, y);
+	}
+	else if (game.current_level_index == 4)
+	{
+		init_enemy_drone(i, x, y-5*8);
+	}
+	else if (game.frame_counter % 3 == 0)
+	{
+		init_enemy_turret(i, x, y);
+	}
+	else if (game.frame_counter % 3 == 1)
+	{
+		init_enemy_spider(i, x, y);
+	}
+	else if (game.frame_counter % 3 == 2)
+	{
+		init_enemy_drone(i, x, y-5*8);
+	}
+}
+
+void init_space_enemy(u8 i, u16 x, u16 y)
+{
+	if (game.current_level_index == 1)
+	{
+		init_enemy_shark(i, x, y);
+	}
+	else if (game.current_level_index == 3)
+	{
+		init_enemy_globe(i, x, y);
+	}
+	else if (game.frame_counter % 3 == 0)
+	{
+		init_enemy_shark(i, x, y);
+	}
+	else if (game.frame_counter % 3 == 1)
+	{
+		init_enemy_globe(i, x, y);
+	}
+	else if (game.frame_counter % 3 == 2)
+	{
+		init_enemy_globe(i, x, y);
+	}
+}
+
 void spawn_enemy(u16 x, u16 y, u8 level_hazard)
 {
 	if (game.camera_x < ENEMY_SPAWN_CUTOFF)
@@ -539,11 +678,11 @@ void spawn_enemy(u16 x, u16 y, u8 level_hazard)
 					{
 						if (is_space())
 						{
-							init_enemy_shark(i, x, y);
+							init_space_enemy(i, x, y);
 						}
 						else if (!level_hazard)
 						{
-							init_enemy_spider(i, x, y);
+							init_level_enemy(i, x, y);
 						}
 						else
 						{
@@ -1307,6 +1446,35 @@ void update_spider_enemy(Enemy* e, u8 slot)
 	e->frame_count++;
 }
 
+void update_turret_enemy(Enemy* e, u8 slot)
+{
+	e->shared.vx = 0;
+	e->shared.vy = 0;
+	if (game.player.shared.x > e->shared.x)
+	{
+		LBMapSprite(slot, LBGetNextFrame(&e->anim), SPRITE_FLIP_X);
+	}
+	else
+	{
+		LBMapSprite(slot, LBGetNextFrame(&e->anim), 0);
+	}
+}
+
+void update_drone_enemy(Enemy* e, u8 slot)
+{
+	e->shared.vx = -DRONE_SPEED;
+	e->shared.vy = 0;
+	LBMapSprite(slot, LBGetNextFrame(&e->anim), 0);
+}
+
+void update_globe_enemy(Enemy* e, u8 slot)
+{
+	e->shared.vx = GLOBE_SPEED;
+	e->shared.vy = 0;
+	LBMapSprite(slot, LBGetNextFrame(&e->anim), 0);
+}
+
+
 void update_shark_enemy(Enemy* e, u8 slot)
 {
 	e->shared.vx = SHARK_SPEED;
@@ -1346,7 +1514,10 @@ void update_enemies()
 			switch (game.enemies[i].enemy_type)
 			{
 				case ENEMY_SPIDER: update_spider_enemy(&game.enemies[i], slot); break;
+				case ENEMY_TURRET: update_turret_enemy(&game.enemies[i], slot); break;
+				case ENEMY_DRONE: update_drone_enemy(&game.enemies[i], slot); break;
 				case ENEMY_SHARK: update_shark_enemy(&game.enemies[i], slot); break;
+				case ENEMY_GLOBE: update_globe_enemy(&game.enemies[i], slot); break;
 				default: update_level_hazard(&game.enemies[i], slot); break;
 			}
 		}
@@ -1372,10 +1543,25 @@ void update_enemy_shots()
 						game.enemies[i].shot[j].active = 1;
 						game.enemies[i].shot[j].shared.x = game.enemies[i].shared.x;
 						game.enemies[i].shot[j].shared.y = ((u16 ) game.enemies[i].shared.y / 8) * 8;
-						game.enemies[i].shot[j].shared.vx = game.enemies[i].shot[j].shot_speed;
-						if (game.player.shared.x <= game.enemies[i].shared.x)
+						if (game.enemies[i].enemy_type == ENEMY_DRONE)
 						{
-							game.enemies[i].shot[j].shared.vx = -game.enemies[i].shot[j].shot_speed;
+							game.enemies[i].shot[j].shared.vy = game.enemies[i].shot[j].shot_speed;
+						}
+						else if (game.enemies[i].enemy_type == ENEMY_GLOBE)
+						{
+							game.enemies[i].shot[j].shared.vy = game.enemies[i].shot[j].shot_speed;
+							if (game.player.shared.y <= game.enemies[i].shared.y)
+							{
+								game.enemies[i].shot[j].shared.vy = -game.enemies[i].shot[j].shot_speed;
+							}
+						}
+						else
+						{
+							game.enemies[i].shot[j].shared.vx = game.enemies[i].shot[j].shot_speed;
+							if (game.player.shared.x <= game.enemies[i].shared.x)
+							{
+								game.enemies[i].shot[j].shared.vx = -game.enemies[i].shot[j].shot_speed;
+							}
 						}
 					}
 					update_basic_shot(&game.enemies[i].shot[j], slot);
@@ -1454,7 +1640,7 @@ void animate_enemy_shots()
 			{
 				if (game.enemies[i].shot[j].active)
 				{
-					if (game.enemies[i].shot[j].shared.x < game.camera_x || game.enemies[i].shot[j].shared.x > game.camera_x + CAMERA_WIDTH*8 ||
+					if (out_of_bounds(&game.enemies[i].shot[j].shared) ||
 					   collision_detect_level(&game.enemies[i].shot[j].shared, 1, 1))
 					{
 						game.enemies[i].shot[j].active = 0;
@@ -1482,6 +1668,7 @@ void animate_enemy_shots()
 					else
 					{
 						game.enemies[i].shot[j].shared.x += LBMoveDelta(game.enemies[i].shot[j].shared.vx, game.frame_counter);
+						game.enemies[i].shot[j].shared.y += LBMoveDelta(game.enemies[i].shot[j].shared.vy, game.frame_counter);
 						LBMoveSprite(slot, game.enemies[i].shot[j].shared.x - game.camera_x, game.enemies[i].shot[j].shared.y - game.camera_y, 1, 1);
 					}
 				}
