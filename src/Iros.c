@@ -844,7 +844,7 @@ void load_level(u8 index, u8 drop_ship)
 		case 6: map_level_info((char*) map_level_city); break;
 		case 7: map_level_info((char*) map_level_space); break;
 		case 8: map_level_info((char*) map_level_desert); break;
-		case 9: map_level_info((char*) map_level_space); break;
+		case 9: map_level_info((char*) map_level_space_final); break;
 	}
 	game.column_count = 0;
 	game.camera_x = get_camera_x(index);

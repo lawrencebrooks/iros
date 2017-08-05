@@ -54,18 +54,19 @@ const unsigned char default_scores[] PROGMEM = {
     0x44, 0x44, 0x44, 0x00, 0x00,
 };
 
-const unsigned char strIntro [] PROGMEM="IRIS HAS BETRAYED US\0\0"
-"HE HAS STOLEN THE 5 EMERALDS\0"
-"OF POWER AND WILL SURELY\0"
-"BRING RUIN TO US ALL\0\0"
-"DESTROY HIM AND RETURN THE\0"
-"EMERALDS TO BRING PEACE TO\0"
-"THE GALAXY\0#";
+const unsigned char strIntro [] PROGMEM="THE 5 KNIGHTS OF IROS\0"
+"HAVE STOLEN YOUR POWER UPS\0"
+"AND FLEW TO THEIR HOMEWORLDS\0\0"
+"\0\0"
+"JERKS\0\0"
+"\0\0"
+"DESTROY THEM AND\0"
+"TAKE BACK YOUR SWAG\0#";
 
-const unsigned char strChallenge [] PROGMEM="I KNEW THEY\0WOULD SEND YOU\0#       "
-"YOU ARE\0PERSISTENT\0#               "
-"YOU CANT\0HAVE THEM ALL\0#           "
-"YOU ARE MAKING\0A MISTAKE\0#         "
-"THIS DOES NOT\0END HERE\0#           ";
+const unsigned char strChallenge [] PROGMEM="   PREPARE\0  TO BE ICED\0#          "
+"     CUTE\0PINK IS SO YOU\0#         "
+" I LIKE TREES\0 AND BEATINGS\0#      "
+"    MY GUN\0  YOUR FACE\0#           "
+" YEAH BUT ITS\0  A DRY HEAT\0#       ";
 
 #endif
