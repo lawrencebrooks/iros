@@ -1,7 +1,7 @@
 /*
  * All printable strings
  *
- * Copyright 2016 Lawrence Brooks
+ * Copyright 2017 Lawrence Brooks
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 
 
 // String indexes
-const unsigned char strCopyright [] PROGMEM="2016 LAWRENCE BROOKS";
+const unsigned char strCopyright [] PROGMEM="2017 LAWRENCE BROOKS";
 const unsigned char str1Player [] PROGMEM="START";
 const unsigned char strHighScores [] PROGMEM="HIGH SCORES";
 const unsigned char strSelectHandle [] PROGMEM="";

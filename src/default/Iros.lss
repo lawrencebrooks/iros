@@ -322,7 +322,7 @@ Disassembly of section .text:
      b20:	53 54 41 52 54 00                                   START.
 
 00000b26 <strCopyright>:
-     b26:	32 30 31 36 20 4c 41 57 52 45 4e 43 45 20 42 52     2016 LAWRENCE BR
+     b26:	32 30 31 37 20 4c 41 57 52 45 4e 43 45 20 42 52     2017 LAWRENCE BR
      b36:	4f 4f 4b 53 00                                      OOKS.
 
 00000b3b <spacesong>:
