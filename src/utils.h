@@ -84,37 +84,6 @@ char* LBGetNextFrame(Animation* anim)
 	return anim->anims[anim->current_anim];
 }
 
-char* LBGetNextFrameReverse(Animation* anim)
-{
-	anim->looped = 0;
-	anim->frame_count += 1;
-	if (anim->frame_count < anim->frames_per_anim)
-	{
-		return anim->anims[anim->current_anim];
-	}
-	anim->frame_count = 0;
-	if (anim->reversing)
-	{
-		anim->current_anim = anim->current_anim - 1;
-		if (anim->current_anim == 0xff)
-		{
-			anim->current_anim = 0;
-			anim->looped = 1;
-			anim->reversing = 0;
-		}
-	}
-	else
-	{
-		anim->current_anim = (anim->current_anim + 1) % anim->anim_count;
-		if (anim->current_anim == 0) 
-		{
-			anim->reversing = 1;
-			anim->current_anim = anim->anim_count - 1;
-		}
-	}
-	return anim->anims[anim->current_anim];
-}
-
 void LBResetJoyPadState(JoyPadState* p)
 /*
  * Get the current joy pad button state for index controller
@@ -144,17 +113,6 @@ void LBGetJoyPadState(JoyPadState* p, unsigned char index)
 	p->pressed = p->held & (p->held ^ p_prev[index]);
 	p->released = p_prev[index] & (p->held ^ p_prev[index]);
 	p_prev[index] = p->held;
-}
-
-void LBCopyChars(u8* dst, u8 *src, u8 count)
-/*
- * Custom string copy
- */
-{
-	for (u8 i = 0; i < count; i++)
-	{
-		dst[i] = src[i];
-	}
 }
 
 void LBSetFontTilesMap(char* tiles_map)
@@ -206,14 +164,6 @@ void LBPrintInt(u8 x, u8 y, u16 value, char pad)
 		LBPrintChar(x--, y, value % 10 + 48);
 		value /= 10;
 		if (!pad && value == 0) break;
-	}
-}
-
-void LBPrintStr(u8 x, u8 y, u8* txt, u8 count)
-{
-	for (u8 i = 0; i < count; i++)
-	{
-		PrintChar(x+i, y, txt[i]);
 	}
 }
 

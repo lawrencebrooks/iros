@@ -699,7 +699,7 @@ void spawn_enemy(u16 x, u16 y, u8 level_hazard)
 
 u8 solid_tile(u8 level_tile)
 {
-	if (level_tile >= 1 && level_tile <= 17)
+	if (level_tile >= 1 && level_tile <= 14)
 	{
 		return 1;
 	}
@@ -708,11 +708,11 @@ u8 solid_tile(u8 level_tile)
 
 u8 solid_or_hazard_tile(u8 level_tile)
 {
-	if (level_tile >= 1 && level_tile <= 17)
+	if (level_tile >= 1 && level_tile <= 14)
 	{
 		return 1;
 	}
-	if (level_tile >= 18 && level_tile <= 27)
+	if (level_tile >= 15 && level_tile <= 27)
 	{
 		return 2;
 	}
@@ -721,7 +721,7 @@ u8 solid_or_hazard_tile(u8 level_tile)
 
 u8 hazard_tile(u8 level_tile)
 {
-	if (level_tile >= 18 && level_tile <= 27)
+	if (level_tile >= 15 && level_tile <= 27)
 	{
 		return 1;
 	}
@@ -730,7 +730,7 @@ u8 hazard_tile(u8 level_tile)
 
 u8 hazard_projectile_tile(u8 level_tile)
 {
-	if (level_tile >= 18 && level_tile <= 22)
+	if (level_tile >= 15 && level_tile <= 19)
 	{
 		return 1;
 	}
@@ -1088,6 +1088,7 @@ u8 handle_player_death(Player* player)
 
 u8 update_player(Player* player, u8 slot)
 {
+	s8 space_ship_speed = SPACE_SHIP_SPEED;
 	
 	if (player->flags & EXPLODING)
 	{
@@ -1098,12 +1099,24 @@ u8 update_player(Player* player, u8 slot)
 	}
 	else if (is_space())
 	{
-		if (player->flags & END_OF_SPACE) {
-			player->shared.vx = SPACE_SHIP_SPEED*2;
+		if (game.current_level_index == 9)
+		{
+			if (player->flags & END_OF_SPACE)
+			{
+				space_ship_speed = 0;
+				
+			}
+			else if (game.camera_x/8 + CAMERA_WIDTH >= 210)
+			{
+				space_ship_speed = SPACE_SHIP_SPEED / 2;
+			}
+		}
+		if (player->flags & END_OF_SPACE && game.current_level_index != 9) {
+			player->shared.vx = space_ship_speed*2;
 			player->shared.vy = 0;
 		} else {
 			player->shared.vy = 0;
-			player->shared.vx = SPACE_SHIP_SPEED;
+			player->shared.vx = space_ship_speed;
 			
 			if ((player->controls.held & BTN_DOWN) && (player->shared.y/8 + 1 < game.level_height))
 			{
@@ -1111,11 +1124,11 @@ u8 update_player(Player* player, u8 slot)
 			}
 			if ((player->controls.held & BTN_RIGHT) && (player->shared.x + 24 < game.camera_x + CAMERA_WIDTH*8))
 			{
-				player->shared.vx = SPACE_SHIP_SPEED*2;
+				player->shared.vx = space_ship_speed + SPACE_SHIP_SPEED;
 			}
 			if ((player->controls.held & BTN_LEFT) && (player->shared.x > game.camera_x))
 			{
-				player->shared.vx = 0;
+				player->shared.vx = space_ship_speed - SPACE_SHIP_SPEED;
 			}
 			if ((player->controls.held & BTN_UP) && (player->shared.y > 0))
 			{
@@ -1695,7 +1708,14 @@ u8 update_level()
 	{
 		if (game.camera_x/8 + CAMERA_WIDTH < game.level_width)
 		{
-			move_camera_x();
+			if (game.current_level_index == 9 && (game.camera_x/8 + CAMERA_WIDTH >= 210))
+			{
+				if (game.frame_counter % 2 == 0) move_camera_x();
+			} 
+			else
+			{
+				move_camera_x();
+			}
 		}
 		else if (game.player.shared.x >= game.camera_x+CAMERA_WIDTH*8)
 		{

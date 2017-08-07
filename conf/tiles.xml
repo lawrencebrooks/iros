@@ -27,16 +27,19 @@
             </mega-map>
         </maps>
         <defines>
-            <define def-name="L_CITY_ACID_CLOUD" left="18" top="0"/>
-            <define def-name="L_DESERT_EYE" left="19" top="0"/>
-            <define def-name="L_ICICLE_DOWN" left="20" top="0"/>
-            <define def-name="L_JUNGLE_FLOWER" left="21" top="0"/>
-            <define def-name="L_FIRE_LAVA" left="22" top="0"/>
-            <define def-name="L_JUNGLE_WATER" left="23" top="0"/>
-            <define def-name="L_CITY_ACID" left="24" top="0"/>
-            <define def-name="L_DESERT_SPIKE_DOWN" left="25" top="0"/>
-            <define def-name="L_DESERT_SPIKE_UP" left="26" top="0"/>
-            <define def-name="L_ICICLE_UP" left="27" top="0"/>
+            <define def-name="L_CITY_ACID_CLOUD" left="15" top="0"/>
+            <define def-name="L_DESERT_EYE" left="16" top="0"/>
+            <define def-name="L_ICICLE_DOWN" left="17" top="0"/>
+            <define def-name="L_JUNGLE_FLOWER" left="18" top="0"/>
+            <define def-name="L_FIRE_LAVA" left="19" top="0"/>
+            <define def-name="L_JUNGLE_WATER" left="20" top="0"/>
+            <define def-name="L_CITY_ACID" left="21" top="0"/>
+            <define def-name="L_DESERT_SPIKE_DOWN" left="22" top="0"/>
+            <define def-name="L_DESERT_SPIKE_UP" left="23" top="0"/>
+            <define def-name="L_ICICLE_UP" left="24" top="0"/>
+            <define def-name="L_SCAFOLDING" left="25" top="0"/>
+            <define def-name="L_IRON_BAR" left="26" top="0"/>
+            <define def-name="L_EYE" left="27" top="0"/>
         </defines>
     </output>
 </gfx-xform>
