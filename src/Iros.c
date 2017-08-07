@@ -306,7 +306,7 @@ void init_player_state()
 	game.player.expl.anims[0] = (char*) map_explosion_0;
 	game.player.expl.anims[1] = (char*) map_explosion_1;
 	game.player.expl.anims[2] = (char*) map_explosion_2;
-	
+	game.eye_clusters = 8;
 	init_player_shot(game.current_level_index);
 }
 
@@ -503,12 +503,46 @@ void init_enemy_boss_turret(u8 i, u16 x, u16 y)
 	init_enemy_shot(i, x, y, 1);
 }
 
+void init_enemy_boss_eye(u8 i, u16 x, u16 y)
+{
+	game.enemies[i].flags = 0;
+	game.enemies[i].active = 1;
+	game.enemies[i].direction = D_LEFT;
+	game.enemies[i].width = 1;
+	game.enemies[i].height = 1;
+	game.enemies[i].enemy_type = ENEMY_BOSS_EYE;
+	game.enemies[i].frame_count = 0;
+	game.enemies[i].shot_frame_count = 0;
+	game.enemies[i].shield = ENEMY_BOSS_EYE_SHIELD;
+	
+	game.enemies[i].anim.anim_count = 1;
+	game.enemies[i].anim.frames_per_anim = 1;
+	game.enemies[i].anim.anims = turret_anim;
+	game.enemies[i].anim.anims[0] = (char*) map_enemy_boss_eye;
+	game.enemies[i].shared.gravity = 0;
+	game.enemies[i].shared.vx = 0;
+	game.enemies[i].shared.vy = 0;
+	game.enemies[i].shared.x = x;
+	game.enemies[i].shared.y = y;
+	init_enemy_shot(i, x, y, 1);
+	SetTile(24-game.eye_clusters,y/8, 0);
+}
+
 void init_enemy_boss_turrets()
 {
 	init_enemy_boss_turret(0, 249*8, 4*8);
 	init_enemy_boss_turret(1, 249*8, 6*8);
 	init_enemy_boss_turret(2, 249*8, 18*8);
 	init_enemy_boss_turret(3, 249*8, 20*8);
+	game.active_enemies = 4;
+}
+
+void init_enemy_boss_eyes()
+{
+	init_enemy_boss_eye(0, (255-game.eye_clusters)*8, 11*8);
+	init_enemy_boss_eye(1, (255-game.eye_clusters)*8, 12*8);
+	init_enemy_boss_eye(2, (255-game.eye_clusters)*8, 13*8);
+	game.active_enemies = 3;
 }
 
 void init_enemy_level_hazard(u8 i, u16 x, u16 y)
@@ -754,7 +788,7 @@ u8 solid_or_hazard_tile(u8 level_tile)
 	{
 		return 1;
 	}
-	if (level_tile >= 15 && level_tile <= 27)
+	if (level_tile >= 15 && level_tile <= 26)
 	{
 		return 2;
 	}
@@ -763,7 +797,7 @@ u8 solid_or_hazard_tile(u8 level_tile)
 
 u8 hazard_tile(u8 level_tile)
 {
-	if (level_tile >= 15 && level_tile <= 27)
+	if (level_tile >= 15 && level_tile <= 26)
 	{
 		return 1;
 	}
@@ -1156,25 +1190,35 @@ u8 update_player(Player* player, u8 slot)
 	{
 		if (game.current_level_index == 9)
 		{
-			if (player->flags & END_OF_SPACE)
+			if (game.camera_x/8 + CAMERA_WIDTH >= 210)
 			{
-				space_ship_speed = 0;
-				
-			}
-			else if (game.camera_x/8 + CAMERA_WIDTH >= 210)
-			{
-				if (player->flags ^ BOSS_APROACHING)
+				space_ship_speed = SPACE_SHIP_SPEED / 2;
+				if (player->flags & END_OF_SPACE)
+				{
+					space_ship_speed = 0;
+					
+				}
+				LBPrintByte(17, VRAM_TILES_V-3, game.active_enemies ,true);
+				if (!(player->flags & BOSS_APROACHING))
 				{
 					player->flags |= BOSS_APROACHING;
 					explode_all_enemies();
 					StopSong();
 				}
-				space_ship_speed = SPACE_SHIP_SPEED / 2;
-				if (game.camera_x/8 + CAMERA_WIDTH >= 250 && (player->flags ^ BOSS_REACHED))
+				if (game.camera_x/8 + CAMERA_WIDTH >= 250 && !(player->flags & BOSS_REACHED))
 				{
 					player->flags |= BOSS_REACHED;
 					init_enemy_boss_turrets();
 					StartSong(planetsong);
+				}
+				if ((player->flags & BOSS_REACHED) && (game.active_enemies == 0))
+				{
+					init_enemy_boss_eyes();
+					game.eye_clusters--;
+					if (game.eye_clusters == 0)
+					{
+						game.level_ended = 1;
+					}
 				}
 			}
 		}
@@ -1596,6 +1640,7 @@ void update_enemies()
 				case ENEMY_SPIDER: update_spider_enemy(&game.enemies[i], slot); break;
 				case ENEMY_TURRET: update_turret_enemy(&game.enemies[i], slot); break;
 				case ENEMY_BOSS_TURRET: update_turret_enemy(&game.enemies[i], slot); break;
+				case ENEMY_BOSS_EYE: update_turret_enemy(&game.enemies[i], slot); break;
 				case ENEMY_DRONE: update_drone_enemy(&game.enemies[i], slot); break;
 				case ENEMY_SHARK: update_shark_enemy(&game.enemies[i], slot); break;
 				case ENEMY_GLOBE: update_globe_enemy(&game.enemies[i], slot); break;
@@ -1759,6 +1804,11 @@ void animate_enemy_shots()
 	}
 }
 
+void congratulation()
+{
+	
+}
+
 u8 update_level()
 {
 	u8 ship_x = game.player.shared.x - game.camera_x;
@@ -1846,6 +1896,7 @@ u8 update_level()
 	{
 		tally_score((char*) strLevelClear, 100);
 		if (game.current_level_index == 9) {
+			congratulation();
 			exit_game();
 			return 1;
 		} else {
