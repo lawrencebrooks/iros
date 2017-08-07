@@ -310,7 +310,7 @@ void init_player_state()
 	init_player_shot(game.current_level_index);
 }
 
-void init_enemy_shot(u8 i, u16 x, u16 y)
+void init_enemy_shot(u8 i, u16 x, u16 y, u8 is_boss)
 {
 	game.enemies[i].expl.anim_count = 3;
 	game.enemies[i].expl.frames_per_anim = EXPLOSION_FRAME_COUNT;
@@ -329,7 +329,12 @@ void init_enemy_shot(u8 i, u16 x, u16 y)
 		game.enemies[i].shot[j].anim.anims = enemy_shot_anim;
 		game.enemies[i].shot[j].anim.anims[0] = (char*) map_enemy_shot;
 		game.enemies[i].shot[j].shot_speed = SLOW_SHOT_SPEED;
-		if (game.enemies[i].enemy_type == ENEMY_DRONE)
+		if (is_boss)
+		{
+			game.enemies[i].shot[j].anim.anims[0] = (char*) map_enemy_boss_shot;
+			game.enemies[i].shot[j].shot_speed = MEDIUM_SHOT_SPEED;
+		}
+		else if (game.enemies[i].enemy_type == ENEMY_DRONE)
 		{
 			game.enemies[i].shot[j].shared.vy = SLOW_SHOT_SPEED;
 			game.enemies[i].shot[j].shared.vx = -DRONE_SPEED;
@@ -372,11 +377,12 @@ void init_enemy_spider(u8 i, u16 x, u16 y)
 	game.enemies[i].shared.x = x;
 	game.enemies[i].shared.y = y;
 	
-	init_enemy_shot(i, x, y);
+	init_enemy_shot(i, x, y, 0);
 }
 
 void init_enemy_turret(u8 i, u16 x, u16 y)
 {
+	game.enemies[i].flags = 0;
 	game.enemies[i].active = 1;
 	game.enemies[i].direction = D_LEFT;
 	game.enemies[i].width = 1;
@@ -396,11 +402,12 @@ void init_enemy_turret(u8 i, u16 x, u16 y)
 	game.enemies[i].shared.x = x;
 	game.enemies[i].shared.y = y;
 	
-	init_enemy_shot(i, x, y);
+	init_enemy_shot(i, x, y, 0);
 }
 
 void init_enemy_drone(u8 i, u16 x, u16 y)
 {
+	game.enemies[i].flags = 0;
 	game.enemies[i].active = 1;
 	game.enemies[i].direction = D_LEFT;
 	game.enemies[i].width = 1;
@@ -420,11 +427,12 @@ void init_enemy_drone(u8 i, u16 x, u16 y)
 	game.enemies[i].shared.x = x;
 	game.enemies[i].shared.y = y;
 	
-	init_enemy_shot(i, x, y);
+	init_enemy_shot(i, x, y, 0);
 }
 
 void init_enemy_shark(u8 i, u16 x, u16 y)
 {
+	game.enemies[i].flags = 0;
 	game.enemies[i].active = 1;
 	game.enemies[i].width = 1;
 	game.enemies[i].height = 1;
@@ -443,11 +451,12 @@ void init_enemy_shark(u8 i, u16 x, u16 y)
 	game.enemies[i].shared.x = x;
 	game.enemies[i].shared.y = y;
 	
-	init_enemy_shot(i, x, y);
+	init_enemy_shot(i, x, y, 0);
 }
 
 void init_enemy_globe(u8 i, u16 x, u16 y)
 {
+	game.enemies[i].flags = 0;
 	game.enemies[i].active = 1;
 	game.enemies[i].width = 1;
 	game.enemies[i].height = 1;
@@ -466,7 +475,40 @@ void init_enemy_globe(u8 i, u16 x, u16 y)
 	game.enemies[i].shared.x = x;
 	game.enemies[i].shared.y = y;
 	
-	init_enemy_shot(i, x, y);
+	init_enemy_shot(i, x, y, 0);
+}
+
+void init_enemy_boss_turret(u8 i, u16 x, u16 y)
+{
+	game.enemies[i].flags = 0;
+	game.enemies[i].active = 1;
+	game.enemies[i].direction = D_LEFT;
+	game.enemies[i].width = 1;
+	game.enemies[i].height = 1;
+	game.enemies[i].enemy_type = ENEMY_BOSS_TURRET;
+	game.enemies[i].frame_count = 0;
+	game.enemies[i].shot_frame_count = 0;
+	game.enemies[i].shield = ENEMY_BOSS_TURRET_SHIELD;
+	
+	game.enemies[i].anim.anim_count = 1;
+	game.enemies[i].anim.frames_per_anim = 1;
+	game.enemies[i].anim.anims = turret_anim;
+	game.enemies[i].anim.anims[0] = (char*) map_enemy_boss_turret;
+	game.enemies[i].shared.gravity = 0;
+	game.enemies[i].shared.vx = 0;
+	game.enemies[i].shared.vy = 0;
+	game.enemies[i].shared.x = x;
+	game.enemies[i].shared.y = y;
+	
+	init_enemy_shot(i, x, y, 1);
+}
+
+void init_enemy_boss_turrets()
+{
+	init_enemy_boss_turret(0, 249*8, 4*8);
+	init_enemy_boss_turret(1, 249*8, 6*8);
+	init_enemy_boss_turret(2, 249*8, 18*8);
+	init_enemy_boss_turret(3, 249*8, 20*8);
 }
 
 void init_enemy_level_hazard(u8 i, u16 x, u16 y)
@@ -1086,6 +1128,19 @@ u8 handle_player_death(Player* player)
 	return 0;
 }
 
+void explode_all_enemies()
+{
+	for (u8 i = 0; i < MAX_ENEMIES; i++)
+	{
+		if (game.enemies[i].active)
+		{
+			game.enemies[i].flags = EXPLODING;
+			game.enemies[i].active = 0;
+			game.active_enemies--;
+		}
+	}
+}
+
 u8 update_player(Player* player, u8 slot)
 {
 	s8 space_ship_speed = SPACE_SHIP_SPEED;
@@ -1108,7 +1163,19 @@ u8 update_player(Player* player, u8 slot)
 			}
 			else if (game.camera_x/8 + CAMERA_WIDTH >= 210)
 			{
+				if (player->flags ^ BOSS_APROACHING)
+				{
+					player->flags |= BOSS_APROACHING;
+					explode_all_enemies();
+					StopSong();
+				}
 				space_ship_speed = SPACE_SHIP_SPEED / 2;
+				if (game.camera_x/8 + CAMERA_WIDTH >= 250 && (player->flags ^ BOSS_REACHED))
+				{
+					player->flags |= BOSS_REACHED;
+					init_enemy_boss_turrets();
+					StartSong(planetsong);
+				}
 			}
 		}
 		if (player->flags & END_OF_SPACE && game.current_level_index != 9) {
@@ -1528,6 +1595,7 @@ void update_enemies()
 			{
 				case ENEMY_SPIDER: update_spider_enemy(&game.enemies[i], slot); break;
 				case ENEMY_TURRET: update_turret_enemy(&game.enemies[i], slot); break;
+				case ENEMY_BOSS_TURRET: update_turret_enemy(&game.enemies[i], slot); break;
 				case ENEMY_DRONE: update_drone_enemy(&game.enemies[i], slot); break;
 				case ENEMY_SHARK: update_shark_enemy(&game.enemies[i], slot); break;
 				case ENEMY_GLOBE: update_globe_enemy(&game.enemies[i], slot); break;
@@ -2357,8 +2425,8 @@ void prepare_debugging() {
 	init_player_state();
 	init_boss_state();
 	init_enemy_state();
-	
 	render_camera_view();
+	music_transition();
 }
 #endif
 
