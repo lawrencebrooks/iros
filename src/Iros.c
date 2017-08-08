@@ -1047,8 +1047,9 @@ void update_shot(Player* player, u8 shot_slot)
 	u8 idx;
 	if (player->controls.pressed & BTN_A && player->active_shots < MAX_PLAYER_SHOTS)
 	{
-		SFX_PLAYER_SHOOT;
 		idx = find_shot_slot(player);
+		if (player->shot[idx].shot_type == SPACE_BOMB_SHOT && player->shared.y < 4) return;
+		SFX_PLAYER_SHOOT;
 		LBMapSprite(shot_slot+idx, LBGetNextFrame(&player->shot[idx].anim), 0);
 		player->shot[idx].active = 1;
 		player->shot[idx].shared.y = (u16) player->shared.y / 8 * 8 + player->shot[idx].y_delta;
@@ -1059,6 +1060,10 @@ void update_shot(Player* player, u8 shot_slot)
 			if (player->shot[idx].shot_type == SPACE_BOMB_SHOT)
 			{
 				player->shot[idx].shared.vy *= -1;
+				if (player->shot[idx].shared.vy == 0)
+				{
+					player->shot[idx].shared.vy = FAST_SHOT_SPEED;
+				}
 			}
 		}
 		else
