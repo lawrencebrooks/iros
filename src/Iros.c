@@ -43,6 +43,7 @@ void planet_transition(u8 index, char scroll, char atmosphere_height, char dy, u
 void challenge();
 u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height);
 u8 map_explosion(u8* flags, Animation* anim, u8 slot, u8 width, u8 height);
+char music_toggle_pressed(JoyPadState* p);
 
 // Globals
 Game game;
@@ -60,6 +61,7 @@ char* turret_anim[1];
 char* drone_anim[1];
 char* shark_anim[1];
 char* globe_anim[1];
+char* xwing_anim[1];
 char* hazard_anim[1];
 char* enemy_shot_anim[1];
 char* expl_anim[3];
@@ -231,6 +233,7 @@ void init_boss_state()
 		game.boss.run.anims[2] = (char*) map_ahero_step_2;
 		game.boss.run.anims[3] = (char*) map_ahero_step_3;
 	}
+	game.boss.shared.y = 21*8;
 	game.boss.active = 0;
 	game.boss.direction = D_RIGHT;
 	game.boss.flags = IDLE;
@@ -306,7 +309,7 @@ void init_player_state()
 	game.player.expl.anims[0] = (char*) map_explosion_0;
 	game.player.expl.anims[1] = (char*) map_explosion_1;
 	game.player.expl.anims[2] = (char*) map_explosion_2;
-	game.eye_clusters = 8;
+	game.eye_clusters = 9;
 	init_player_shot(game.current_level_index);
 }
 
@@ -478,6 +481,30 @@ void init_enemy_globe(u8 i, u16 x, u16 y)
 	init_enemy_shot(i, x, y, 0);
 }
 
+void init_enemy_xwing(u8 i, u16 x, u16 y)
+{
+	game.enemies[i].flags = 0;
+	game.enemies[i].active = 1;
+	game.enemies[i].width = 1;
+	game.enemies[i].height = 1;
+	game.enemies[i].enemy_type = ENEMY_XWING;
+	game.enemies[i].frame_count = 0;
+	game.enemies[i].shot_frame_count = 0;
+	game.enemies[i].shield = ENEMY_XWING_SHIELD;
+	
+	game.enemies[i].anim.anim_count = 1;
+	game.enemies[i].anim.frames_per_anim = 1;
+	game.enemies[i].anim.anims = xwing_anim;
+	game.enemies[i].anim.anims[0] = (char*) map_enemy_xwing;
+	game.enemies[i].shared.gravity = 0;
+	game.enemies[i].shared.vx = XWING_SPEED;
+	game.enemies[i].shared.vy = XWING_SPEED;
+	game.enemies[i].shared.x = x;
+	game.enemies[i].shared.y = y;
+	
+	init_enemy_shot(i, x, y, 0);
+}
+
 void init_enemy_boss_turret(u8 i, u16 x, u16 y)
 {
 	game.enemies[i].flags = 0;
@@ -525,7 +552,7 @@ void init_enemy_boss_eye(u8 i, u16 x, u16 y)
 	game.enemies[i].shared.x = x;
 	game.enemies[i].shared.y = y;
 	init_enemy_shot(i, x, y, 1);
-	SetTile(24-game.eye_clusters,y/8, 0);
+	SetTile(25-game.eye_clusters,y/8, 0);
 }
 
 void init_enemy_boss_turrets()
@@ -539,10 +566,12 @@ void init_enemy_boss_turrets()
 
 void init_enemy_boss_eyes()
 {
-	init_enemy_boss_eye(0, (255-game.eye_clusters)*8, 11*8);
-	init_enemy_boss_eye(1, (255-game.eye_clusters)*8, 12*8);
-	init_enemy_boss_eye(2, (255-game.eye_clusters)*8, 13*8);
+	static u8 idx = 0;
+	init_enemy_boss_eye(idx % 5, (256-game.eye_clusters)*8, 11*8);
+	init_enemy_boss_eye((idx+1) % 5, (256-game.eye_clusters)*8, 12*8);
+	init_enemy_boss_eye((idx+2) % 5, (256-game.eye_clusters)*8, 13*8);
 	game.active_enemies = 3;
+	idx += 3;
 }
 
 void init_enemy_level_hazard(u8 i, u16 x, u16 y)
@@ -726,6 +755,10 @@ void init_space_enemy(u8 i, u16 x, u16 y)
 	{
 		init_enemy_globe(i, x, y);
 	}
+	else if (game.current_level_index == 5)
+	{
+		init_enemy_xwing(i, x, y);
+	}
 	else if (game.frame_counter % 3 == 0)
 	{
 		init_enemy_shark(i, x, y);
@@ -736,7 +769,7 @@ void init_space_enemy(u8 i, u16 x, u16 y)
 	}
 	else if (game.frame_counter % 3 == 2)
 	{
-		init_enemy_globe(i, x, y);
+		init_enemy_xwing(i, x, y);
 	}
 }
 
@@ -816,7 +849,7 @@ u8 hazard_projectile_tile(u8 level_tile)
 void append_tile_column()
 {
 	u8 level_tile;
-	u8 rndom = LBRandom(1, CAMERA_HEIGHT-1)*8;
+	u8 rndom = LBRandom(2, CAMERA_HEIGHT-3)*8;
 	u8 hazard_tile_index = 0;
 	u8 solid_tile_index = 0;
 	u8 do_spawn = 0;
@@ -1056,7 +1089,7 @@ u8 out_of_bounds(SpriteShared* s)
 	if (s->x < game.camera_x) return 1;
 	if (s->x+8 > game.camera_x + CAMERA_WIDTH*8) return 1;
 	if (s->y < game.camera_y) return 1;
-	if (s->y < 4) return 1;
+	if (s->y < 4 && s->vy != 0) return 1;
 	if (s->y+8 > game.camera_y + CAMERA_HEIGHT*8) return 1;
 	return 0;
 }
@@ -1175,9 +1208,26 @@ void explode_all_enemies()
 	}
 }
 
+void handle_music_toggle(JoyPadState* p)
+{
+	if (music_toggle_pressed(p))
+	{
+		if (IsSongPlaying())
+		{
+			StopSong();
+		}
+		else
+		{
+			ResumeSong();
+		}
+	}
+}
+
 u8 update_player(Player* player, u8 slot)
 {
 	s8 space_ship_speed = SPACE_SHIP_SPEED;
+	
+	handle_music_toggle(&player->controls);
 	
 	if (player->flags & EXPLODING)
 	{
@@ -1198,7 +1248,6 @@ u8 update_player(Player* player, u8 slot)
 					space_ship_speed = 0;
 					
 				}
-				LBPrintByte(17, VRAM_TILES_V-3, game.active_enemies ,true);
 				if (!(player->flags & BOSS_APROACHING))
 				{
 					player->flags |= BOSS_APROACHING;
@@ -1598,6 +1647,16 @@ void update_globe_enemy(Enemy* e, u8 slot)
 	LBMapSprite(slot, LBGetNextFrame(&e->anim), 0);
 }
 
+void update_xwing_enemy(Enemy* e, u8 slot)
+{
+	e->shared.vx = XWING_SPEED;
+	if (game.frame_counter % 60 == 0)
+	{
+		e->shared.vy = -e->shared.vy;
+	}
+	LBMapSprite(slot, LBGetNextFrame(&e->anim), 0);
+}
+
 
 void update_shark_enemy(Enemy* e, u8 slot)
 {
@@ -1644,6 +1703,7 @@ void update_enemies()
 				case ENEMY_DRONE: update_drone_enemy(&game.enemies[i], slot); break;
 				case ENEMY_SHARK: update_shark_enemy(&game.enemies[i], slot); break;
 				case ENEMY_GLOBE: update_globe_enemy(&game.enemies[i], slot); break;
+				case ENEMY_XWING: update_xwing_enemy(&game.enemies[i], slot); break;
 				default: update_level_hazard(&game.enemies[i], slot); break;
 			}
 		}
@@ -1798,15 +1858,59 @@ void animate_enemy_shots()
 						LBMoveSprite(slot, game.enemies[i].shot[j].shared.x - game.camera_x, game.enemies[i].shot[j].shared.y - game.camera_y, 1, 1);
 					}
 				}
+				else
+				{
+					LBMoveSprite(slot, OFF_SCREEN, 0, 1, 1);
+				}
 			}
 			slot += 1;
 		}
 	}
 }
 
+void stream_text_middle(const char* dialogue, u8 y)
+{
+	u8 x, ln, c;
+	
+	while (pgm_read_byte(dialogue) != '#')
+	{
+		ln = strnlen_P(dialogue, 255);
+		x = 14 - ln / 2;
+		while ((c = pgm_read_byte(dialogue++)))
+		{
+			LBPrintChar(x++, y, c);
+			LBGetJoyPadState(&game.player.controls, 0);
+			if (!(game.player.controls.held & BTN_B)) WaitUs(CHARACTER_DELAY_US);
+		}
+		y++;
+	}
+}
+
+void print_scroll(const unsigned char text[])
+{
+	LBMapSprite(0, map_emerald_0, 0);
+	LBMoveSprite(0, 80, 48, 1, 1);
+	LBMapSprite(1, map_emerald_1, 0);
+	LBMoveSprite(1, 96, 48, 1, 1);
+	LBMapSprite(2, map_emerald_2, 0);
+	LBMoveSprite(2, 112, 48, 1, 1);
+	LBMapSprite(3, map_emerald_3, 0);
+	LBMoveSprite(3, 128, 48, 1, 1);
+	LBMapSprite(4, map_emerald_4, 0);
+	LBMoveSprite(4, 144, 48, 1, 1);
+	LBRotateSprites();
+	stream_text_middle((const char*) text, 12);
+	LBWaitSeconds(2);
+}
+
 void congratulation()
 {
-	
+	fade_through();
+	Screen.scrollX = 0;
+	Screen.scrollY = 0;
+	Screen.scrollHeight = 32;
+	Screen.overlayHeight = 0;
+	print_scroll(strCongrats);
 }
 
 u8 update_level()
@@ -1894,12 +1998,13 @@ u8 update_level()
 	}
 	else if (game.level_ended && is_space())
 	{
-		tally_score((char*) strLevelClear, 100);
 		if (game.current_level_index == 9) {
+			tally_score((char*) strLevelClear, 500);
 			congratulation();
 			exit_game();
 			return 1;
 		} else {
+			tally_score((char*) strLevelClear, 100);
 			planet_transition(game.current_level_index+1, 1, 28, -3, 199);
 		}
 	}
@@ -1940,23 +2045,9 @@ char select_pressed(JoyPadState* p)
 	return (p->pressed & BTN_A) || (p->pressed & BTN_START);
 }
 
-
-void stream_text_middle(const char* dialogue, u8 y)
+char music_toggle_pressed(JoyPadState* p)
 {
-	u8 x, ln, c;
-	
-	while (pgm_read_byte(dialogue) != '#')
-	{
-		ln = strnlen_P(dialogue, 255);
-		x = 14 - ln / 2;
-		while ((c = pgm_read_byte(dialogue++)))
-		{
-			LBPrintChar(x++, y, c);
-			LBGetJoyPadState(&game.player.controls, 0);
-			if (!(game.player.controls.held & BTN_B)) WaitUs(CHARACTER_DELAY_US);
-		}
-		y++;
-	}
+	return (p->pressed & BTN_SELECT);
 }
 
 void stream_text_anywhere(const char* dialogue, u8 x, u8 y)
@@ -2084,19 +2175,7 @@ void intro()
 	game.level_score = 0;
 	game.time = 0;
 	StartSong(planetsong);
-	LBMapSprite(0, map_emerald_0, 0);
-	LBMoveSprite(0, 80, 48, 1, 1);
-	LBMapSprite(1, map_emerald_1, 0);
-	LBMoveSprite(1, 96, 48, 1, 1);
-	LBMapSprite(2, map_emerald_2, 0);
-	LBMoveSprite(2, 112, 48, 1, 1);
-	LBMapSprite(3, map_emerald_3, 0);
-	LBMoveSprite(3, 128, 48, 1, 1);
-	LBMapSprite(4, map_emerald_4, 0);
-	LBMoveSprite(4, 144, 48, 1, 1);
-	LBRotateSprites();
-	stream_text_middle((const char*) strIntro, 12);
-	LBWaitSeconds(1);
+	print_scroll(strIntro);
 	planet_transition(0, 1, 28, -3, 199);
 }
 
