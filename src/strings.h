@@ -57,9 +57,7 @@ const unsigned char default_scores[] PROGMEM = {
 const unsigned char strIntro [] PROGMEM="THE 5 KNIGHTS OF IROS\0"
 "HAVE STOLEN YOUR POWER UPS\0"
 "AND FLED TO THEIR HOMEWORLDS\0\0"
-"\0\0"
 "BECAUASE THEY SUCK\0\0"
-"\0\0"
 "DESTROY THEM AND\0"
 "TAKE BACK YOUR SWAG\0#";
 
@@ -74,7 +72,7 @@ const unsigned char strCongrats [] PROGMEM="CONGRATS\0\0"
 "FOR A JOB WELL DONE\0#";
 
 const unsigned char strChallenge [] PROGMEM="   PREPARE\0  TO BE ICED\0#          "
-"     CUTE\0PINK IS SO YOU\0#         "
+"     CUTE\0PINK SUITS YOU\0#         "
 " I LIKE TREES\0 AND BEATINGS\0#      "
 "    MY GUN\0  YOUR FACE\0#           "
 " YEAH BUT ITS\0  A DRY HEAT\0#       ";
