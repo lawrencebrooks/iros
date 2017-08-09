@@ -44,6 +44,7 @@ void challenge();
 u8 collision_detect_level(SpriteShared* s, u8 tile_width, u8 tile_height);
 u8 map_explosion(u8* flags, Animation* anim, u8 slot, u8 width, u8 height);
 char music_toggle_pressed(JoyPadState* p);
+void hide_sprites(u8 from, u8 count);
 
 // Globals
 Game game;
@@ -1228,11 +1229,39 @@ void handle_music_toggle(JoyPadState* p)
 	}
 }
 
+void handle_demo_play(Player* player)
+{
+	if (game.selection == DEMO_SELECTED)
+	{
+		player->controls.pressed = 0;
+		if (is_space())
+		{
+			if (game.time < 1)
+			{
+				player->controls.held = BTN_UP;
+			}
+		}
+		else
+		{
+			player->controls.held = BTN_RIGHT;
+			if (player->shared.vx == 0 && player->shared.x > 40)
+			{
+				player->controls.pressed |= BTN_B;
+			}
+		}
+		if (game.frame_counter % 15 == 0)
+		{
+			player->controls.pressed = BTN_A;
+		}
+	}
+}
+
 u8 update_player(Player* player, u8 slot)
 {
 	s8 space_ship_speed = SPACE_SHIP_SPEED;
 	
 	handle_music_toggle(&player->controls);
+	handle_demo_play(player);
 	
 	if (player->flags & EXPLODING)
 	{
@@ -1908,7 +1937,7 @@ void print_scroll(const unsigned char text[])
 	LBWaitSeconds(2);
 }
 
-void congratulation()
+void congratulations()
 {
 	fade_through();
 	Screen.scrollX = 0;
@@ -1923,6 +1952,7 @@ u8 update_level()
 	u8 ship_x = game.player.shared.x - game.camera_x;
 	u8 ship_y = 0;
 	char ship_increment = 3;
+	static u16 demo_counter = 0;
 	
 	game.frame_counter++;
 	if (game.frame_counter == 60)
@@ -2005,12 +2035,22 @@ u8 update_level()
 	{
 		if (game.current_level_index == 9) {
 			tally_score((char*) strLevelClear, 500);
-			congratulation();
+			congratulations();
 			exit_game();
 			return 1;
 		} else {
 			tally_score((char*) strLevelClear, 100);
 			planet_transition(game.current_level_index+1, 1, 28, -3, 199);
+		}
+	}
+	if (game.selection == DEMO_SELECTED) 
+	{
+		demo_counter++;
+		if (ReadJoypad(0) || (demo_counter >= DEMO_LENGTH))
+		{
+			demo_counter = 0;
+			exit_game();
+			return 1;
 		}
 	}
 	return 0;
@@ -2184,6 +2224,23 @@ void intro()
 	planet_transition(0, 1, 28, -3, 199);
 }
 
+void demo_load(u8 idx)
+{
+	game.lives = LIVES;
+	game.score = 0;
+	game.level_score = 0;
+	game.time = 0;
+	game.current_screen = LEVEL;
+	ClearVram();
+	clear_sprites(0, MAX_EXTENDED_SPRITES);
+	LBRotateSprites();
+	fade_through();
+	load_level(idx, true);
+	init_player_state();
+	init_boss_state();
+	init_enemy_state();
+}
+
 void load_splash()
 {
 	fade_through();
@@ -2204,6 +2261,11 @@ void load_splash()
 
 void update_splash()
 {
+	static u16 demo_counter = 0;
+	static u8 demo_choice = 0;
+	
+	if (game.player.controls.pressed) demo_counter = 0;
+	
 	if (game.player.controls.pressed & BTN_DOWN && game.selection == START_SELECTED)
 	{
 		game.selection = HIGH_SCORES_SELECTED;
@@ -2226,6 +2288,23 @@ void update_splash()
 		load_high_scores();
 		return;
 	}
+	else if (demo_counter >= DEMO_WAIT)
+	{
+		demo_counter = 0;
+		game.selection = DEMO_SELECTED;
+		if (demo_choice % 2 == 0)
+		{
+			demo_load(0);
+		}
+		else
+		{
+			demo_load(1);
+		}
+		demo_choice++;
+		return;
+		
+	}
+	demo_counter++;
 	
 	if (game.selection == START_SELECTED)
 	{
@@ -2269,7 +2348,7 @@ void load_high_scores()
 		memcpy(&score, &(scores.data[i+3]), 2);
 		LBPrintInt(19, ypos, score, true);
 		
-		if (game.score > score && game.high_score_index == -1)
+		if (game.score > score && game.high_score_index == -1 && game.selection != DEMO_SELECTED)
 		{
 			// Shift scores down
 			for (u8 j = 25; j > i; j -= 5)
@@ -2299,17 +2378,29 @@ void load_high_scores()
 
 void update_high_scores()
 {
+	static u16 high_score_counter = 0;
+	
 	if (game.player.controls.pressed & BTN_X)
 	{
+		high_score_counter = 0;
 		SFX_NAVIGATE;
 		game.high_score_index = -1;
 		game.score = 0;
 		save_eeprom(&scores);
 		load_splash();
 	}
+	if ((game.player.controls.held & BTN_SL) && (game.player.controls.held_cycles == 255) && (game.high_score_index == -1))
+	{
+		high_score_counter = 0;
+	    SFX_NAVIGATE;
+		init_default_high_scores();
+	    save_eeprom(&scores);
+		load_high_scores();
+	}
 	
 	if (game.high_score_index != -1)
 	{
+		high_score_counter = 0;
 		if (game.player.controls.pressed & BTN_RIGHT && game.high_score_index % 5 != 2)
 		{
 			SFX_NAVIGATE;
@@ -2339,6 +2430,15 @@ void update_high_scores()
 			LBPrintChar(11+(game.high_score_index % 5), 7+(game.high_score_index/5)*2, scores.data[game.high_score_index]);
 		}
 	}
+	if (high_score_counter > HIGH_SCORES_LENGTH)
+	{
+		high_score_counter = 0;
+		SFX_NAVIGATE;
+		game.high_score_index = -1;
+		game.score = 0;
+		load_splash();
+	}
+	high_score_counter++;
 }
 
 void update_pause()
@@ -2459,28 +2559,38 @@ void update_player_ai(Player* player)
 {
 	 static s8 last_shield_value;
 	 
-	 if (player->ai_flags == AI_NOT_READY) {
+	 if (player->ai_flags == AI_NOT_READY)
+	 {
 		 player->controls.held = BTN_LEFT;
 		 player->ai_flags = AI_READY;
 	 }
-	 else if (player->ai_flags & AI_READY) {
+	 else if (player->ai_flags & AI_READY)
+	 {
 		 LBResetJoyPadState(&player->controls);
-		 if (game.camera_x/8 + CAMERA_WIDTH >= game.level_width) {
+		 if (game.camera_x/8 + CAMERA_WIDTH >= game.level_width)
+		 {
 			 challenge();
 			 player->ai_flags = AI_WALKING;
 			 player->controls.held = BTN_LEFT;
 		 }
-	 } else if (player->ai_flags & AI_WALKING) {
+	 }
+	 else if (player->ai_flags & AI_WALKING) 
+	 {
 		 player->controls.pressed = 0;
-		 if (game.frame_counter % 15 == 0) {
+		 if (game.frame_counter % 15 == 0)
+		 {
 			 player->controls.pressed = BTN_A;
 		 }
-		 if (last_shield_value > player->shield) {
+		 if (last_shield_value > player->shield)
+		 {
 			 player->controls.pressed |= BTN_B;
 		 }
-		 if (player->shared.x <= game.camera_x) {
+		 if (player->shared.x <= game.camera_x)
+		 {
 			 player->controls.held = BTN_RIGHT;
-		 } else if (player->shared.x >= game.camera_x+(CAMERA_WIDTH-2)*8) {
+		 }
+		 else if (player->shared.x >= game.camera_x+(CAMERA_WIDTH-2)*8)
+		 {
 			 player->controls.held = BTN_LEFT;
 		 }
 	 }

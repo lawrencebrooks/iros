@@ -38,6 +38,7 @@
 // Selections
 #define START_SELECTED 0
 #define HIGH_SCORES_SELECTED 1
+#define DEMO_SELECTED 2
 
 // Frame counts
 #define FRAMES_PER_FADE 1
@@ -58,6 +59,9 @@
 #define CHARACTER_DELAY_US 6000
 #define TALLY_DELAY 1500
 #define CHALLENGE_LENGTH 35
+#define DEMO_WAIT 600
+#define DEMO_LENGTH 900
+#define HIGH_SCORES_LENGTH 900
 
 // Player macros
 #define FRAMES_PER_RUN_CYCLE 12
