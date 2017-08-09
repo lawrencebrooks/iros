@@ -203,7 +203,7 @@ void init_boss_shot(u8 level)
 	else if (level == 8) // Dessert
 	{
 		init_shot(&game.boss.shot[0], RED_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, -8, map_hero_rplasma_shot, boss_shot_top_anim);
-		init_shot(&game.boss.shot[1], RED_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, 0, map_hero_rplasma_shot, boss_shot_middle_anim);
+		init_shot(&game.boss.shot[1], RED_PLASMA_SHOT, LOW_SHOT_DAMAGE, MEDIUM_SHOT_SPEED, 0, map_hero_rplasma_shot, boss_shot_middle_anim);
 		init_shot(&game.boss.shot[2], RED_PLASMA_SHOT, MEDIUM_SHOT_DAMAGE, FAST_SHOT_SPEED, 8, map_hero_rplasma_shot, boss_shot_bottom_anim);
 		game.boss.shots_per_fire = 3;
 	}

@@ -27,7 +27,7 @@
 #define DEBUG_GODMODE 0
 
 // EEPROM ID
-#define EEPROM_SCORES_ID 0x8C
+#define EEPROM_SCORES_ID 0x8E
 
 // Screens
 #define SPLASH 0
@@ -74,7 +74,7 @@
 #define D_RIGHT 1
 #define D_UP 2
 #define D_DOWN 3
-#define LIVES 5
+#define LIVES 10
 #define PLAYER_SHIELD 20
 #define BOSS_SHIELD 20
 
@@ -137,7 +137,7 @@
 #define XWING_SPEED 20
 #define GLOBE_SPEED 10
 #define DRONE_SPEED 30
-#define HAZARD_SPEED 40
+#define HAZARD_SPEED 30
 #define SPIDER_FRAMES_PER_IDLE 10
 #define ENEMY_SPIDER_SHIELD 2
 #define ENEMY_TURRET_SHIELD 2
