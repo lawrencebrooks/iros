@@ -236,7 +236,7 @@ void init_boss_state()
 	}
 	game.boss.shared.y = 21*8;
 	game.boss.active = 0;
-	game.boss.direction = D_RIGHT;
+	game.boss.direction = D_LEFT;
 	game.boss.flags = IDLE;
 	game.boss.ai_flags = AI_NOT_READY;
 	game.boss.shield = BOSS_SHIELD;
@@ -1046,7 +1046,7 @@ void update_shot(Player* player, u8 shot_slot)
 {
 	// Shot updates
 	u8 idx;
-	if (player->controls.pressed & BTN_A && player->active_shots < MAX_PLAYER_SHOTS)
+	if (player->controls.pressed & BTN_B && player->active_shots < MAX_PLAYER_SHOTS)
 	{
 		idx = find_shot_slot(player);
 		if (player->shot[idx].shot_type == SPACE_BOMB_SHOT && player->shared.y < 4) return;
@@ -1095,7 +1095,7 @@ u8 out_of_bounds(SpriteShared* s)
 	if (s->x < game.camera_x) return 1;
 	if (s->x+8 > game.camera_x + CAMERA_WIDTH*8) return 1;
 	if (s->y < game.camera_y) return 1;
-	if (s->y < 4 && s->vy != 0) return 1;
+	if (s->y < game.camera_y + 1 && s->vy != 0) return 1;
 	if (s->y+8 > game.camera_y + CAMERA_HEIGHT*8) return 1;
 	return 0;
 }
@@ -1246,12 +1246,12 @@ void handle_demo_play(Player* player)
 			player->controls.held = BTN_RIGHT;
 			if (player->shared.vx == 0 && player->shared.x > 40)
 			{
-				player->controls.pressed |= BTN_B;
+				player->controls.pressed |= BTN_A;
 			}
 		}
 		if (game.frame_counter % 15 == 0)
 		{
-			player->controls.pressed = BTN_A;
+			player->controls.pressed = BTN_B;
 		}
 	}
 }
@@ -1375,7 +1375,7 @@ u8 update_player(Player* player, u8 slot)
 				player->shared.vx = 0;
 				LBMapSprite(slot, LBGetNextFrame(&player->idle), extendedSprites[slot].flags);
 			}
-			if (player->controls.pressed & BTN_B && !(player->flags & PRONE))
+			if (player->controls.pressed & BTN_A && !(player->flags & PRONE))
 			{
 				player->shared.vy = -JUMP_SPEED;
 				player->shared.gravity = GRAVITY;
@@ -1424,7 +1424,7 @@ u8 update_player(Player* player, u8 slot)
 			player->width = 2;
 			player->height = 3;
 		}
-		else if (player->controls.pressed & BTN_B)
+		else if (player->controls.pressed & BTN_A)
 		{
 			player->flags = JUMPING;
 			player->shared.y -= 16;
@@ -1601,7 +1601,7 @@ void animate_player(Player* player, Player* other_player, u8 slot)
 	{
 		LBMoveSprite(slot, player->shared.x - game.camera_x, player->shared.y - game.camera_y, player->width, player->height);
 	}
-	else if (!DEBUG_GODMODE && other_player == &game.player && LBCollides(player->shared.x-game.camera_x,player->shared.y, player->width*8, player->height*8,
+	/*else if (!DEBUG_GODMODE && other_player == &game.player && LBCollides(player->shared.x-game.camera_x,player->shared.y, player->width*8, player->height*8,
 					other_player->shared.x-game.camera_x, other_player->shared.y, other_player->width*8, other_player->height*8
 				) 
 	)
@@ -1609,7 +1609,8 @@ void animate_player(Player* player, Player* other_player, u8 slot)
 		SFX_PLAYER_EXPLODE;
 		other_player->shield = 0;
 		other_player->flags = EXPLODING;
-	}
+		player->controls.pressed |= BTN_A;
+	}*/
 	else if (animate_sprite(&player->shared, slot, player->width, player->height, 0, 0) > 1 && !DEBUG_GODMODE)
 	{
 		SFX_PLAYER_EXPLODE;
@@ -1809,7 +1810,12 @@ void animate_enemies()
 	{
 		if (game.enemies[i].active && !(game.enemies[i].flags & EXPLODING))
 		{
-			if (game.enemies[i].shared.x < game.camera_x || game.enemies[i].shared.y < game.camera_y || game.enemies[i].shared.y > game.camera_y + CAMERA_HEIGHT*8)
+			if (game.enemies[i].shared.x < game.camera_x ||
+			    game.enemies[i].shared.y < game.camera_y ||
+				game.enemies[i].shared.y > game.camera_y + CAMERA_HEIGHT*8 ||
+				(game.enemies[i].shared.x > game.camera_x + CAMERA_WIDTH*8 &&
+				 game.enemies[i].enemy_type == ENEMY_SPIDER &&
+				 game.enemies[i].direction == D_RIGHT))
 			{
 				game.enemies[i].active = 0;
 				game.active_enemies--;
@@ -1914,7 +1920,7 @@ void stream_text_middle(const char* dialogue, u8 y)
 		{
 			LBPrintChar(x++, y, c);
 			LBGetJoyPadState(&game.player.controls, 0);
-			if (!(game.player.controls.held & BTN_B)) WaitUs(CHARACTER_DELAY_US);
+			if (!(game.player.controls.held & BTN_A)) WaitUs(CHARACTER_DELAY_US);
 		}
 		y++;
 	}
@@ -1976,7 +1982,7 @@ u8 update_level()
 				move_camera_x();
 			}
 		}
-		else if (game.player.shared.x >= game.camera_x+CAMERA_WIDTH*8)
+		else if (game.player.shared.x+24 >= game.camera_x+CAMERA_WIDTH*8 && game.current_level_index != 9)
 		{
 			game.level_ended = 1;
 			game.player.flags ^= END_OF_SPACE;
@@ -2089,7 +2095,7 @@ void exit_game()
 
 char select_pressed(JoyPadState* p)
 {
-	return (p->pressed & BTN_A) || (p->pressed & BTN_START);
+	return (p->pressed & BTN_B) || (p->pressed & BTN_START);
 }
 
 char music_toggle_pressed(JoyPadState* p)
@@ -2581,11 +2587,11 @@ void update_player_ai(Player* player)
 		 player->controls.pressed = 0;
 		 if (game.frame_counter % 15 == 0)
 		 {
-			 player->controls.pressed = BTN_A;
+			 player->controls.pressed = BTN_B;
 		 }
 		 if (last_shield_value > player->shield)
 		 {
-			 player->controls.pressed |= BTN_B;
+			 player->controls.pressed |= BTN_A;
 		 }
 		 if (player->shared.x <= game.camera_x)
 		 {
