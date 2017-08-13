@@ -213,30 +213,19 @@ void init_boss_shot(u8 level)
 void init_boss_state()
 {
 	LBResetJoyPadState(&game.boss.controls);
-	if (is_space())
-	{
-		game.boss.width = 3;
-		game.boss.height = 1;
-		game.boss.run.anim_count = 2;
-		game.boss.run.frames_per_anim = EXPLOSION_FRAME_COUNT;
-		game.boss.run.anims = boss_run_anim;
-		game.boss.run.anims[0] = (char*) map_hero_ship_0;
-		game.boss.run.anims[1] = (char*) map_hero_ship_1;
-	}
-	else
-	{
-		game.boss.width = 2;
-		game.boss.height = 3;
-		game.boss.run.anim_count = 4;
-		game.boss.run.frames_per_anim = FRAMES_PER_RUN_CYCLE;
-		game.boss.run.anims = boss_run_anim;
-		game.boss.run.anims[0] = (char*) map_ahero_step_0;
-		game.boss.run.anims[1] = (char*) map_ahero_step_1;
-		game.boss.run.anims[2] = (char*) map_ahero_step_2;
-		game.boss.run.anims[3] = (char*) map_ahero_step_3;
-	}
+	game.boss.width = 2;
+	game.boss.height = 3;
+	game.boss.run.anim_count = 4;
+	game.boss.run.frames_per_anim = FRAMES_PER_RUN_CYCLE;
+	game.boss.run.anims = boss_run_anim;
+	game.boss.run.anims[0] = (char*) map_ahero_step_0;
+	game.boss.run.anims[1] = (char*) map_ahero_step_1;
+	game.boss.run.anims[2] = (char*) map_ahero_step_2;
+	game.boss.run.anims[3] = (char*) map_ahero_step_3;
 	game.boss.active_shots = 0;
-	game.boss.shared.y = 21*8;
+	game.boss.shared.vx = 0;
+	game.boss.shared.vy = 0;
+	game.boss.shared.gravity = 0;
 	game.boss.active = 0;
 	game.boss.direction = D_LEFT;
 	game.boss.flags = IDLE;
@@ -286,6 +275,9 @@ void init_player_state()
 		game.player.run.anims[2] = (char*) map_hero_step_2;
 		game.player.run.anims[3] = (char*) map_hero_step_3;
 	}
+	game.player.shared.vx = 0;
+	game.player.shared.vy = 0;
+	game.player.shared.gravity = 0;
 	game.player.active_shots = 0;
 	game.player.active = 1;
 	game.player.direction = D_RIGHT;
@@ -2722,19 +2714,12 @@ int main()
 				animate_shot(&game.player, &game.boss, PLAYER_SHOT_SLOT);
 				update_pause();
 			}
-			if (!is_space() && (game.camera_x >= BOSS_UPDATE_THRESHOLD))
+			if (!is_space() && (game.camera_x >= BOSS_UPDATE_THRESHOLD) && update_player(&game.boss, BOSS_SLOT))
 			{
-				if (game.flags != BOSS_APROACHING)
-				{
-					game.flags = BOSS_APROACHING;
-				}
-				if (update_player(&game.boss, BOSS_SLOT))
-				{
-					update_shot(&game.boss, BOSS_SHOT_SLOT);
-					animate_player(&game.boss, &game.player, BOSS_SLOT);
-					animate_shot(&game.boss, &game.player, BOSS_SHOT_SLOT);
-					update_player_ai(&game.boss);
-				}
+				update_shot(&game.boss, BOSS_SHOT_SLOT);
+				animate_player(&game.boss, &game.player, BOSS_SLOT);
+				animate_shot(&game.boss, &game.player, BOSS_SHOT_SLOT);
+				update_player_ai(&game.boss);
 			}
 		}
 		else if (game.current_screen == SPLASH)
