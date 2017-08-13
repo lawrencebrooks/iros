@@ -280,7 +280,7 @@ Disassembly of section .text:
      a55:	20 44 45 46 45 4e 43 45 53 00 00 59 4f 55 20 41      DEFENCES..YOU A
      a65:	4c 53 4f 20 45 53 43 41 50 45 44 00 54 48 45 49     LSO ESCAPED.THEI
      a75:	52 20 41 4e 4e 4f 59 49 4e 47 20 4f 4e 45 20 4c     R ANNOYING ONE L
-     a85:	49 4e 45 52 53 00 00 54 41 50 20 59 4f 55 52 53     INERS..TAP YOURS
+     a85:	49 4e 45 52 53 00 00 50 41 54 20 59 4f 55 52 53     INERS..PAT YOURS
      a95:	45 4c 46 20 4f 4e 20 54 48 45 20 42 41 43 4b 00     ELF ON THE BACK.
      aa5:	46 4f 52 20 41 20 4a 4f 42 20 57 45 4c 4c 20 44     FOR A JOB WELL D
      ab5:	4f 4e 45 00 23 00                                   ONE.#.
