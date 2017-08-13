@@ -106,6 +106,7 @@ typedef struct sGameState {
 	u8 spawn_rate;
 	u8 level_ended;
 	u8 eye_clusters;
+	u8 flags;
 	Player player;
 	Player boss;
 	Enemy enemies[MAX_ENEMIES];

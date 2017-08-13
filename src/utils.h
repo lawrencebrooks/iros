@@ -291,8 +291,7 @@ void LBRotateSprites()
 		sprites[i].tileIndex = extendedSprites[rotate_index].tileIndex;
 		sprites[i].x = extendedSprites[rotate_index].x;
 		sprites[i].y = extendedSprites[rotate_index].y;
-		rotate_index += 1;
-		if (rotate_index >= MAX_EXTENDED_SPRITES) rotate_index = ROTATE_SPRITES_FROM;
+		if (++rotate_index >= MAX_EXTENDED_SPRITES) rotate_index = ROTATE_SPRITES_FROM;
 	}
 }
 

@@ -118,6 +118,7 @@ void init_shot(Shot* shot, u8 type, u8 damage, u8 speed, s8 y_delta, const char*
 	if (type == SPACE_BOMB_SHOT) {
 		shot->shared.vy = speed;
 	}
+	shot->active = 0;
 }
 
 void init_player_shot(u8 level)
@@ -234,6 +235,7 @@ void init_boss_state()
 		game.boss.run.anims[2] = (char*) map_ahero_step_2;
 		game.boss.run.anims[3] = (char*) map_ahero_step_3;
 	}
+	game.boss.active_shots = 0;
 	game.boss.shared.y = 21*8;
 	game.boss.active = 0;
 	game.boss.direction = D_LEFT;
@@ -284,6 +286,7 @@ void init_player_state()
 		game.player.run.anims[2] = (char*) map_hero_step_2;
 		game.player.run.anims[3] = (char*) map_hero_step_3;
 	}
+	game.player.active_shots = 0;
 	game.player.active = 1;
 	game.player.direction = D_RIGHT;
 	game.player.flags = IDLE;
@@ -972,6 +975,7 @@ void load_level(u8 index, u8 drop_ship)
 	game.scroll_x = 0;
 	game.scroll_y = 0;
 	game.spawn_rate = BASE_SPAWN_RATE;
+	game.flags = 0;
 	render_camera_view();
 	LBPrint(0, VRAM_TILES_V-3, (char*) strShield);
 	LBPrint(18, VRAM_TILES_V-3, (char*) strTime);
@@ -1138,11 +1142,11 @@ void animate_shot(Player* player, Player* other_player, u8 shot_slot)
 							game.enemies[j].active = 0;
 							game.active_enemies--;
 							game.level_score += KILL_SCORE;
-							break;
 						}
 						player->shot[i].active = 0;
 						player->active_shots--;
 						LBMoveSprite(shot_slot+i, OFF_SCREEN, 0, 1, 1);
+						break;
 					}
 					slot += game.enemies[j].width*game.enemies[j].height;
 				}
@@ -1236,7 +1240,7 @@ void handle_demo_play(Player* player)
 		player->controls.pressed = 0;
 		if (is_space())
 		{
-			if (game.time < 1)
+			if (game.time < 2)
 			{
 				player->controls.held = BTN_UP;
 			}
@@ -1282,19 +1286,19 @@ u8 update_player(Player* player, u8 slot)
 					space_ship_speed = 0;
 					
 				}
-				if (!(player->flags & BOSS_APROACHING))
+				if (!(game.flags & BOSS_APROACHING))
 				{
-					player->flags |= BOSS_APROACHING;
+					game.flags |= BOSS_APROACHING;
 					explode_all_enemies();
 					StopSong();
 				}
-				if (game.camera_x/8 + CAMERA_WIDTH >= 250 && !(player->flags & BOSS_REACHED))
+				if (game.camera_x/8 + CAMERA_WIDTH >= 250 && !(game.flags & BOSS_REACHED))
 				{
-					player->flags |= BOSS_REACHED;
+					game.flags |= BOSS_REACHED;
 					init_enemy_boss_turrets();
 					StartSong(planetsong);
 				}
-				if ((player->flags & BOSS_REACHED) && (game.active_enemies == 0))
+				if ((game.flags & BOSS_REACHED) && (game.active_enemies == 0))
 				{
 					init_enemy_boss_eyes();
 					game.eye_clusters--;
@@ -2622,6 +2626,7 @@ void prepare_debugging() {
 	game.time = 0;
 	game.current_level_index = DEBUG_LEVEL;
 	game.level_ended = 0;
+	game.flags = 0;
 	clear_sprites(0, MAX_EXTENDED_SPRITES);
 	LBResetJoyPadState(&game.player.controls);
 	LBResetJoyPadState(&game.boss.controls);
@@ -2717,12 +2722,19 @@ int main()
 				animate_shot(&game.player, &game.boss, PLAYER_SHOT_SLOT);
 				update_pause();
 			}
-			if (!is_space() && (game.camera_x >= BOSS_UPDATE_THRESHOLD) && update_player(&game.boss, BOSS_SLOT))
+			if (!is_space() && (game.camera_x >= BOSS_UPDATE_THRESHOLD))
 			{
-				update_shot(&game.boss, BOSS_SHOT_SLOT);
-				animate_player(&game.boss, &game.player, BOSS_SLOT);
-				animate_shot(&game.boss, &game.player, BOSS_SHOT_SLOT);
-				update_player_ai(&game.boss);
+				if (game.flags != BOSS_APROACHING)
+				{
+					game.flags = BOSS_APROACHING;
+				}
+				if (update_player(&game.boss, BOSS_SLOT))
+				{
+					update_shot(&game.boss, BOSS_SHOT_SLOT);
+					animate_player(&game.boss, &game.player, BOSS_SLOT);
+					animate_shot(&game.boss, &game.player, BOSS_SHOT_SLOT);
+					update_player_ai(&game.boss);
+				}
 			}
 		}
 		else if (game.current_screen == SPLASH)
