@@ -330,6 +330,7 @@ void init_enemy_shot(u8 i, u16 x, u16 y, u8 is_boss)
 		game.enemies[i].shot[j].shot_speed = SLOW_SHOT_SPEED;
 		if (is_boss)
 		{
+			game.enemies[i].shot[j].hit_count = CRITICAL_SHOT_DAMAGE;
 			game.enemies[i].shot[j].anim.anims[0] = (char*) map_enemy_boss_shot;
 			game.enemies[i].shot[j].shot_speed = MEDIUM_SHOT_SPEED;
 		}

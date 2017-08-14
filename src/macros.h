@@ -85,6 +85,8 @@
 #define IDLE 8
 #define EXPLODING 16
 #define END_OF_SPACE 32
+
+// Game State Flags
 #define BOSS_APROACHING 64
 #define BOSS_REACHED 128
 
@@ -106,6 +108,7 @@
 #define LOW_SHOT_DAMAGE 1
 #define MEDIUM_SHOT_DAMAGE 2
 #define SEVERE_SHOT_DAMAGE 4
+#define CRITICAL_SHOT_DAMAGE 10
 
 // Sprite slots
 #define PLAYER_SLOT 0
