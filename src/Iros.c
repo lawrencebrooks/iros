@@ -2561,9 +2561,7 @@ void challenge()
 }
 
 void update_player_ai(Player* player) 
-{
-	 static s8 last_shield_value;
-	 
+{	 
 	 if (player->ai_flags == AI_NOT_READY)
 	 {
 		 player->controls.held = BTN_LEFT;
@@ -2586,7 +2584,7 @@ void update_player_ai(Player* player)
 		 {
 			 player->controls.pressed = BTN_B;
 		 }
-		 if (last_shield_value > player->shield)
+		 if (player->shared.x >= game.camera_x+(CAMERA_WIDTH*8/2-40) && player->shared.x <= game.camera_x+(CAMERA_WIDTH*8/2+40))
 		 {
 			 player->controls.pressed |= BTN_A;
 		 }
@@ -2599,7 +2597,6 @@ void update_player_ai(Player* player)
 			 player->controls.held = BTN_LEFT;
 		 }
 	 }
-	 last_shield_value = player->shield;
 }
 
 #if DEBUG_MODE
