@@ -2297,15 +2297,9 @@ void update_splash()
 	{
 		demo_counter = 0;
 		game.selection = DEMO_SELECTED;
-		if (demo_choice % 2 == 0)
-		{
-			demo_load(0);
-		}
-		else
-		{
-			demo_load(1);
-		}
-		demo_choice++;
+		demo_load(demo_choice++);
+		if (demo_choice == 2) demo_choice = 3;
+		if (demo_choice == 5) demo_choice = 0;
 		return;
 		
 	}
