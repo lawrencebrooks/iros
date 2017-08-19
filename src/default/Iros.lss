@@ -12756,7 +12756,7 @@ void init_boss_state()
 	game.boss.ai_flags = AI_NOT_READY;
     b03a:	10 92 5d 0e 	sts	0x0E5D, r1
 	game.boss.shield = BOSS_SHIELD;
-    b03e:	84 e1       	ldi	r24, 0x14	; 20
+    b03e:	8e e1       	ldi	r24, 0x1E	; 30
     b040:	80 93 63 0e 	sts	0x0E63, r24
 	game.boss.idle.anim_count = 1;
     b044:	81 e0       	ldi	r24, 0x01	; 1
@@ -12917,7 +12917,7 @@ void init_player_state()
 	game.player.ai_flags = AI_NOT_READY;
     b16e:	10 92 e2 0d 	sts	0x0DE2, r1
 	game.player.shield = PLAYER_SHIELD;
-    b172:	94 e1       	ldi	r25, 0x14	; 20
+    b172:	9f e0       	ldi	r25, 0x0F	; 15
     b174:	90 93 e8 0d 	sts	0x0DE8, r25
 	game.player.idle.anim_count = 1;
     b178:	80 93 26 0e 	sts	0x0E26, r24

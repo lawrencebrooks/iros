@@ -75,8 +75,8 @@
 #define D_UP 2
 #define D_DOWN 3
 #define LIVES 10
-#define PLAYER_SHIELD 20
-#define BOSS_SHIELD 20
+#define PLAYER_SHIELD 15
+#define BOSS_SHIELD 30
 
 // State flags
 #define JUMPING 1
