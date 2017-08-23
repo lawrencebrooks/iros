@@ -12,7 +12,7 @@ INFO=../gameinfo.properties
 
 ## Kernel settings
 KERNEL_DIR = ../kernel
-KERNEL_OPTIONS  = -DVIDEO_MODE=3  -DSOUND_MIXER=1 -DINTRO_LOGO=1 
+KERNEL_OPTIONS  = -DVIDEO_MODE=3  -DSOUND_MIXER=1 -DINTRO_LOGO=0 -D_PF_USE_WRITE=1
 KERNEL_OPTIONS += -DMAX_SPRITES=16 -DMAX_EXTENDED_SPRITES=20 -DROTATE_SPRITES_FROM=15 -DRAM_TILES_COUNT=28 -DTRUE_RANDOM_GEN=1 -DSCROLLING=1 -DVRAM_TILES_V=32
 
 ## Options common to compile, link and assembly rules
@@ -45,7 +45,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 
 ## Objects that must be built in order to link
-OBJECTS = uzeboxVideoEngineCore.o uzeboxCore.o uzeboxSoundEngine.o uzeboxSoundEngineCore.o uzeboxVideoEngine.o $(GAME).o 
+OBJECTS = uzeboxVideoEngineCore.o uzeboxCore.o uzeboxSoundEngine.o uzeboxSoundEngineCore.o uzeboxVideoEngine.o mmc.o pff.o $(GAME).o 
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
@@ -70,6 +70,12 @@ uzeboxSoundEngine.o: $(KERNEL_DIR)/uzeboxSoundEngine.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 uzeboxVideoEngine.o: $(KERNEL_DIR)/uzeboxVideoEngine.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+mmc.o: $(KERNEL_DIR)/petitfatfs/mmc.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+pff.o: $(KERNEL_DIR)/petitfatfs/pff.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 ## Compile game sources

@@ -97,33 +97,33 @@
 .section .bss
 	.align 1
 
-	sync_phase:  .byte 1	;0=vsync, 1=hsync
-	sync_pulse:	 .byte 1	;scanline counter
-	sync_flags:  .byte 1	;b0: vsync flag, set at 60Hz when video frame rendered
+	sync_phase:  .space 1	;0=vsync, 1=hsync
+	sync_pulse:	 .space 1	;scanline counter
+	sync_flags:  .space 1	;b0: vsync flag, set at 60Hz when video frame rendered
 							;b1: current field (0=odd, 1=even)
 
-	pre_vsync_user_callback:  .word 1 ;pointer to function
-	post_vsync_user_callback: .word 1 ;pointer to function
+	pre_vsync_user_callback:  .space 2 ;pointer to function
+	post_vsync_user_callback: .space 2 ;pointer to function
 
-	first_render_line:		.byte 1
-	render_lines_count: 	.byte 1
+	first_render_line:		.space 1
+	render_lines_count: 	.space 1
 
 	
 	;last read results of joypads
-	joypad1_status_lo:	.byte 1
-						.byte 1
-	joypad1_status_hi:	.byte 1
-						.byte 1
+	joypad1_status_lo:	.space 1
+						.space 1
+	joypad1_status_hi:	.space 1
+						.space 1
 
-	joypad2_status_lo:	.byte 1
-						.byte 1
-	joypad2_status_hi:	.byte 1
-						.byte 1
+	joypad2_status_lo:	.space 1
+						.space 1
+	joypad2_status_hi:	.space 1
+						.space 1
 
-	vsync_counter:		.word 1
+	vsync_counter:		.space 2
 	
 #if TRUE_RANDOM_GEN == 1
-	random_value:			.word 1
+	random_value:			.space 2
 #endif
 
 .section .text
@@ -146,41 +146,41 @@ TIMER1_COMPA_vect:
 	;Read timer offset since rollover to remove cycles 
 	;and conpensate for interrupt latency.
 	;This is nessesary to eliminate frame jitter.
-;  lds ZL,_SFR_MEM_ADDR(TCNT1L)
-;  subi ZL,0x12 ;MIN_INT_LATENCY
+;	lds ZL,_SFR_MEM_ADDR(TCNT1L)
+;	subi ZL,0x12 ;MIN_INT_LATENCY
 ;
-;  ldi ZH,1
+;	ldi ZH,1
 ;latency_loop:
-;  cp ZL,ZH
-;  brlo .      ;advance PC to next instruction 
-;  inc ZH
-;  cpi ZH,10
-;  brlo latency_loop
-;  jmp .
+;	cp ZL,ZH
+;	brlo .		;advance PC to next instruction	
+;	inc ZH
+;	cpi ZH,10
+;	brlo latency_loop
+;	jmp .
 
 
-   ; *** Kernel boost hack ***
-   ;
-   ; Use an alternate way to shave off 5 cycles jitter faster. It shifts
-   ; all timing 57 cycles "down", so every Timer related comment and code
-   ; should subtract 57 to align with this (Notes: Everything works as
-   ; normal except video modes using the Timer to terminate the line).
+	; *** Kernel boost hack ***
+	;
+	; Use an alternate way to shave off 5 cycles jitter faster. It shifts
+	; all timing 57 cycles "down", so every Timer related comment and code
+	; should subtract 57 to align with this (Notes: Everything works as
+	; normal except video modes using the Timer to terminate the line).
 
-   lds   ZL,      _SFR_MEM_ADDR(TCNT1L) ; 0x12 - 0x17 (5 cy jitter)
+	lds   ZL,      _SFR_MEM_ADDR(TCNT1L) ; 0x12 - 0x17 (5 cy jitter)
 
-   cpi   ZL,      0x16    ; ( 1)
-   breq  .                ; ( 2) +1 (6: cpi - rjmp - rjmp - nop)
-   brcc  .+10             ; ( 4) +0 (5: cpi - nop - rjmp - nop)
-   cpi   ZL,      0x14    ; ()
-   breq  .                ; ()   +3 (8: cpi - 2x nop - cpi - rjmp - rjmp)
-   brcc  .+6              ; ()   +2 (7: cpi - 2x nop - cpi - nop - rjmp)
-   cpi   ZL,      0x12    ; ()
-   breq  .                ; ()   +5 / +4 (10 / 9)
-   nop                    ; ( 5) Timer at 0x1C
+	cpi   ZL,      0x16    ; ( 1)
+	breq  .                ; ( 2) +1 (6: cpi - rjmp - rjmp - nop)
+	brcc  .+10             ; ( 4) +0 (5: cpi - nop - rjmp - nop)
+	cpi   ZL,      0x14    ; ()
+	breq  .                ; ()   +3 (8: cpi - 2x nop - cpi - rjmp - rjmp)
+	brcc  .+6              ; ()   +2 (7: cpi - 2x nop - cpi - nop - rjmp)
+	cpi   ZL,      0x12    ; ()
+	breq  .                ; ()   +5 / +4 (10 / 9)
+	nop                    ; ( 5) Timer at 0x1C
 
-;  WAIT  ZL,      57      ; Realigns with original kernel
+;	WAIT  ZL,      57      ; Realigns with original kernel
 
-	
+
 	;decrement sync pulse counter
 	lds ZL,sync_pulse
 	dec ZL
@@ -272,58 +272,59 @@ TIMER1_COMPB_vect:
 	in ZL,_SFR_IO_ADDR(SREG);1
 	push ZL ;2		
 
-;  lds ZL,_SFR_MEM_ADDR(TCNT1L)
-;  subi ZL,62+31 ;0x5D ;MIN_INT_LATENCY
+;	lds ZL,_SFR_MEM_ADDR(TCNT1L)
+;	subi ZL,62+31 ;0x5D ;MIN_INT_LATENCY
 ;
-;  cpi ZL,1
-;  brlo .      ;advance PC to next instruction
+;	cpi ZL,1
+;	brlo .		;advance PC to next instruction
 ;
-;  cpi ZL,2
-;  brlo .      ;advance PC to next instruction
+;	cpi ZL,2
+;	brlo .		;advance PC to next instruction
 ;
-;  cpi ZL,3
-;  brlo .      ;advance PC to next instruction
+;	cpi ZL,3
+;	brlo .		;advance PC to next instruction
 ;
-;  cpi ZL,4
-;  brlo .      ;advance PC to next instruction
+;	cpi ZL,4
+;	brlo .		;advance PC to next instruction
 ;
-;  cpi ZL,5
-;  brlo .      ;advance PC to next instruction
+;	cpi ZL,5
+;	brlo .		;advance PC to next instruction
 
 
-   ; *** Kernel boost hack ***
-   ;
-   ; Use an alternate way to shave off 5 cycles jitter faster. The
-   ; commented block works with the original COMPB value, the enabled
-   ; code with the value aligned with the HSync code.
+	; *** Kernel boost hack ***
+	;
+	; Use an alternate way to shave off 5 cycles jitter faster. The
+	; commented block works with the original COMPB value, the enabled
+	; code with the value aligned with the HSync code.
 
-;  lds   ZL,      _SFR_MEM_ADDR(TCNT1L) ; 0x5D - 0x62 (5 cy jitter)
+;	lds   ZL,      _SFR_MEM_ADDR(TCNT1L) ; 0x5D - 0x62 (5 cy jitter)
 
-;  cpi   ZL,      0x61    ; ( 1)
-;  breq  .                ; ( 2) +1 (6: cpi - rjmp - rjmp - nop)
-;  brcc  .+10             ; ( 4) +0 (5: cpi - nop - rjmp - nop)
-;  cpi   ZL,      0x5F    ; ()
-;  breq  .                ; ()   +3 (8: cpi - 2x nop - cpi - rjmp - rjmp)
-;  brcc  .+6              ; ()   +2 (7: cpi - 2x nop - cpi - nop - rjmp)
-;  cpi   ZL,      0x5D    ; ()
-;  breq  .                ; ()   +5 / +4 (10 / 9)
-;  nop                    ; ( 5) Timer at 0x67 
+;	cpi   ZL,      0x61    ; ( 1)
+;	breq  .                ; ( 2) +1 (6: cpi - rjmp - rjmp - nop)
+;	brcc  .+10             ; ( 4) +0 (5: cpi - nop - rjmp - nop)
+;	cpi   ZL,      0x5F    ; ()
+;	breq  .                ; ()   +3 (8: cpi - 2x nop - cpi - rjmp - rjmp)
+;	brcc  .+6              ; ()   +2 (7: cpi - 2x nop - cpi - nop - rjmp)
+;	cpi   ZL,      0x5D    ; ()
+;	breq  .                ; ()   +5 / +4 (10 / 9)
+;	nop                    ; ( 5) Timer at 0x67
 
-;  WAIT  ZL,      6       ; Realigns with original kernel
+;	WAIT  ZL,      6       ; Realigns with original kernel
 
-    lds   ZL,      _SFR_MEM_ADDR(TCNT1L) ; 0x2A - 0x2F (5 cy jitter)
+	lds   ZL,      _SFR_MEM_ADDR(TCNT1L) ; 0x2A - 0x2F (5 cy jitter)
 
-    cpi   ZL,      0x2E    ; ( 1)
-    breq  .                ; ( 2) +1 (6: cpi - rjmp - rjmp - nop)
-    brcc  .+10             ; ( 4) +0 (5: cpi - nop - rjmp - nop)
-    cpi   ZL,      0x2C    ; ()
-    breq  .                ; ()   +3 (8: cpi - 2x nop - cpi - rjmp - rjmp)
-    brcc  .+6              ; ()   +2 (7: cpi - 2x nop - cpi - nop - rjmp)
-    cpi   ZL,      0x2A    ; ()
-    breq  .                ; ()   +5 / +4 (10 / 9)
-    nop                    ; ( 5) Timer at 0x34
+	cpi   ZL,      0x2E    ; ( 1)
+	breq  .                ; ( 2) +1 (6: cpi - rjmp - rjmp - nop)
+	brcc  .+10             ; ( 4) +0 (5: cpi - nop - rjmp - nop)
+	cpi   ZL,      0x2C    ; ()
+	breq  .                ; ()   +3 (8: cpi - 2x nop - cpi - rjmp - rjmp)
+	brcc  .+6              ; ()   +2 (7: cpi - 2x nop - cpi - nop - rjmp)
+	cpi   ZL,      0x2A    ; ()
+	breq  .                ; ()   +5 / +4 (10 / 9)
+	nop                    ; ( 5) Timer at 0x34
 
-;   WAIT  ZL,      57      ; Realigns with original kernel
+;	WAIT  ZL,      57      ; Realigns with original kernel
+
 
  	sbi _SFR_IO_ADDR(SYNC_PORT),SYNC_PIN ;68
 	ldi ZL,(1<<OCIE1A) ; disable OCIE1B 
