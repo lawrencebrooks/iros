@@ -44,7 +44,8 @@
             <map var-name="map_ahero_step_0" left="2" top="8" width="2" height="3"/>
             <map var-name="map_ahero_step_1" left="4" top="8" width="2" height="3"/>
             <map var-name="map_ahero_step_2" left="6" top="8" width="2" height="3"/>
-            <map var-name="map_ahero_step_3" left="10" top="8" width="2" height="3"/>
+            <map var-name="map_ahero_step_3" left="4" top="8" width="2" height="3"/>
+            <map var-name="map_ahero_prone" left="10" top="10" width="3" height="1"/>
             <map var-name="map_ahero_jump" left="8" top="8" width="2" height="3"/>
 
             <!-- Enemy Sprites -->
