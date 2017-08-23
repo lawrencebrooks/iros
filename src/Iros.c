@@ -68,6 +68,7 @@ char* enemy_shot_anim[1];
 char* expl_anim[3];
 char* boss_idle_anim[1];
 char* boss_jump_anim[1];
+char* boss_prone_anim[1];
 char* boss_run_anim[4];
 char* boss_shot_top_anim[1];
 char* boss_shot_middle_anim[1];
@@ -240,6 +241,11 @@ void init_boss_state()
 	game.boss.jump.frames_per_anim = 1;
 	game.boss.jump.anims = boss_jump_anim;
 	game.boss.jump.anims[0] = (char*) map_ahero_jump;
+	
+	game.boss.prone.anim_count = 1;
+	game.boss.prone.frames_per_anim = 1;
+	game.boss.prone.anims = boss_prone_anim;
+	game.boss.prone.anims[0] = (char*) map_ahero_prone;
 	
 	game.boss.expl.anim_count = 3;
 	game.boss.expl.frames_per_anim = EXPLOSION_FRAME_COUNT;
@@ -1349,7 +1355,7 @@ u8 update_player(Player* player, u8 slot)
 				player->flags = PRONE;
 				player->width = 3;
 				player->height = 1;
-				clear_sprites(3, 3);
+				clear_sprites(slot+3, 3);
 				LBMapSprite(slot, LBGetNextFrame(&player->prone), extendedSprites[slot].flags);
 			}
 			else if ((player->controls.held & BTN_RIGHT) && (player->shared.x/8 + 2 < game.level_width))
@@ -2556,10 +2562,15 @@ void challenge()
 
 void update_player_ai(Player* player) 
 {	 
-	 if (player->ai_flags == AI_NOT_READY)
+	static u8 prone_counter = 0;
+	static u8 do_prone = 1;
+ 
+	if (player->ai_flags == AI_NOT_READY)
 	 {
 		 player->controls.held = BTN_LEFT;
 		 player->ai_flags = AI_READY;
+		 prone_counter = 0;
+		 do_prone = 1;
 	 }
 	 else if (player->ai_flags & AI_READY)
 	 {
@@ -2581,6 +2592,7 @@ void update_player_ai(Player* player)
 		 if (player->shared.x >= game.camera_x+(CAMERA_WIDTH*8/2-40) && player->shared.x <= game.camera_x+(CAMERA_WIDTH*8/2+40))
 		 {
 			 player->controls.pressed |= BTN_A;
+			 do_prone = 1;
 		 }
 		 if (player->shared.x <= game.camera_x)
 		 {
@@ -2589,6 +2601,25 @@ void update_player_ai(Player* player)
 		 else if (player->shared.x >= game.camera_x+(CAMERA_WIDTH-2)*8)
 		 {
 			 player->controls.held = BTN_LEFT;
+		 }
+		 if (player->controls.held == BTN_RIGHT && player->shared.x >= game.camera_x+3*8 && player->shared.x <=  game.camera_x+4*8 && do_prone)
+		 {
+			 player->controls.held |= BTN_DOWN;
+		 }
+		 else if (player->controls.held == BTN_LEFT && player->shared.x >= game.camera_x+(CAMERA_WIDTH*8)-6*8 && player->shared.x <=  game.camera_x+(CAMERA_WIDTH*8)-5*8 && do_prone)
+		 {
+			player->controls.held |= BTN_DOWN; 
+		 }
+		 if (player->controls.held & BTN_DOWN)
+		 {
+			 prone_counter++;
+			 if (prone_counter >= 60)
+			 {
+				prone_counter = 0;
+				player->controls.held ^= BTN_DOWN;
+				player->controls.pressed |= BTN_UP;
+				do_prone = 0;
+			 }
 		 }
 	 }
 }
