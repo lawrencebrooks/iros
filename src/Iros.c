@@ -2382,12 +2382,10 @@ void load_high_scores()
 }
 
 void update_high_scores()
-{
-	static u16 high_score_counter = 0;
-	
+{	
 	if (game.player.controls.pressed & BTN_X)
 	{
-		high_score_counter = 0;
+		game.high_score_counter = 0;
 		SFX_NAVIGATE;
 		game.high_score_index = -1;
 		game.score = 0;
@@ -2396,7 +2394,7 @@ void update_high_scores()
 	}
 	if ((game.player.controls.held & BTN_SL) && (game.player.controls.held_cycles == 255) && (game.high_score_index == -1))
 	{
-		high_score_counter = 0;
+		game.high_score_counter = 0;
 	    SFX_NAVIGATE;
 		init_default_high_scores();
 	    save_eeprom(&scores);
@@ -2405,7 +2403,7 @@ void update_high_scores()
 	
 	if (game.high_score_index != -1)
 	{
-		high_score_counter = 0;
+		game.high_score_counter = 0;
 		if (game.player.controls.pressed & BTN_RIGHT && game.high_score_index % 5 != 2)
 		{
 			SFX_NAVIGATE;
@@ -2435,15 +2433,15 @@ void update_high_scores()
 			LBPrintChar(11+(game.high_score_index % 5), 7+(game.high_score_index/5)*2, scores.data[game.high_score_index]);
 		}
 	}
-	if (high_score_counter > HIGH_SCORES_LENGTH)
+	if (game.high_score_counter >= HIGH_SCORES_LENGTH)
 	{
-		high_score_counter = 0;
+		game.high_score_counter = 0;
 		SFX_NAVIGATE;
 		game.high_score_index = -1;
 		game.score = 0;
 		load_splash();
 	}
-	high_score_counter++;
+	game.high_score_counter++;
 }
 
 void update_pause()

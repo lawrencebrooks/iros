@@ -159,13 +159,13 @@ const u16 io_table[] PROGMEM ={
 	io_set(OCR2A,0), //duty cycle (amplitude)
 	io_set(TCCR2B,(1<<CS20)),  //enable timer, no pre-scaler	
 	io_set(SYNC_PORT,(1<<SYNC_PIN)|(1<<VIDEOCE_PIN)), //set sync & chip enable line to hi
-	
-	// *** Kernel boost hack ***
-	//
-	// Shift COMPB down by 51 cycles to align its head cycle count with
-	// the HSync entry's cycle count
-	//
-	io_set(OCR1BL,0x4f - 51),		//lo8(0x36e-31) eq pulse pulse restore
+
+    // *** Kernel boost hack ***
+    //
+    // Shift COMPB down by 51 cycles to align its head cycle count with
+    // the HSync entry's cycle count
+    //
+    io_set(OCR1BL,0x4f - 51),
 	io_set(OCR1BH,0x03)			//hi8(0x36e-31)	
 };
 

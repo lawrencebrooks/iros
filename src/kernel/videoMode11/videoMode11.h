@@ -1,7 +1,7 @@
 /*
- *  Mode 74 tests
- *  Copyright (C) 2015 Sandor Zsuga (Jubatian)
- *
+ *  Uzebox(tm) Video Mode 8
+ *  Copyright (C) 2009  Alec Bourque
+ *  
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -14,22 +14,21 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Uzebox is a reserved trade mark
 */
 
+/** 
+ * ==============================================================================
+ *
+ * This file contains function prototypes & exports for video mode 8
+ *
+ * ===============================================================================
+ */
+#pragma once
 
-#include <avr/io.h>
-#include <avr/pgmspace.h>
+extern unsigned char* vram_ptr;  
+extern u8 row_height;
+extern u8 col_width;
 
-
-#ifndef TILES_H
-#define TILES_H
-
-
-extern const unsigned char res_font[] __attribute__ ((section (".tiles")));
-extern const unsigned char res_pal_00[] __attribute__ ((section (".tiles")));
-extern const unsigned char res_screen_00[] __attribute__ ((section (".tiles")));
-extern const unsigned char imgattr[] PROGMEM;
-extern const unsigned char imgdata[] PROGMEM;
-
-
-#endif
+extern u8 Blit(u8 x,u8 y, u8* sprite_data, u8 height);
