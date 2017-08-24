@@ -107,6 +107,8 @@ typedef struct sGameState {
 	u8 level_ended;
 	u8 eye_clusters;
 	u8 flags;
+	u8 ai_prone_counter;
+	u8 ai_do_prone;
 	Player player;
 	Player boss;
 	Enemy enemies[MAX_ENEMIES];

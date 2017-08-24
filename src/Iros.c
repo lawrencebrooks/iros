@@ -2562,15 +2562,12 @@ void challenge()
 
 void update_player_ai(Player* player) 
 {	 
-	static u8 prone_counter = 0;
-	static u8 do_prone = 1;
- 
 	if (player->ai_flags == AI_NOT_READY)
 	 {
 		 player->controls.held = BTN_LEFT;
 		 player->ai_flags = AI_READY;
-		 prone_counter = 0;
-		 do_prone = 1;
+		 game.ai_prone_counter = 0;
+		 game.ai_do_prone = 1;
 	 }
 	 else if (player->ai_flags & AI_READY)
 	 {
@@ -2592,7 +2589,7 @@ void update_player_ai(Player* player)
 		 if (player->shared.x >= game.camera_x+(CAMERA_WIDTH*8/2-40) && player->shared.x <= game.camera_x+(CAMERA_WIDTH*8/2+40))
 		 {
 			 player->controls.pressed |= BTN_A;
-			 do_prone = 1;
+			 game.ai_do_prone = 1;
 		 }
 		 if (player->shared.x <= game.camera_x)
 		 {
@@ -2602,23 +2599,23 @@ void update_player_ai(Player* player)
 		 {
 			 player->controls.held = BTN_LEFT;
 		 }
-		 if (player->controls.held == BTN_RIGHT && player->shared.x >= game.camera_x+3*8 && player->shared.x <=  game.camera_x+4*8 && do_prone)
+		 if (player->controls.held == BTN_RIGHT && player->shared.x >= game.camera_x+3*8 && player->shared.x <=  game.camera_x+4*8 && game.ai_do_prone)
 		 {
 			 player->controls.held |= BTN_DOWN;
 		 }
-		 else if (player->controls.held == BTN_LEFT && player->shared.x >= game.camera_x+(CAMERA_WIDTH*8)-6*8 && player->shared.x <=  game.camera_x+(CAMERA_WIDTH*8)-5*8 && do_prone)
+		 else if (player->controls.held == BTN_LEFT && player->shared.x >= game.camera_x+(CAMERA_WIDTH*8)-6*8 && player->shared.x <=  game.camera_x+(CAMERA_WIDTH*8)-5*8 && game.ai_do_prone)
 		 {
 			player->controls.held |= BTN_DOWN; 
 		 }
 		 if (player->controls.held & BTN_DOWN)
 		 {
-			 prone_counter++;
-			 if (prone_counter >= 60)
+			 game.ai_prone_counter++;
+			 if (game.ai_prone_counter >= 60)
 			 {
-				prone_counter = 0;
+				game.ai_prone_counter = 0;
 				player->controls.held ^= BTN_DOWN;
 				player->controls.pressed |= BTN_UP;
-				do_prone = 0;
+				game.ai_do_prone = 0;
 			 }
 		 }
 	 }
