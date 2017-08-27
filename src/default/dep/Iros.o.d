@@ -12,8 +12,8 @@ Iros.o: ../Iros.c ../kernel/uzebox.h \
  ../kernel/videoMode3/videoMode3.h /usr/local/avr/include/avr/pgmspace.h \
  /usr/local/lib/gcc/avr/4.9.2/include/stddef.h \
  /usr/local/avr/include/string.h ../data/tiles.h ../data/sprites.h \
- ../data/patches.h ../data/planetmusic.h ../data/spacemusic.h ../types.h \
- ../utils.h ../macros.h ../strings.h
+ ../data/patches.h ../data/planetmusic.h ../data/spacemusic.h \
+ ../data/observations.h ../types.h ../utils.h ../macros.h ../strings.h
 
 ../kernel/uzebox.h:
 
@@ -66,6 +66,8 @@ Iros.o: ../Iros.c ../kernel/uzebox.h \
 ../data/planetmusic.h:
 
 ../data/spacemusic.h:
+
+../data/observations.h:
 
 ../types.h:
 

@@ -280,6 +280,7 @@
       <File Name="src/data/music.h"/>
       <File Name="src/data/planetmusic.h"/>
       <File Name="src/data/spacemusic.h"/>
+      <File Name="src/data/observations.h"/>
     </VirtualDirectory>
     <File Name="src/Iros.c"/>
   </VirtualDirectory>

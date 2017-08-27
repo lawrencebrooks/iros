@@ -24,6 +24,7 @@
 #include "data/patches.h"
 #include "data/planetmusic.h"
 #include "data/spacemusic.h"
+#include "data/observations.h"
 #include "types.h"
 #include "strings.h"
 #include "utils.h"
@@ -618,12 +619,14 @@ void load_eeprom(struct EepromBlockStruct* block)
  *  0x04 = EEPROM_ERROR_NOT_FORMATTED
  */
 {
+#if DEBUG_OBSERVE_PLAYER == 0
 	u8 status = 0;
 	status = EepromReadBlock(block->id, block);
 	if (status == 0x03)
 	{
 		status = EepromWriteBlock(block);
 	}
+#endif
 }
 
 void save_eeprom(struct EepromBlockStruct* block)
@@ -631,7 +634,9 @@ void save_eeprom(struct EepromBlockStruct* block)
  * Save to EEPROM
  */
 {
+#if DEBUG_OBSERVE_PLAYER == 0
 	EepromWriteBlock(block);
+#endif
 }
 
 void fade_through()
