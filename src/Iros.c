@@ -19,6 +19,7 @@
 #include <uzebox.h>
 #include <avr/pgmspace.h>
 #include <string.h>
+#include "macros.h"
 #include "data/tiles.h"
 #include "data/sprites.h"
 #include "data/patches.h"
@@ -28,7 +29,6 @@
 #include "types.h"
 #include "strings.h"
 #include "utils.h"
-#include "macros.h"
 
 // Function Prototypes
 void load_eeprom(struct EepromBlockStruct* block);
@@ -1264,13 +1264,65 @@ void handle_demo_play(Player* player)
 	}
 }
 
+#if DEBUG_OBSERVE_PLAYER
+void observe_player()
+{
+	u8 orientation = 0;
+	u8 distance_sevenths = 0;
+	u8 posture = 0;
+	u8 vy_direction = 0;
+	u8 action = 0;
+	
+	if (!(game.boss.ai_flags & AI_NOT_READY))
+	{
+		orientation = ORIENTATION_TOWARD;
+		//if (player->controls.held & BTN_DOWN) action = ACTION_PRONE_TOWARD;
+		
+		if (game.boss.shared.x < game.player.shared.x)
+		{
+			if (game.player.direction == D_RIGHT)
+			{
+				orientation = ORIENTATION_AWAY;
+				//if (player->controls.held & BTN_DOWN) action = ACTION_PRONE_AWAY;
+			}
+			distance_sevenths = (game.player.shared.x - game.boss.shared.x) / 8 / 7;
+		}
+		else if (game.boss.shared.x > game.player.shared.x)
+		{
+			if (game.player.direction == D_LEFT)
+			{
+				orientation = ORIENTATION_AWAY;
+			}
+			distance_sevenths = (game.boss.shared.x - game.player.shared.x) / 8 / 7;
+		}
+		vy_direction = VY_UP;
+		posture = POSTURE_IDLE;
+		if (game.player.shared.vy >= 0)
+		{
+			vy_direction = VY_DOWN;
+		}
+		if (game.player.shared.vy > 0 || game.player.shared.vy < 0)
+		{
+			posture = POSTURE_JUMPING;
+		}
+		else if (game.player.shared.vx > 0 || game.player.shared.vx < 0)
+		{
+			posture = POSTURE_WALKING;
+		}
+		else if (game.player.flags & PRONE)
+		{
+			posture = POSTURE_PRONE;
+		}
+		record_observation(build_state(orientation, distance_sevenths, posture, vy_direction), action);
+	}
+}
+#endif	
+
 u8 update_player(Player* player, u8 slot)
 {
 	s8 space_ship_speed = SPACE_SHIP_SPEED;
-	
 	handle_music_toggle(&player->controls);
-	handle_demo_play(player);
-	
+	handle_demo_play(player);	
 	if (player->flags & EXPLODING)
 	{
 		if (map_explosion(&player->flags, &player->expl, slot, player->width, player->height))
@@ -2719,6 +2771,9 @@ int main()
 #else
 	load_splash();
 #endif
+#if DEBUG_OBSERVE_PLAYER
+	clear_eeprom();
+#endif
 	while (1)
 	{
 		WaitVsync(1);
@@ -2736,6 +2791,9 @@ int main()
 				animate_player(&game.player, &game.boss, PLAYER_SLOT);
 				animate_shot(&game.player, &game.boss, PLAYER_SHOT_SLOT);
 				update_pause();
+#if DEBUG_OBSERVE_PLAYER
+				observe_player();
+#endif
 			}
 			if (!is_space() && (game.camera_x >= BOSS_UPDATE_THRESHOLD) && update_player(&game.boss, BOSS_SLOT))
 			{
