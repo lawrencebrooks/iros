@@ -124,6 +124,16 @@
 	#endif
 
 	/*
+	 * Wave table for the intro when using the "bling" sound (INTRO_LOGO == 1)
+	 * The default value corresponds to the default wavetables (see MIXER_WAVES)
+	 * You should set this if you use a custom wavetable with the intro
+	 * logo enabled.
+	 */
+	#ifndef INTRO_WAVETABLE
+		#define INTRO_WAVETABLE 8
+	#endif
+
+	/*
 	 * Joystick type used on the board.
 	 * Note: Will be read from EEPROM in a future release. 
 	 *
@@ -432,22 +442,22 @@
 			#define CHANNELS WAVE_CHANNELS+NOISE_CHANNELS+PCM_CHANNELS
 			
 			#if UART == 1
-				#define AUDIO_OUT_HSYNC_CYCLES 258 
-				#define AUDIO_OUT_VSYNC_CYCLES 258 
+				#define AUDIO_OUT_HSYNC_CYCLES (232)
+				#define AUDIO_OUT_VSYNC_CYCLES (232)
 			#else
-				#define AUDIO_OUT_HSYNC_CYCLES 212 
-				#define AUDIO_OUT_VSYNC_CYCLES 212 
+				#define AUDIO_OUT_HSYNC_CYCLES (189)
+				#define AUDIO_OUT_VSYNC_CYCLES (189)
 			#endif 
 		#else
 			#define PCM_CHANNELS 0
 			#define CHANNELS WAVE_CHANNELS+NOISE_CHANNELS
 			
 			#if UART == 1
-				#define AUDIO_OUT_HSYNC_CYCLES 213 
-				#define AUDIO_OUT_VSYNC_CYCLES 213 
+				#define AUDIO_OUT_HSYNC_CYCLES (187)
+				#define AUDIO_OUT_VSYNC_CYCLES (187)
 			#else
-				#define AUDIO_OUT_HSYNC_CYCLES 167 
-				#define AUDIO_OUT_VSYNC_CYCLES 167 
+				#define AUDIO_OUT_HSYNC_CYCLES (144)
+				#define AUDIO_OUT_VSYNC_CYCLES (144)
 			#endif
 		#endif
 	#else
@@ -479,6 +489,14 @@
 	#define HDRIVE_CL 1819
 	#define HDRIVE_CL_TWICE 909
 	#define SYNC_HSYNC_PULSES 253
+
+	// Used to identify Timer1 value displacement relative to original
+	// kernel. Use to restore Timer1 in video modes which use it for their
+	// video frame code (scanline termination with Timer1 overflow), so
+	// they remain compatible with different kernel versions. Subtract it
+	// from the value you are normally programming Timer1 when restoring.
+	// See frame_end: in Mode 13's videoMode13core.s as example.
+	#define TIMER1_DISPLACE 57
 
 	#define SYNC_PRE_EQ_PULSES 6
 	#define SYNC_EQ_PULSES 6
@@ -542,9 +560,21 @@
 		#include "videoMode13/videoMode13.def.h"
 	#elif VIDEO_MODE == 14
 		#include "videoMode14/videoMode14.def.h"
+	#elif VIDEO_MODE == 40
+		#include "videoMode40/videoMode40.def.h"
+	#elif VIDEO_MODE == 41
+		#include "videoMode41/videoMode41.def.h"
+	#elif VIDEO_MODE == 42
+		#include "videoMode42/videoMode42.def.h"
+	#elif VIDEO_MODE == 74
+		#include "videoMode74/videoMode74.def.h"
+	#elif VIDEO_MODE == 90
+		#include "videoMode90/videoMode90.def.h"
+	#elif VIDEO_MODE == 92
+		#include "videoMode92/videoMode92.def.h"
 	#elif VIDEO_MODE == 0
-	    //custom user defined video mode
-	    #include QUOTE(VIDEO_MODE_PATH/videoMode.def.h)
+		//custom user defined video mode
+		#include QUOTE(VIDEO_MODE_PATH/videoMode.def.h)
 	#else
 		#error Invalid video mode defined with VIDEO_MODE
 	#endif

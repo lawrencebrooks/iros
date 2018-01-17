@@ -36,6 +36,13 @@ const unsigned char strLevelClear [] PROGMEM="LEVEL CLEAR";
 const unsigned char strLevelBonus [] PROGMEM="BONUS";
 const unsigned char strGameOver [] PROGMEM="GAME OVER";
 const unsigned char strTally [] PROGMEM="TALLY ";
+const unsigned char strCredits [] PROGMEM ="IROS V2 FOR UZEBOX\0\0\0"
+"PROGRAMMING AND DESIGN\0\0"
+"LAWRENCE BROOKS\0\0\0"
+"MUSIC DERIVED FROM\0\0"
+"CYARONS GATE BY\0\0"
+"TANNER HELLAND\0\0"
+"LICENCED UNDER CC V3\0#";
 
 // Default scores
 const unsigned char default_scores[] PROGMEM = {

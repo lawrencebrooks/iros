@@ -1911,7 +1911,7 @@ void animate_enemy_shots()
 	}
 }
 
-void stream_text_middle(const char* dialogue, u8 y)
+void stream_text_middle(const char* dialogue, u8 y, u16 delay)
 {
 	u8 x, ln, c;
 	
@@ -1923,7 +1923,7 @@ void stream_text_middle(const char* dialogue, u8 y)
 		{
 			LBPrintChar(x++, y, c);
 			LBGetJoyPadState(&game.player.controls, 0);
-			if (!(game.player.controls.held & BTN_A)) WaitUs(CHARACTER_DELAY_US);
+			if (!(game.player.controls.held & BTN_A)) WaitUs(delay);
 		}
 		y++;
 	}
@@ -1942,7 +1942,7 @@ void print_scroll(const unsigned char text[])
 	LBMapSprite(4, map_emerald_4, 0);
 	LBMoveSprite(4, 144, 48, 1, 1);
 	LBRotateSprites();
-	stream_text_middle((const char*) text, 12);
+	stream_text_middle((const char*) text, 12, CHARACTER_DELAY_US);
 	LBWaitSeconds(2);
 }
 
@@ -2698,6 +2698,17 @@ void prepare_debugging() {
 }
 #endif
 
+void load_credits()
+{
+	fade_through();
+	Screen.scrollX = 0;
+	Screen.scrollY = 0;
+	Screen.scrollHeight = 32;
+	Screen.overlayHeight = 0;
+	stream_text_middle((const char*) strCredits, 5, 100);
+	LBWaitSeconds(8);
+}
+
 int main()
 {
 	// Initialize
@@ -2712,6 +2723,7 @@ int main()
 #if DEBUG_MODE
 	prepare_debugging();
 #else
+	load_credits();
 	load_splash();
 #endif
 	while (1)

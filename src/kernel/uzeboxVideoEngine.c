@@ -45,7 +45,7 @@
 		
 		for(u8 dy=0;dy<mapHeight;dy++){
 			for(u8 dx=0;dx<mapWidth;dx++){			
-				SetTile(x+dx,(y+dy)%Screen.scrollHeight,pgm_read_byte(&(map[(dy*mapWidth)+dx+2])));					
+				SetTile(x+dx,y+dy,pgm_read_byte(&(map[(dy*mapWidth)+dx+2])));					
 			}
 		}
 
