@@ -337,17 +337,15 @@ void init_enemy_shot(u8 i, u16 x, u16 y, u8 is_boss)
 		if (is_boss)
 		{
 			game.enemies[i].shot[j].hit_count = CRITICAL_SHOT_DAMAGE;
+			game.enemies[i].shot[j].shot_speed = FAST_SHOT_SPEED;
 			game.enemies[i].shot[j].anim.anims[0] = (char*) map_enemy_boss_shot;
-			game.enemies[i].shot[j].shot_speed = MEDIUM_SHOT_SPEED;
 		}
 		else if (game.enemies[i].enemy_type == ENEMY_DRONE)
 		{
-			game.enemies[i].shot[j].shared.vy = SLOW_SHOT_SPEED;
 			game.enemies[i].shot[j].shared.vx = -DRONE_SPEED;
 		}
 		else if (game.enemies[i].enemy_type == ENEMY_GLOBE)
 		{
-			game.enemies[i].shot[j].shared.vy = SLOW_SHOT_SPEED;
 			game.enemies[i].shot[j].shared.vx = GLOBE_SPEED;
 		}
 		else
@@ -1779,6 +1777,10 @@ void update_enemy_shots()
 								game.enemies[i].shot[j].shared.vy = -game.enemies[i].shot[j].shot_speed;
 							}
 						}
+						else if (game.enemies[i].enemy_type == ENEMY_BOSS_EYE && i % 2 != 0)
+						{
+							game.enemies[i].shot[j].shared.vy = game.enemies[i].shot[j].shared.vx;
+						}
 						else
 						{
 							game.enemies[i].shot[j].shared.vx = -game.enemies[i].shot[j].shot_speed;
@@ -1897,6 +1899,14 @@ void animate_enemy_shots()
 					else
 					{
 						game.enemies[i].shot[j].shared.x += LBMoveDelta(game.enemies[i].shot[j].shared.vx, game.frame_counter);
+						if ((i % 2) == 0 && (game.enemies[i].enemy_type == ENEMY_BOSS_TURRET || game.enemies[i].enemy_type == ENEMY_BOSS_EYE))
+						{
+							game.enemies[i].shot[j].shared.x += LBMoveDelta(game.enemies[i].shot[j].shared.vx, game.frame_counter);
+						}
+						else if (game.enemies[i].enemy_type == ENEMY_BOSS_EYE && game.frame_counter % 10 == 0)
+						{
+							game.enemies[i].shot[j].shared.vy = -game.enemies[i].shot[j].shared.vy;
+						}
 						game.enemies[i].shot[j].shared.y += LBMoveDelta(game.enemies[i].shot[j].shared.vy, game.frame_counter);
 						LBMoveSprite(slot, game.enemies[i].shot[j].shared.x - game.camera_x, game.enemies[i].shot[j].shared.y - game.camera_y, 1, 1);
 					}

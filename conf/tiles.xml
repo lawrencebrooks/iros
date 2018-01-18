@@ -7,13 +7,13 @@
             <!-- Misc. tiles -->
             <map var-name="map_tile_none" left="0" top="0" width="1" height="1"/>
             <map var-name="map_splash" left="0" top="4" width="15" height="5"/>
-            <map var-name="map_canvas" left="52" top="0" width="15" height="9"/>
+            <map var-name="map_canvas" left="53" top="0" width="15" height="9"/>
             <map var-name="map_dialog" left="68" top="0" width="16" height="6"/>
 
             <map var-name="map_atmosphere" left="15" top="6" width="28" height="2"/>
 
             <!-- Font -->
-            <map var-name="map_font" left="15" top="8" width="37" height="1"/>
+            <map var-name="map_font" left="15" top="8" width="38" height="1"/>
 
             <!-- Level Maps -->
             <mega-map var-name="map_level_mega_tiles" mega-tile-width="5" mega-tile-height="5">

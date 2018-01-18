@@ -130,6 +130,10 @@ void LBPrintChar(u8 x, u8 y, u8 code)
 	{
 		SetTile(x, y, pgm_read_byte(&font_tiles_map[13+code-65]));
 	}
+	else if (code == 46)
+	{
+		SetTile(x, y, pgm_read_byte(&font_tiles_map[39]));
+	}
 	else
 	{
 		SetTile(x, y, pgm_read_byte(&font_tiles_map[2]));
