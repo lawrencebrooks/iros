@@ -2055,7 +2055,7 @@ u8 update_level()
 	else if (game.level_ended && is_space())
 	{
 		if (game.current_level_index == 9) {
-			tally_score((char*) strLevelClear, 500);
+			tally_score((char*) strLevelClear, 200*game.lives);
 			congratulations();
 			exit_game();
 			return 1;
@@ -2568,26 +2568,104 @@ void challenge()
 	render_camera_view();
 }
 
+void ai_set_position_flag(Player* player, u8 flag)
+{
+	if (player->ai_flags & AI_START) player->ai_flags ^= AI_START;
+	if (player->ai_flags & AI_LEFT) player->ai_flags ^= AI_LEFT;
+	if (player->ai_flags & AI_MIDDLE) player->ai_flags ^= AI_MIDDLE;
+	if (player->ai_flags & AI_RIGHT) player->ai_flags ^= AI_RIGHT;
+	player->ai_flags |= flag;
+}
+
+void ai_determine_start_state(Player* player)
+{
+	ai_set_position_flag(player, AI_START);
+	game.ai_prone_counter = 0;
+	if (player->ai_flags & AI_DO_PRONE) player->ai_flags ^= AI_DO_PRONE;
+	player->controls.held = BTN_LEFT;
+}
+
+void ai_determine_right_edge_state(Player* player)
+{
+	if (game.current_level_index == 2 && !(player->ai_flags & AI_RIGHT))
+	{
+		player->ai_flags |= AI_DO_PRONE;
+	}
+	ai_set_position_flag(player, AI_RIGHT);
+	if (player->ai_flags & AI_DO_PRONE)
+	{
+		player->controls.held |= BTN_DOWN;
+	}
+	else if (game.current_level_index != 6 && game.current_level_index != 8)
+	{
+		player->controls.pressed |= BTN_A;
+	}
+}
+
+void ai_determine_left_edge_state(Player* player)
+{
+	if (game.current_level_index == 2 && !(player->ai_flags & AI_LEFT))
+	{
+		player->ai_flags |= AI_DO_PRONE;
+	}
+	ai_set_position_flag(player, AI_LEFT);
+	if (player->ai_flags & AI_DO_PRONE)
+	{
+		player->controls.held |= BTN_DOWN;
+	}
+	else if (game.current_level_index != 6 && game.current_level_index != 8)
+	{
+		player->controls.pressed |= BTN_A;
+	}
+}
+
+void ai_determine_mid_state(Player* player)
+{
+	if ((game.current_level_index == 4 || game.current_level_index == 8) && !(player->ai_flags & AI_MIDDLE))
+	{
+		player->ai_flags |= AI_DO_PRONE;
+	}
+	ai_set_position_flag(player, AI_MIDDLE);
+	if (player->ai_flags & AI_DO_PRONE)
+	{
+		player->controls.held |= BTN_DOWN;
+	}
+	else if (game.current_level_index != 8)
+	{
+		player->controls.pressed |= BTN_A;
+	}
+}
+
+void ai_determine_prone_state(Player* player)
+{
+	game.ai_prone_counter++;
+	if (game.ai_prone_counter >= 60)
+	{
+		game.ai_prone_counter = 0;
+		player->controls.held ^= BTN_DOWN;
+		player->controls.pressed |= BTN_UP;
+		if (player->ai_flags & AI_DO_PRONE) player->ai_flags ^= AI_DO_PRONE;
+	}
+}
+
 void update_player_ai(Player* player) 
 {	 
 	if (player->ai_flags == AI_NOT_READY)
 	 {
-		 player->controls.held = BTN_LEFT;
-		 player->ai_flags = AI_READY;
-		 game.ai_prone_counter = 0;
-		 game.ai_do_prone = 1;
+		 ai_determine_start_state(player);
 	 }
-	 else if (player->ai_flags & AI_READY)
+	 else if (player->ai_flags & AI_START)
 	 {
 		 LBResetJoyPadState(&player->controls);
 		 if (game.camera_x/8 + CAMERA_WIDTH >= game.level_width)
 		 {
 			 challenge();
-			 player->ai_flags = AI_WALKING;
+			 player->ai_flags |= AI_MOVING;
+			 player->ai_flags ^= AI_START;
 			 player->controls.held = BTN_LEFT;
 		 }
 	 }
-	 else if (player->ai_flags & AI_WALKING) 
+	 else if (player->ai_flags & AI_MOVING) 
 	 {
 		 player->controls.pressed = 0;
 		 if (game.frame_counter % 15 == 0)
@@ -2596,35 +2674,33 @@ void update_player_ai(Player* player)
 		 }
 		 if (player->shared.x >= game.camera_x+(CAMERA_WIDTH*8/2-40) && player->shared.x <= game.camera_x+(CAMERA_WIDTH*8/2+40))
 		 {
-			 player->controls.pressed |= BTN_A;
-			 game.ai_do_prone = 1;
+			 ai_determine_mid_state(player);
 		 }
 		 if (player->shared.x <= game.camera_x)
 		 {
 			 player->controls.held = BTN_RIGHT;
+			 if (game.current_level_index == 8) {
+				 player->controls.pressed |= BTN_A;
+			 }
 		 }
 		 else if (player->shared.x >= game.camera_x+(CAMERA_WIDTH-2)*8)
 		 {
 			 player->controls.held = BTN_LEFT;
+			 if (game.current_level_index == 8) {
+				 player->controls.pressed |= BTN_A;
+			 }
 		 }
-		 if (player->controls.held == BTN_RIGHT && player->shared.x >= game.camera_x+3*8 && player->shared.x <=  game.camera_x+4*8 && game.ai_do_prone)
+		 if (player->controls.held == BTN_RIGHT && player->shared.x >= game.camera_x+3*8 && player->shared.x <=  game.camera_x+4*8)
 		 {
-			 player->controls.held |= BTN_DOWN;
+			 ai_determine_left_edge_state(player);
 		 }
-		 else if (player->controls.held == BTN_LEFT && player->shared.x >= game.camera_x+(CAMERA_WIDTH*8)-6*8 && player->shared.x <=  game.camera_x+(CAMERA_WIDTH*8)-5*8 && game.ai_do_prone)
+		 else if (player->controls.held == BTN_LEFT && player->shared.x >= game.camera_x+(CAMERA_WIDTH*8)-6*8 && player->shared.x <=  game.camera_x+(CAMERA_WIDTH*8)-5*8)
 		 {
-			player->controls.held |= BTN_DOWN; 
+			ai_determine_right_edge_state(player);
 		 }
 		 if (player->controls.held & BTN_DOWN)
 		 {
-			 game.ai_prone_counter++;
-			 if (game.ai_prone_counter >= 60)
-			 {
-				game.ai_prone_counter = 0;
-				player->controls.held ^= BTN_DOWN;
-				player->controls.pressed |= BTN_UP;
-				game.ai_do_prone = 0;
-			 }
+			 ai_determine_prone_state(player);
 		 }
 	 }
 }

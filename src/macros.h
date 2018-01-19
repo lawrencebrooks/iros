@@ -20,7 +20,7 @@
 
 // Debug Flags
 #define DEBUG_MODE 0
-#define DEBUG_LEVEL 4
+#define DEBUG_LEVEL 0
 #define DEBUG_LEVEL_BEGINNING 0
 #define DEBUG_LEVEL_END 1
 #define DEBUG_LEVEL_LOCATION DEBUG_LEVEL_END
@@ -156,12 +156,12 @@
 
 // Player AI flags
 #define AI_NOT_READY 0
-#define AI_READY 1
-#define AI_WALKING 2
-#define AI_SHOOTING 4
-#define AI_JUMPING 8
-#define AI_PRONE 16
-#define AI_DEFEATED 32
+#define AI_MOVING 1
+#define AI_START 2
+#define AI_RIGHT 4
+#define AI_MIDDLE 8
+#define AI_LEFT 16
+#define AI_DO_PRONE 32
 
 // Sound Effects
 #define SFX_NAVIGATE TriggerFx(PATCH_NAVIGATE,0xff,true)
