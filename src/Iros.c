@@ -2163,7 +2163,7 @@ u8 update_level()
 	if (game.selection == DEMO_SELECTED) 
 	{
 		demo_counter++;
-		if (ReadJoypad(0) || (demo_counter >= DEMO_LENGTH))
+		if (ReadJoypad(0) || ReadJoypad(1) || (demo_counter >= DEMO_LENGTH))
 		{
 			demo_counter = 0;
 			exit_game();
@@ -2412,11 +2412,13 @@ void update_splash()
     else if (demo_counter >= DEMO_WAIT)
     {
         demo_counter = 0;
-        game.selection = DEMO_SELECTED;
-        demo_load(demo_choice++);
-        if (demo_choice == 2) demo_choice = 3;
-        if (demo_choice == 5) demo_choice = 0;
-        return;
+        if (!credits_available()) {
+            game.selection = DEMO_SELECTED;
+            demo_load(demo_choice++);
+            if (demo_choice == 2) demo_choice = 3;
+            if (demo_choice == 5) demo_choice = 0;
+            return;
+        }
 
     }
     demo_counter++;
