@@ -28,6 +28,9 @@
 #include "strings.h"
 #include "utils.h"
 #include "macros.h"
+#if JAMMA
+#include "jamma.h"
+#endif
 
 // Function Prototypes
 void load_eeprom(struct EepromBlockStruct* block);
@@ -74,10 +77,26 @@ char* boss_shot_top_anim[1];
 char* boss_shot_middle_anim[1];
 char* boss_shot_bottom_anim[1];
 
+void waitForVSync()
+{
+    WaitVsync(1);
+#if JAMMA
+    handle_coin_insert();
+#endif
+}
+
 u8 is_space()
 {
 	return (game.current_level_index % 2 != 0);
 }
+
+#if JAMMA
+void read_dip_switches() {
+    scores.id = EEPROM_DIP_SWITCH_ID;
+    load_eeprom(&scores);
+    extract_dip_switches(scores.data[0]);
+} 
+#endif
 
 void init_default_high_scores()
 {
@@ -992,7 +1011,7 @@ void load_level(u8 index, u8 drop_ship)
 		map_ship();
 		while (1)
 		{
-			WaitVsync(1);
+            waitForVSync();
 			if (ship_y >= get_hero_spawn_y(index)*8)
 			{
 				LBMapSprite(0, map_hero_idle, 0);
@@ -1175,12 +1194,81 @@ void animate_shot(Player* player, Player* other_player, u8 shot_slot)
 	}
 }
 
+
+#if JAMMA
+u8 handle_continue() {
+    u8 x = Screen.scrollX / 8;
+    u8 y = Screen.scrollY / 8;
+    u8 count_down = 10;
+
+    DrawMap2((x+8)%32, (y+6)%30, map_canvas);
+    LBPrint((x+9)%32, (y+9)%30, (char*) strContinue);
+    LBPrintByte((x+9)%32+12, (y+9)%30, count_down, true);
+
+    LBPrint((x+9)%32, (y+12)%30, (char*) strCreditCount);
+    LBPrintByte((x+9)%32+12, (y+12)%30, credits_available(), true);
+
+    hide_sprites(0, MAX_EXTENDED_SPRITES);
+    LBRotateSprites();
+    while (1)
+    {
+        waitForVSync();
+        if (game.frame_counter % 60 == 0) {
+            if (count_down > 0) count_down--;
+            LBPrintByte((x+13)%32+12, (y+9)%30, count_down, true);
+        }
+        if (count_down <= 0) {
+           tally_score((char*) strGameOver, 0);
+           exit_game();
+           return 0; 
+        }
+        LBGetJoyPadState(&game.player.controls, 0);
+        if (game.player.controls.pressed & BTN_START && credits_available())
+        {
+            acquire_credit();
+            game.lives = LIVES;
+            return 1; 
+        }
+        else if (game.player.controls.pressed)
+        {
+            if (count_down > 0) count_down--;
+        }
+    }
+}
+#else
+#endif
+
 u8 handle_player_death(Player* player)
 {
-	if (player == &game.boss) {
-		game.level_ended = 1;
-		return 1;
-	}
+   if (player == &game.boss) {
+        game.level_ended = 1;
+        return 1;
+    }
+#if JAMMA
+    game.lives--;
+    clear_sprites(0, 6);
+    LBRotateSprites();
+    if (game.lives == 0)
+    {
+        if (!handle_continue()) {
+            return 0;
+        } else {
+            tally_score((char*) strGameOver, 0);
+            exit_game();
+            return 0;
+        }
+    }
+    FadeOut(FRAMES_PER_FADE, true);
+    ClearVram();
+    clear_sprites(0, MAX_EXTENDED_SPRITES);
+    LBRotateSprites();
+    FadeIn(FRAMES_PER_FADE, false);
+    init_player_state();
+    init_boss_state();
+    init_enemy_state();
+    load_level(game.current_level_index, false);
+    return 0;
+#else
 	game.lives--;
 	clear_sprites(0, 6);
 	LBRotateSprites();
@@ -1200,6 +1288,7 @@ u8 handle_player_death(Player* player)
 	init_enemy_state();
 	load_level(game.current_level_index, false);
 	return 0;
+#endif
 }
 
 void explode_all_enemies()
@@ -1618,6 +1707,13 @@ void animate_player(Player* player, Player* other_player, u8 slot)
 		game.player.shield = 0;
 		game.player.flags = EXPLODING;
 	}
+#if JAMMA
+    else if (game.time >= MAX_TIME  && !DEBUG_GODMODE) {
+        SFX_PLAYER_EXPLODE;
+        game.player.shield = 0;
+        game.player.flags = EXPLODING;
+    }
+#endif
 }
 
 void update_spider_enemy(Enemy* e, u8 slot)
@@ -2031,7 +2127,7 @@ u8 update_level()
 		map_ship();
 		while (1)
 		{
-			WaitVsync(1);
+            waitForVSync();
 			if (ship_y >= get_hero_spawn_y(game.current_level_index)*8)
 			{
 				clear_sprites(0, 6);
@@ -2108,12 +2204,20 @@ void exit_game()
 
 char select_pressed(JoyPadState* p)
 {
+#if JAMMA
+    return (p->pressed & BTN_START);
+#else
 	return (p->pressed & BTN_B) || (p->pressed & BTN_START);
+#endif
 }
 
 char music_toggle_pressed(JoyPadState* p)
 {
+#if JAMMA
+    return 0;
+#else
 	return (p->pressed & BTN_SELECT);
+#endif
 }
 
 void stream_text_anywhere(const char* dialogue, u8 x, u8 y)
@@ -2212,7 +2316,7 @@ void planet_transition(u8 index, char scroll, char atmosphere_height, char dy, u
 	
 	while (frame_counter < 255)
 	{
-		WaitVsync(1);
+        waitForVSync();
 		LBMapSprite(0, LBGetNextFrame(&game.player.run), 0);
 		LBMoveSprite(0, 104, 104, 4, 2);
 		frame_counter++;
@@ -2273,15 +2377,57 @@ void load_splash()
 	game.selection = START_SELECTED;
 	clear_sprites(0, MAX_EXTENDED_SPRITES);
 	LBRotateSprites();
-	LBPrint(8, 15, (char*) str1Player);
+#if JAMMA
+    if (credits_available()) {
+        LBPrint(5, 15, (char*) str1Player);
+    } else {
+        LBPrint(5, 15, (char*) strInsertCoin);
+    }
+    LBPrint(15, 23, (char*) strCreditCount);
+    LBPrintByte(27, 23, credits_available(), true);
+#else	
+    LBPrint(8, 15, (char*) str1Player);
 	LBPrint(8, 16, (char*) strHighScores);
 	LBPrint(4, 21, (char*) strCopyright);
-	DrawMap2(6, 5, map_splash);
 	LBMapSprite(0, map_right_arrow, 0);
+#endif
+    DrawMap2(6, 5, map_splash);
 }
 
 void update_splash()
 {
+#if JAMMA
+    static u16 demo_counter = 0;
+    static u8 demo_choice = 0;
+
+    if (game.player.controls.pressed) demo_counter = 0;
+
+    if (select_pressed(&game.player.controls) && credits_available())
+    {
+        acquire_credit();
+        SFX_NAVIGATE;
+        intro();
+        return;
+    }
+    else if (demo_counter >= DEMO_WAIT)
+    {
+        demo_counter = 0;
+        game.selection = DEMO_SELECTED;
+        demo_load(demo_choice++);
+        if (demo_choice == 2) demo_choice = 3;
+        if (demo_choice == 5) demo_choice = 0;
+        return;
+
+    }
+    demo_counter++;
+    if (credits_available()) {
+        LBPrint(5, 15, (char*) str1Player);
+    } else {
+        LBPrint(5, 15, (char*) strInsertCoin);
+    }
+    LBPrint(15, 23, (char*) strCreditCount);
+    LBPrintByte(27, 23, credits_available(), true);
+#else
 	static u16 demo_counter = 0;
 	static u8 demo_choice = 0;
 	
@@ -2329,6 +2475,7 @@ void update_splash()
 	{
 		LBMoveSprite(0, 7*8, 16*8, 1, 1);
 	}
+#endif
 }
 
 void load_high_scores()
@@ -2393,7 +2540,68 @@ void load_high_scores()
 
 void update_high_scores()
 {	
-	if (game.player.controls.pressed & BTN_X)
+#if JAMMA
+    if ((game.player.controls.pressed & BTN_A) || (game.player.controls.pressed & BTN_B))
+    {
+        game.high_score_counter = 0;
+        SFX_NAVIGATE;
+        game.high_score_index = -1;
+        game.score = 0;
+        save_eeprom(&scores);
+        load_splash();
+    }
+    if ((game.player.controls.held & BTN_Y) && (game.player.controls.held_cycles == 255) && (game.high_score_index == -1))
+    {
+        game.high_score_counter = 0;
+        SFX_NAVIGATE;
+        init_default_high_scores();
+        save_eeprom(&scores);
+        load_high_scores();
+    }
+
+    if (game.high_score_index != -1)
+    {
+        game.high_score_counter = 0;
+        if (game.player.controls.pressed & BTN_RIGHT && game.high_score_index % 5 != 2)
+        {
+            SFX_NAVIGATE;
+            game.high_score_index++;
+            LBMoveSprite(2, extendedSprites[2].x+8, extendedSprites[2].y, 1, 1);
+            LBMoveSprite(3, extendedSprites[3].x+8, extendedSprites[3].y, 1, 1);
+        }
+        else if (game.player.controls.pressed & BTN_LEFT && game.high_score_index % 5 != 0)
+        {
+            SFX_NAVIGATE;
+            game.high_score_index--;
+            LBMoveSprite(2, extendedSprites[2].x-8, extendedSprites[2].y, 1, 1);
+            LBMoveSprite(3, extendedSprites[3].x-8, extendedSprites[3].y, 1, 1);
+        }
+        else if (game.player.controls.pressed & BTN_UP)
+        {
+            SFX_NAVIGATE;
+            scores.data[game.high_score_index] = scores.data[game.high_score_index]-1;
+            if (scores.data[game.high_score_index] < 'A') scores.data[game.high_score_index] = 'A';
+            LBPrintChar(11+(game.high_score_index % 5), 7+(game.high_score_index/5)*2, scores.data[game.high_score_index]);
+        }
+        else if (game.player.controls.pressed & BTN_DOWN)
+        {
+            SFX_NAVIGATE;
+            scores.data[game.high_score_index] = scores.data[game.high_score_index]+1;
+            if (scores.data[game.high_score_index] > 'Z') scores.data[game.high_score_index] = 'Z';
+            LBPrintChar(11+(game.high_score_index % 5), 7+(game.high_score_index/5)*2, scores.data[game.high_score_index]);
+        }
+    }
+    if (game.high_score_counter >= HIGH_SCORES_LENGTH)
+    {
+        game.high_score_counter = 0;
+        SFX_NAVIGATE;
+        game.high_score_index = -1;
+        game.score = 0;
+        load_splash();
+    }
+    game.high_score_counter++;
+#else
+    if (game.player.controls.pressed & BTN_X)
 	{
 		game.high_score_counter = 0;
 		SFX_NAVIGATE;
@@ -2452,8 +2660,11 @@ void update_high_scores()
 		load_splash();
 	}
 	game.high_score_counter++;
+#endif
 }
 
+#if JAMMA
+#else
 void update_pause()
 {
 	u8 x = Screen.scrollX / 8;
@@ -2468,7 +2679,7 @@ void update_pause()
 		LBRotateSprites();
 		while (1)
 		{
-			WaitVsync(1);
+            waitForVSync();
 			LBGetJoyPadState(&game.player.controls, 0);
 			if (game.player.controls.pressed & BTN_START)
 			{
@@ -2484,6 +2695,7 @@ void update_pause()
 		}
 	}
 }
+#endif
 
 void tally_score(char* title, u16 bonus)
 {
@@ -2514,7 +2726,7 @@ void tally_score(char* title, u16 bonus)
 	counter = game.level_score;
 	while (counter > 0)
 	{
-		WaitVsync(1);
+        waitForVSync();
 		SFX_HIT;
 		tally += 1;
 		counter -= 1;
@@ -2527,7 +2739,7 @@ void tally_score(char* title, u16 bonus)
 	counter = game.time;
 	while (counter > 0)
 	{
-		WaitVsync(1);
+        waitForVSync();
 		SFX_HIT;
 		tally -= 1;
 		if (tally == 0 || tally == 65535) tally = 0;
@@ -2541,7 +2753,7 @@ void tally_score(char* title, u16 bonus)
 	counter = bonus;
 	while (counter > 0)
 	{
-		WaitVsync(1);
+        waitForVSync();
 		SFX_HIT;
 		tally += 1;
 		counter -= 1;
@@ -2805,6 +3017,9 @@ int main()
 	SetTileTable(tiles_data);
 	SetSpritesTileTable(sprites_data);
 	LBSetFontTilesMap((char*) map_font);
+#if JAMMA
+    read_dip_switches();
+#endif
 	init_default_high_scores();
 #if DEBUG_MODE
 	prepare_debugging();
@@ -2814,7 +3029,7 @@ int main()
 #endif
 	while (1)
 	{
-		WaitVsync(1);
+        waitForVSync();
 		LBGetJoyPadState(&game.player.controls, 0);
 		if (game.current_screen == LEVEL)
 		{
@@ -2828,7 +3043,10 @@ int main()
 				animate_enemy_shots();
 				animate_player(&game.player, &game.boss, PLAYER_SLOT);
 				animate_shot(&game.player, &game.boss, PLAYER_SHOT_SLOT);
+#if JAMMA
+#else
 				update_pause();
+#endif
 			}
 			if (!is_space() && (game.camera_x >= BOSS_UPDATE_THRESHOLD) && update_player(&game.boss, BOSS_SLOT))
 			{

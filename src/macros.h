@@ -28,6 +28,7 @@
 
 // EEPROM ID
 #define EEPROM_SCORES_ID 0x8E
+#define EEPROM_DIP_SWITCH_ID 0xAB0C
 
 // Screens
 #define SPLASH 0
@@ -62,6 +63,7 @@
 #define DEMO_WAIT 600
 #define DEMO_LENGTH 900
 #define HIGH_SCORES_LENGTH 255
+#define MAX_TIME 60*5
 
 // Player macros
 #define FRAMES_PER_RUN_CYCLE 12
@@ -74,7 +76,11 @@
 #define D_RIGHT 1
 #define D_UP 2
 #define D_DOWN 3
+#if JAMMA
+#define LIVES 3
+#else
 #define LIVES 10
+#endif
 #define PLAYER_SHIELD 15
 #define BOSS_SHIELD 30
 

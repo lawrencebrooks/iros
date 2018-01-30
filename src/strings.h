@@ -21,17 +21,25 @@
 
 
 // String indexes
-const unsigned char strCopyright [] PROGMEM="2017 LAWRENCE BROOKS";
+#if JAMMA
+const unsigned char strInsertCoin [] PROGMEM="INSERT COIN";
+const unsigned char str1Player [] PROGMEM="PRESS START";
+const unsigned char strCreditCount [] PROGMEM="CREDITS ";
+const unsigned char strContinue [] PROGMEM="CONTINUE ";
+const unsigned char strMainMenu [] PROGMEM="           ";
+#else
 const unsigned char str1Player [] PROGMEM="START";
+const unsigned char strMainMenu [] PROGMEM="X MAIN MENU";
+const unsigned char strExitGame [] PROGMEM="X EXIT GAME";
+const unsigned char strPaused [] PROGMEM="PAUSE";
+#endif
 const unsigned char strHighScores [] PROGMEM="HIGH SCORES";
+const unsigned char strCopyright [] PROGMEM="2017 LAWRENCE BROOKS";
 const unsigned char strSelectHandle [] PROGMEM="";
 const unsigned char strScore [] PROGMEM="SCORE ";
 const unsigned char strShield [] PROGMEM="SHIELD ";
 const unsigned char strLives [] PROGMEM="LIVES ";
 const unsigned char strTime [] PROGMEM="TIME ";
-const unsigned char strMainMenu [] PROGMEM="X MAIN MENU";
-const unsigned char strExitGame [] PROGMEM="X EXIT GAME";
-const unsigned char strPaused [] PROGMEM="PAUSE";
 const unsigned char strLevelClear [] PROGMEM="LEVEL CLEAR";
 const unsigned char strLevelBonus [] PROGMEM="BONUS";
 const unsigned char strGameOver [] PROGMEM="GAME OVER";
