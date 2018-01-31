@@ -54,11 +54,11 @@
 #define LEVEL_WIDTH 255
 #define LEVEL_HEIGHT 52
 #define OVERLAP_THRESHOLD 4
-#define KILL_SCORE 10
+#define KILL_SCORE 50
 #define BOSS_KILL_SCORE 100
 #define EXPLOSION_FRAME_COUNT 5
 #define CHARACTER_DELAY_US 6000
-#define TALLY_DELAY 1500
+#define TALLY_DELAY 100
 #define CHALLENGE_LENGTH 35
 #define DEMO_WAIT 600
 #define DEMO_LENGTH 900
@@ -170,11 +170,20 @@
 #define AI_DO_PRONE 32
 
 // Sound Effects
+#if JAMMA
+#define SFX_NAVIGATE if (!(no_demo_sound() && (game.selection == DEMO_SELECTED))) TriggerFx(PATCH_NAVIGATE,0xff,true)
+#define SFX_DIALOGUE if (!(no_demo_sound() && (game.selection == DEMO_SELECTED))) TriggerFx(PATCH_NAVIGATE,0xff,true)
+#define SFX_PLAYER_SHOOT if (!(no_demo_sound() && (game.selection == DEMO_SELECTED))) TriggerNote(2,PATCH_PLAYER_SHOOT,0x23,0xff)
+#define SFX_HIT if (!(no_demo_sound() && (game.selection == DEMO_SELECTED))) TriggerFx(PATCH_HIT,0xff,true)
+#define SFX_PLAYER_EXPLODE if (!(no_demo_sound() && (game.selection == DEMO_SELECTED))) TriggerFx(PATCH_PLAYER_EXPLODE,0xff,true)
+#define SFX_ENEMY_EXPLODE if (!(no_demo_sound() && (game.selection == DEMO_SELECTED))) TriggerFx(PATCH_ENEMY_EXPLODE,0xff,true)
+#else
 #define SFX_NAVIGATE TriggerFx(PATCH_NAVIGATE,0xff,true)
 #define SFX_DIALOGUE TriggerFx(PATCH_NAVIGATE,0xff,true)
 #define SFX_PLAYER_SHOOT TriggerNote(2,PATCH_PLAYER_SHOOT,0x23,0xff)
 #define SFX_HIT TriggerFx(PATCH_HIT,0xff,true)
 #define SFX_PLAYER_EXPLODE TriggerFx(PATCH_PLAYER_EXPLODE,0xff,true)
 #define SFX_ENEMY_EXPLODE TriggerFx(PATCH_ENEMY_EXPLODE,0xff,true)
+#endif
 
 #endif

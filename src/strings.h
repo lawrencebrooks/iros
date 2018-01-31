@@ -44,7 +44,7 @@ const unsigned char strLevelClear [] PROGMEM="LEVEL CLEAR";
 const unsigned char strLevelBonus [] PROGMEM="BONUS";
 const unsigned char strGameOver [] PROGMEM="GAME OVER";
 const unsigned char strTally [] PROGMEM="TALLY ";
-const unsigned char strCredits [] PROGMEM ="IROS V2.0 FOR UZEBOX\0\0\0"
+const unsigned char strCredits [] PROGMEM ="IROS V3.0 FOR UZEBOX\0\0\0"
 "PROGRAMMING AND DESIGN\0\0"
 "LAWRENCE BROOKS\0\0\0"
 "MUSIC DERIVED FROM\0\0"

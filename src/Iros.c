@@ -26,11 +26,11 @@
 #include "data/spacemusic.h"
 #include "types.h"
 #include "strings.h"
-#include "utils.h"
-#include "macros.h"
 #if JAMMA
 #include "jamma.h"
 #endif
+#include "utils.h"
+#include "macros.h"
 
 // Function Prototypes
 void load_eeprom(struct EepromBlockStruct* block);
@@ -1199,27 +1199,25 @@ void animate_shot(Player* player, Player* other_player, u8 shot_slot)
 u8 handle_continue() {
     u8 x = Screen.scrollX / 8;
     u8 y = Screen.scrollY / 8;
-    u8 count_down = 10;
+    u8 count_down = 9;
 
     DrawMap2((x+8)%32, (y+6)%30, map_canvas);
-    LBPrint((x+9)%32, (y+9)%30, (char*) strContinue);
-    LBPrintByte((x+9)%32+12, (y+9)%30, count_down, true);
-
-    LBPrint((x+9)%32, (y+12)%30, (char*) strCreditCount);
-    LBPrintByte((x+9)%32+12, (y+12)%30, credits_available(), true);
+    LBPrint((x+10)%32, (y+9)%30, (char*) strContinue);
+	LBPrint((x+11)%32, (y+12)%30, (char*) strCreditCount);
 
     hide_sprites(0, MAX_EXTENDED_SPRITES);
     LBRotateSprites();
+	game.frame_counter = 0;
     while (1)
     {
         waitForVSync();
-        if (game.frame_counter % 60 == 0) {
+		LBPrintByte((x+10)%32+10, (y+9)%30, count_down, false);
+		LBPrintByte((x+11)%32+9, (y+12)%30, credits_available(), false);
+        if (game.frame_counter == 60) {
             if (count_down > 0) count_down--;
-            LBPrintByte((x+13)%32+12, (y+9)%30, count_down, true);
+			game.frame_counter = 0;
         }
         if (count_down <= 0) {
-           tally_score((char*) strGameOver, 0);
-           exit_game();
            return 0; 
         }
         LBGetJoyPadState(&game.player.controls, 0);
@@ -1233,6 +1231,7 @@ u8 handle_continue() {
         {
             if (count_down > 0) count_down--;
         }
+		game.frame_counter++;
     }
 }
 #else
@@ -1251,8 +1250,6 @@ u8 handle_player_death(Player* player)
     if (game.lives == 0)
     {
         if (!handle_continue()) {
-            return 0;
-        } else {
             tally_score((char*) strGameOver, 0);
             exit_game();
             return 0;
@@ -1266,6 +1263,7 @@ u8 handle_player_death(Player* player)
     init_player_state();
     init_boss_state();
     init_enemy_state();
+	game.time = 0;
     load_level(game.current_level_index, false);
     return 0;
 #else
@@ -2027,9 +2025,12 @@ void stream_text_middle(const char* dialogue, u8 y, u16 delay)
 		x = 14 - ln / 2;
 		while ((c = pgm_read_byte(dialogue++)))
 		{
+#if JAMMA
+			handle_coin_insert();
+#endif
 			LBPrintChar(x++, y, c);
 			LBGetJoyPadState(&game.player.controls, 0);
-			if (!(game.player.controls.held & BTN_A)) WaitUs(delay);
+			if (!(game.player.controls.held & BTN_A)) LBWaitUs(delay);
 		}
 		y++;
 	}
@@ -2063,6 +2064,19 @@ void congratulations()
 	print_scroll(strCongrats);
 	StopSong();
 }
+
+#if JAMMA
+void exit_demo()
+{
+	clear_sprites(0, MAX_EXTENDED_SPRITES);
+	LBRotateSprites();
+	init_player_state();
+	init_boss_state();
+	init_enemy_state();
+	StopSong();
+	load_splash();
+}
+#endif
 
 u8 update_level()
 {
@@ -2141,7 +2155,7 @@ u8 update_level()
 			{
 				clear_sprites(6, 8);
 				LBRotateSprites();
-				tally_score((char*) strLevelClear, 100);
+				tally_score((char*) strLevelClear, 200);
 				planet_transition(game.current_level_index+1, -1, 26, 3, 0);
 				break;
 			}
@@ -2156,7 +2170,7 @@ u8 update_level()
 			exit_game();
 			return 1;
 		} else {
-			tally_score((char*) strLevelClear, 100);
+			tally_score((char*) strLevelClear, 200);
 			planet_transition(game.current_level_index+1, 1, 28, -3, 199);
 		}
 	}
@@ -2166,7 +2180,11 @@ u8 update_level()
 		if (ReadJoypad(0) || ReadJoypad(1) || (demo_counter >= DEMO_LENGTH))
 		{
 			demo_counter = 0;
+#if JAMMA
+			exit_demo();
+#else
 			exit_game();
+#endif
 			return 1;
 		}
 	}
@@ -2231,7 +2249,7 @@ void stream_text_anywhere(const char* dialogue, u8 x, u8 y)
 		while ((c = pgm_read_byte(dialogue++)))
 		{
 			LBPrintChar(cursor++, y, c);
-			WaitUs(CHARACTER_DELAY_US);
+			LBWaitUs(CHARACTER_DELAY_US);
 		}
 		y++;
 		cursor = x;
@@ -2379,18 +2397,18 @@ void load_splash()
 	LBRotateSprites();
 #if JAMMA
     if (credits_available()) {
-        LBPrint(5, 15, (char*) str1Player);
+        LBPrint(8, 15, (char*) str1Player);
     } else {
-        LBPrint(5, 15, (char*) strInsertCoin);
+        LBPrint(8, 15, (char*) strInsertCoin);
     }
-    LBPrint(15, 23, (char*) strCreditCount);
-    LBPrintByte(27, 23, credits_available(), true);
+    LBPrint(18, 24, (char*) strCreditCount);
+    LBPrintByte(27, 24, credits_available(), false);
 #else	
     LBPrint(8, 15, (char*) str1Player);
 	LBPrint(8, 16, (char*) strHighScores);
-	LBPrint(4, 21, (char*) strCopyright);
 	LBMapSprite(0, map_right_arrow, 0);
 #endif
+	LBPrint(4, 20, (char*) strCopyright);
     DrawMap2(6, 5, map_splash);
 }
 
@@ -2423,12 +2441,12 @@ void update_splash()
     }
     demo_counter++;
     if (credits_available()) {
-        LBPrint(5, 15, (char*) str1Player);
+        LBPrint(8, 15, (char*) str1Player);
     } else {
-        LBPrint(5, 15, (char*) strInsertCoin);
+        LBPrint(8, 15, (char*) strInsertCoin);
     }
-    LBPrint(15, 23, (char*) strCreditCount);
-    LBPrintByte(27, 23, credits_available(), true);
+    LBPrint(18, 24, (char*) strCreditCount);
+    LBPrintByte(27, 24, credits_available(), false);
 #else
 	static u16 demo_counter = 0;
 	static u8 demo_choice = 0;
@@ -2730,11 +2748,11 @@ void tally_score(char* title, u16 bonus)
 	{
         waitForVSync();
 		SFX_HIT;
-		tally += 1;
-		counter -= 1;
+		tally += 10;
+		counter -= 10;
 		LBPrintInt((x+20)%32, (y+9)%30, tally, true);
 		LBPrintInt((x+20)%32, (y+11)%30, counter, true);
-		WaitUs(TALLY_DELAY);
+		LBWaitUs(TALLY_DELAY);
 	}
 	
 	// Tally Time
@@ -2748,7 +2766,7 @@ void tally_score(char* title, u16 bonus)
 		counter -= 1;
 		LBPrintInt((x+20)%32, (y+9)%30, tally, true);
 		LBPrintInt((x+20)%32, (y+12)%30, counter, true);
-		WaitUs(TALLY_DELAY);
+		LBWaitUs(TALLY_DELAY);
 	}
 	
 	// Tally Level Bonus
@@ -2757,11 +2775,11 @@ void tally_score(char* title, u16 bonus)
 	{
         waitForVSync();
 		SFX_HIT;
-		tally += 1;
-		counter -= 1;
+		tally += 10;
+		counter -= 10;
 		LBPrintInt((x+20)%32, (y+9)%30, tally, true);
 		LBPrintInt((x+20)%32, (y+13)%30, counter, true);
-		WaitUs(TALLY_DELAY);
+		LBWaitUs(TALLY_DELAY);
 	}
 	
 	game.score = tally;

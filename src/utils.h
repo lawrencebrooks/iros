@@ -17,6 +17,10 @@
 #ifndef LB_UTILS_H
 #define LB_UTILS_H
 
+#if JAMMA
+#include "jamma.h"
+#endif
+
 extern struct SpriteStruct sprites[];
 extern ScreenType Screen;
 
@@ -190,11 +194,24 @@ u8 LBRandom(u8 from, u8 to)
 	return (((u8)tmp) % (to - from)) + from;
 }
 
+void LBWaitUs(u16 micro_seconds)
+{
+#if JAMMA
+	micro_seconds = micro_seconds / 1500;
+	for (;micro_seconds > 0; micro_seconds--) {
+		WaitVsync(1);
+		handle_coin_insert();
+	}
+#else
+	WaitUs(micro_seconds);
+#endif
+}
+
 void LBWaitSeconds(u8 seconds)
 {
 	for(u8 i = 0; i < seconds; i++)
 	{
-		WaitUs(65535);
+		LBWaitUs(65535);
 	}
 }
 

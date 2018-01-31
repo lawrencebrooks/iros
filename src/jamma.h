@@ -16,6 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+ 
+#ifndef LB_JAMMA_H
+#define LB_JAMMA_H
 
 u8 credits;
 u8 coin_count;
@@ -39,6 +42,7 @@ void extract_dip_switches(u8 switches) {
 }
 
 void coin_inserted() {
+	TriggerNote(2,PATCH_PLAYER_SHOOT,0x23,0xff);
     if (coin_credit_rel == CC_FRE || credits == 255) {
         credits = 255;
         return;
@@ -66,6 +70,10 @@ u8 credits_available() {
     return credits;
 }
 
+u8 no_demo_sound() {
+	return demo_sound_off;
+}
+
 void acquire_credit() {
     if (coin_credit_rel != CC_FRE) credits--;
 }
@@ -79,3 +87,5 @@ void handle_coin_insert() {
     }
     p2_prev_state = ReadJoypad(1);
 }
+
+#endif
