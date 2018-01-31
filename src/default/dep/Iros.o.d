@@ -13,7 +13,7 @@ Iros.o: ../Iros.c ../kernel/uzebox.h \
  c:\avr-gcc\lib\gcc\avr\4.9.2\include\stddef.h \
  c:\avr-gcc\avr\include\string.h ../data/tiles.h ../data/sprites.h \
  ../data/patches.h ../data/planetmusic.h ../data/spacemusic.h ../types.h \
- ../utils.h ../jamma.h ../macros.h ../strings.h
+ ../utils.h ../macros.h ../strings.h
 
 ../kernel/uzebox.h:
 
@@ -70,8 +70,6 @@ c:\avr-gcc\avr\include\string.h:
 ../types.h:
 
 ../utils.h:
-
-../jamma.h:
 
 ../macros.h:
 

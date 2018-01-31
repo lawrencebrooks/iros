@@ -37,8 +37,8 @@ u16 p2_prev_state;
 
 
 void extract_dip_switches(u8 switches) {
-    coin_credit_rel = (((switches >> 1) << 5) >> 5) + 1;
-    demo_sound_off = ((switches >> 4) << 3) >> 3;
+    coin_credit_rel = 1;
+    demo_sound_off = 1;
 }
 
 void coin_inserted() {
