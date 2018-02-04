@@ -42,7 +42,11 @@
 #define DEMO_SELECTED 2
 
 // Frame counts
+#if JAMMA
+#define FRAMES_PER_FADE 0
+#else
 #define FRAMES_PER_FADE 1
+#endif
 #define FRAMES_PER_GRACE 120
 
 // General macros

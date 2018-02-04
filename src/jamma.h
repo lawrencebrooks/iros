@@ -40,7 +40,7 @@ void extract_dip_switches(u8 switches) {
 	coin_credit_rel = switches << 4;
     coin_credit_rel = (coin_credit_rel >> 5) + 1;
 	demo_sound_off = switches << 3;
-    demo_sound_off = switches >> 7;
+    demo_sound_off = demo_sound_off >> 7;
 }
 
 void coin_inserted() {
